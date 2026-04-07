@@ -459,19 +459,97 @@ ul, ol { list-style: none; }
   max-width: 560px;
 }
 
+/* ============================================
+   HERO LOGOS (Original Style & Re-sized)
+   ============================================ */
+.hero-brand-group {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.hero-logos {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.hero-logo-inner {
+  width: 120px; /* Frame size remains the same */
+  height: 120px;
+  border-radius: 50%;
+  background: var(--bg-card);
+  padding: 0; /* Removed padding so image fills the entire circle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.4);
+  border: 1px solid var(--border-light);
+  transition: all var(--duration-fast) var(--ease-out);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+
+.hero-logo-inner::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  transform: skewX(-20deg);
+  z-index: 2;
+}
+
+.hero-logo-item:hover .hero-logo-inner::before {
+  left: 200%;
+  transition: left 0.6s ease;
+}
+
+.hero-logo-item:hover .hero-logo-inner {
+  transform: scale(1.1) translateY(-6px);
+  box-shadow: 0 20px 60px rgba(96,165,250,0.3);
+  border-color: var(--accent-bright);
+}
+
+.hero-logo-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transform: scale(1.25); /* Slightly reduced from 1.4 to be more balanced while still filling the frame */
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
+}
+
 .hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 18px;
+  padding: 12px 32px; /* Increased padding */
   background: var(--accent-glow);
-  border: 1px solid rgba(96,165,250,0.2);
+  border: 1px solid rgba(96,165,250,0.25);
   border-radius: 100px;
-  font-size: 13px;
+  font-size: 15px; /* Larger font size */
   font-weight: 500;
   color: var(--accent-bright);
-  margin-bottom: 40px;
+  white-space: nowrap;
 }
+
+
+.floating-element {
+  animation: floatSmall 5s ease-in-out infinite;
+}
+.anim-delay-0 { animation-delay: 0s; }
+.anim-delay-1 { animation-delay: 1.5s; }
+
+@keyframes floatSmall {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+
 
 .hero-greeting {
   font-family: var(--font-body);
