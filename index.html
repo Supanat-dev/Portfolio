@@ -1,683 +1,253 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description"
-    content="Portfolio สำหรับยื่นเข้าคณะวิศวกรรมศาสตร์ สจล. — แสดงผลงาน ทักษะ และความมุ่งมั่นในสายวิศวกรรมเมคคาทรอนิกส์ โดย ศุภณัฏฐ์ เมฆมูสิก">
+  <meta name="description" content="Portfolio สำหรับยื่นเข้าคณะวิศวกรรมศาสตร์ สจล. โดย ศุภณัฏฐ์ เมฆมูสิก">
   <title>ศุภณัฏฐ์ เมฆมูสิก — Engineering Portfolio</title>
-  <link rel="stylesheet" href="style.css?v=1.1">
+  <link rel="stylesheet" href="style.css?v=2.0">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
-
 <body>
-
-  <!-- Cursor Glow -->
-  <div class="cursor-glow" id="cursorGlow"></div>
-
-  <!-- Scroll Progress Bar -->
+  <!-- Three.js Canvas -->
+  <canvas id="threeBg"></canvas>
+  <!-- Particle Canvas -->
+  <canvas id="particleCanvas"></canvas>
+  <!-- Scroll Progress -->
   <div class="scroll-progress" id="scrollProgress"></div>
 
-  <!-- ============================================
-       NAVIGATION
-       ============================================ -->
+  <!-- NAV -->
   <nav class="navbar" id="navbar">
     <div class="container">
       <a href="#hero" class="nav-logo">Portfolio</a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" data-section="about">เกี่ยวกับ</a></li>
-        <li><a href="#skills" data-section="skills">ทักษะ</a></li>
         <li><a href="#sop" data-section="sop">SOP</a></li>
         <li><a href="#projects" data-section="projects">ผลงาน</a></li>
         <li><a href="#achievements" data-section="achievements">รางวัล</a></li>
         <li><a href="#contact" data-section="contact">ติดต่อ</a></li>
       </ul>
-      <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู">
-        <span></span><span></span><span></span>
-      </button>
+      <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู"><span></span><span></span><span></span></button>
     </div>
   </nav>
 
-  <!-- Dot Navigation (Right side) -->
+  <!-- DOT NAV -->
   <div class="dot-nav" id="dotNav">
     <div class="dot-nav-item active" data-target="#hero"><span class="dot-tooltip">หน้าแรก</span></div>
     <div class="dot-nav-item" data-target="#about"><span class="dot-tooltip">เกี่ยวกับ</span></div>
-    <div class="dot-nav-item" data-target="#skills"><span class="dot-tooltip">ทักษะ</span></div>
     <div class="dot-nav-item" data-target="#sop"><span class="dot-tooltip">SOP</span></div>
     <div class="dot-nav-item" data-target="#projects"><span class="dot-tooltip">ผลงาน</span></div>
     <div class="dot-nav-item" data-target="#achievements"><span class="dot-tooltip">รางวัล</span></div>
     <div class="dot-nav-item" data-target="#contact"><span class="dot-tooltip">ติดต่อ</span></div>
   </div>
 
-  <!-- ============================================
-       HERO SECTION
-       ============================================ -->
+  <!-- ===== HERO ===== -->
   <section class="hero" id="hero">
-    <!-- Background orbs -->
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-
     <div class="container">
       <div class="hero-content">
-        <div class="hero-brand-group reveal-fade delay-0">
+        <div class="hero-brand-group anim-reveal">
           <div class="hero-logos">
-            <div class="hero-logo-item floating-element anim-delay-0" title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
-               <div class="hero-logo-inner">
-                 <img src="assets/tupp-logo-v3.png" alt="TUPP Logo" />
-               </div>
+            <div class="hero-logo-item floating-element" title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
+              <div class="hero-logo-inner"><img src="assets/tupp-logo-v3.png" alt="TUPP Logo" /></div>
             </div>
-            <div class="hero-logo-item floating-element anim-delay-1" title="Gifted Science Research And Artificial Intelligence">
-               <div class="hero-logo-inner">
-                 <img src="assets/gsrt-ai-logo.png" alt="GSRT AI Logo" />
-               </div>
+            <div class="hero-logo-item floating-element anim-delay-1" title="Gifted Science Research And AI">
+              <div class="hero-logo-inner"><img src="assets/gsrt-ai-logo.png" alt="GSRT AI Logo" /></div>
             </div>
           </div>
-
-          <div class="hero-badge">
-            โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ
-          </div>
+          <div class="hero-badge">โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</div>
         </div>
-
-        <p class="hero-greeting reveal-text delay-1"><span class="reveal-text-inner">สวัสดีครับ, ผม —</span></p>
-
-        <h1 class="hero-name">
-          <span class="reveal-text delay-2"><span class="reveal-text-inner">ศุภณัฏฐ์</span></span>
-          <em class="reveal-text delay-3"><span class="reveal-text-inner">เมฆมูสิก</span></em>
-        </h1>
-
-        <p class="hero-tagline reveal-text delay-4">
-          <span
-            class="reveal-text-inner">ผู้หลงใหลในเทคโนโลยีปัญญาประดิษฐ์และการควบคุมหุ่นยนต์<br>พร้อมก้าวกระโดดสู่วิศวกรเมคคาทรอนิกส์</span>
-        </p>
-
-        <p class="hero-department reveal-text delay-5">
-          <span class="reveal-text-inner">วศ.บ. เมคคาทรอนิกส์และออโตเมชัน •
-            สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (KMITL)</span>
-        </p>
-
-        <div class="reveal-fade delay-6">
-          <a href="#projects" class="hero-cta">
-            ดูผลงาน
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-              stroke-linecap="round" stroke-linejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </a>
-        </div>
+        <p class="hero-greeting anim-reveal">สวัสดีครับ, ผม —</p>
+        <h1 class="hero-name anim-reveal">ศุภณัฏฐ์<em>เมฆมูสิก</em></h1>
+        <p class="hero-tagline anim-reveal">ผู้หลงใหลในเทคโนโลยีปัญญาประดิษฐ์และการควบคุมหุ่นยนต์<br>พร้อมก้าวกระโดดสู่วิศวกรเมคคาทรอนิกส์</p>
+        <p class="hero-dept anim-reveal">วศ.บ. เมคคาทรอนิกส์และออโตเมชัน • KMITL</p>
+        <a href="#projects" class="hero-cta anim-reveal">ดูผลงาน <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
       </div>
-
-      <div class="hero-visual reveal-scale delay-4">
-        <div class="hero-image-wrapper" id="heroImage">
-          <div class="hero-photo-placeholder">
-            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-              <circle cx="12" cy="7" r="4" />
-            </svg>
-            <span>รูปภาพประจำตัว</span>
+      <div class="hero-visual anim-reveal">
+        <div class="hero-profile-container" data-tilt>
+          <div class="hero-profile-frame">
+            <img src="assets/profile.jpg" alt="ศุภณัฏฐ์ เมฆมูสิก">
           </div>
-        </div>
-
-        <!-- Floating decorative elements -->
-        <div class="hero-float-element hero-float-1 reveal-fade delay-6">
-          <span style="color:var(--accent);">⚡</span> Full-Stack Dev
-        </div>
-        <div class="hero-float-element hero-float-2 reveal-fade delay-7">
-          <span style="color:var(--accent);">🤖</span> Robotics
-        </div>
-        <div class="hero-float-element hero-float-3 reveal-fade delay-8">
-          <span style="color:var(--accent);">📊</span> AI / ML
+          <div class="hero-profile-glow"></div>
+          <div class="hero-tech-line"></div>
         </div>
       </div>
     </div>
-
-    <div class="hero-scroll-hint">
-      <div class="scroll-indicator"></div>
-      <span>เลื่อนลง</span>
-    </div>
+    <div class="hero-scroll-hint"><div class="scroll-indicator"></div><span>เลื่อนลง</span></div>
   </section>
 
-  <!-- ============================================
-       01 — ABOUT ME
-       ============================================ -->
+  <!-- ===== ABOUT ===== -->
   <section class="section" id="about">
     <div class="container">
-      <div class="section-label reveal-fade">
-        <span class="section-number">01</span>
-        <span class="section-line"></span>
-        <span class="section-name">เกี่ยวกับฉัน</span>
-      </div>
-
-      <h2 class="section-title">
-        <span class="reveal-text"><span class="reveal-text-inner">ประวัติส่วนตัว</span></span>
-
-        <div class="about-grid">
-          <div>
-            <p class="about-bio reveal-fade delay-2">
-              ผมคือ <strong>"ภู"</strong> นักเรียนมัธยมศึกษาปีที่ 5 แผนการเรียนวิทยาศาสตร์–คณิตศาสตร์และปัญญาประดิษฐ์
-              ที่มีความหลงใหลในวิศวกรรมเครื่องกล ไฟฟ้า และโปรแกรมมิง การได้สัมผัสเทคโนโลยี AI รวมถึงการแข่งขัน Robotics
-              และงานช่างอิเล็กทรอนิกส์ต่างๆ ระดับประเทศ
-              ทำให้ผมมุ่งมั่นที่จะพัฒนาตนเองสู่การเป็นวิศวกรที่พร้อมขับเคลื่อนเทคโนโลยี Autonomous Systems ระดับสากล
-            </p>
-
-            <div class="education-timeline reveal-fade delay-3">
-              <h3>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                  <path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5" />
-                </svg>
-                ประวัติการศึกษา
-              </h3>
-              <div class="timeline-item">
-                <span class="timeline-year">2568 (กำลังศึกษา)</span>
-                <div class="timeline-info">
-                  <h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4>
-                  <p>มัธยมศึกษาตอนปลาย • แผนการเรียน วิทยาศาสตร์ คณิตศาสตร์ และปัญญาประดิษฐ์</p>
-                  <span class="timeline-gpa">GPAX ล่าสุด 3.24</span>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <span class="timeline-year">2567</span>
-                <div class="timeline-info">
-                  <h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4>
-                  <p>มัธยมศึกษาตอนต้น</p>
-                  <span class="timeline-gpa">GPAX สะสม 3.42</span>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <span class="timeline-year">2564</span>
-                <div class="timeline-info">
-                  <h4>โรงเรียนสารสาสน์วิเทศมีนบุรี</h4>
-                  <p>ประถมศึกษา</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="about-photo-wrapper reveal-scale delay-3">
-            <div class="about-photo" id="aboutPhoto">
-              <div class="placeholder-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"
-                  style="color:var(--text-dim)">
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>รูปภาพประจำตัว</span>
-              </div>
-            </div>
+      <div class="section-label anim-reveal"><span class="section-number">01</span><span class="section-line"></span><span class="section-name">เกี่ยวกับฉัน</span></div>
+      <h2 class="section-title anim-reveal">ประวัติ<em>ส่วนตัว</em></h2>
+      <div class="about-grid">
+        <div>
+          <p class="about-bio anim-reveal">ผมคือ <strong>"ภู"</strong> นักเรียนมัธยมศึกษาปีที่ 5 แผนการเรียนวิทยาศาสตร์–คณิตศาสตร์และปัญญาประดิษฐ์ ที่มีความหลงใหลในวิศวกรรมเครื่องกล ไฟฟ้า และโปรแกรมมิง การได้สัมผัสเทคโนโลยี AI รวมถึงการแข่งขัน Robotics และงานช่างอิเล็กทรอนิกส์ต่างๆ ระดับประเทศ ทำให้ผมมุ่งมั่นที่จะพัฒนาตนเองสู่การเป็นวิศวกรที่พร้อมขับเคลื่อนเทคโนโลยี Autonomous Systems ระดับสากล</p>
+          <div class="education-timeline anim-reveal">
+            <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg> ประวัติการศึกษา</h3>
+            <div class="timeline-item"><span class="timeline-year">2568</span><div class="timeline-info"><h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4><p>ม.ปลาย • วิทย์-คณิต-AI</p><span class="timeline-gpa">GPAX 3.24</span></div></div>
+            <div class="timeline-item"><span class="timeline-year">2567</span><div class="timeline-info"><h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4><p>มัธยมศึกษาตอนต้น</p><span class="timeline-gpa">GPAX 3.42</span></div></div>
+            <div class="timeline-item"><span class="timeline-year">2564</span><div class="timeline-info"><h4>โรงเรียนสารสาสน์วิเทศมีนบุรี</h4><p>ประถมศึกษา</p></div></div>
           </div>
         </div>
-    </div>
-  </section>
-
-  <!-- ============================================
-       02 — TECHNICAL SKILLS
-       ============================================ -->
-  <section class="section skills-section" id="skills">
-    <div class="container">
-      <div class="section-label reveal-fade" style="justify-content:center;">
-        <span class="section-number">02</span>
-        <span class="section-line"></span>
-        <span class="section-name">ทักษะด้านเทคนิค</span>
-      </div>
-
-      <div style="text-align:center;">
-        <h2 class="section-title" style="margin:0 auto;">
-          <span class="reveal-text"><span class="reveal-text-inner">ความสามารถที่</span></span>
-          <span class="reveal-text delay-1"><span class="reveal-text-inner"><em>พัฒนา</em>มาอย่างต่อเนื่อง</span></span>
-        </h2>
-      </div>
-
-      <div class="skills-content">
-        <div class="radar-chart-wrapper reveal-scale delay-2">
+        <div class="radar-chart-wrapper anim-reveal">
+          <h3 class="radar-title">ทักษะด้านเทคนิค</h3>
           <canvas id="radarChart" width="440" height="440"></canvas>
-        </div>
-        <div class="skills-legend reveal-fade delay-3">
-          <div class="skills-legend-item"><span class="dot"></span> Python</div>
-          <div class="skills-legend-item"><span class="dot"></span> C/C++</div>
-          <div class="skills-legend-item"><span class="dot"></span> Robotics</div>
-          <div class="skills-legend-item"><span class="dot"></span> IoT</div>
-          <div class="skills-legend-item"><span class="dot"></span> Web Dev</div>
-          <div class="skills-legend-item"><span class="dot"></span> AI/ML</div>
+          <div class="skills-legend">
+            <div class="skills-legend-item"><span class="dot"></span>Python</div>
+            <div class="skills-legend-item"><span class="dot"></span>C/C++</div>
+            <div class="skills-legend-item"><span class="dot"></span>Robotics</div>
+            <div class="skills-legend-item"><span class="dot"></span>IoT</div>
+            <div class="skills-legend-item"><span class="dot"></span>Web Dev</div>
+            <div class="skills-legend-item"><span class="dot"></span>AI/ML</div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       03 — SOP
-       ============================================ -->
-  <section class="section" id="sop">
+  <!-- ===== SOP ===== -->
+  <section class="section section-alt" id="sop">
     <div class="container">
-      <div class="section-label reveal-fade" style="justify-content:center;">
-        <span class="section-number">03</span>
-        <span class="section-line"></span>
-        <span class="section-name">Statement of Purpose</span>
-      </div>
-
-      <div style="text-align:center;">
-        <h2 class="section-title" style="margin:0 auto;">
-          <span class="reveal-text"><span class="reveal-text-inner">จุดมุ่งหมายและ</span></span>
-          <span class="reveal-text delay-1"><span class="reveal-text-inner"><em>แรงบันดาลใจ</em></span></span>
-        </h2>
-      </div>
-
+      <div class="section-label anim-reveal"><span class="section-number">02</span><span class="section-line"></span><span class="section-name">Statement of Purpose</span></div>
+      <h2 class="section-title anim-reveal" style="text-align:center">จุดมุ่งหมายและ<em>แรงบันดาลใจ</em></h2>
       <div class="sop-content">
-        <blockquote class="sop-pull-quote reveal-fade delay-2">
-          "ผมไม่ได้มองเทคโนโลยี Autonomous Systems เป็นเพียงความสะดวกสบาย แต่เป็นโจทย์ท้าทายทางวิศวกรรม
-          ที่จะยกระดับอุตสาหกรรมและคุณภาพชีวิตผู้คน"
-        </blockquote>
-
-        <div class="sop-body reveal-fade delay-3">
-          <p>ด้วยโอกาสในการศึกษาในแผนการเรียนเฉพาะทางด้านปัญญาประดิษฐ์ (AI) ทำให้ผมได้สร้างรากฐานทางเทคนิคที่สำคัญ
-            ทั้งในด้าน Software ผ่านการเขียนโปรแกรมด้วยภาษา Python และ C++ รวมถึงการพัฒนาเว็บไซต์ และในด้าน Hardware
-            ผ่านการฝึกทักษะงานช่างอย่างการบัดกรี การต่อวงจรอิเล็กทรอนิกส์ และการควบคุมหุ่นยนต์เบื้องต้น
-            นอกจากนี้ผมยังได้ศึกษาเทคโนโลยีขั้นสูงอย่าง Object Detection ซึ่งทำให้ผมเล็งเห็นถึงศักยภาพในการนำ AI
-            เข้ามาเป็นส่วนหนึ่งของการควบคุมระบบเมคคาทรอนิกส์ให้มีความชาญฉลาดและแม่นยำยิ่งขึ้น</p>
-          <p>แรงบันดาลใจที่ผลักดันให้ผมเลือกเดินเส้นทางวิศวกร
-            คือการก้าวกระโดดของเทคโนโลยียานยนต์ไฟฟ้าและระบบขับเคลื่อนอัตโนมัติ (Autonomous Systems)
-            ผมไม่ได้มองเทคโนโลยีเหล่านี้เป็นเพียงความสะดวกสบาย แต่เป็นโจทย์ทางวิศวกรรมที่ท้าทาย
-            ทั้งในด้านการประมวลผลเซนเซอร์ การออกแบบกลไก และการเขียนอัลกอริทึมควบคุม
-            ผมจึงมีความปรารถนาที่จะเป็นส่วนหนึ่งของผู้พัฒนาเทคโนโลยีชิ้นนี้</p>
-          <p>เหตุผลที่ผมเลือกสมัครเข้าศึกษาต่อที่ คณะวิศวกรรมศาสตร์ สจล.
-            เนื่องจากชื่อเสียงด้านความเป็นเลิศทางวิชาการและการปฏิบัติงานจริง
-            ซึ่งตรงกับรูปแบบการเรียนรู้ของผมที่ชอบการทดลองและเผชิญหน้ากับโจทย์ที่ท้าทาย
-            ผมมีความพร้อมและความมุ่งมั่นที่จะทุ่มเทให้กับการศึกษาในรั้วพระจอมเกล้าลาดกระบัง
-            เพื่อเติบโตไปเป็นวิศวกรเมคคาทรอนิกส์ที่มีความเชี่ยวชาญในอนาคต</p>
+        <blockquote class="sop-pull-quote anim-reveal">"ผมไม่ได้มองเทคโนโลยี Autonomous Systems เป็นเพียงความสะดวกสบาย แต่เป็นโจทย์ท้าทายทางวิศวกรรม ที่จะยกระดับอุตสาหกรรมและคุณภาพชีวิตผู้คน"</blockquote>
+        <div class="sop-body anim-reveal">
+          <p>ด้วยโอกาสในการศึกษาในแผนการเรียนเฉพาะทางด้านปัญญาประดิษฐ์ (AI) ทำให้ผมได้สร้างรากฐานทางเทคนิคที่สำคัญ ทั้งในด้าน Software ผ่านการเขียนโปรแกรมด้วยภาษา Python และ C++ รวมถึงการพัฒนาเว็บไซต์ และในด้าน Hardware ผ่านการฝึกทักษะงานช่างอย่างการบัดกรี การต่อวงจรอิเล็กทรอนิกส์ และการควบคุมหุ่นยนต์เบื้องต้น</p>
+          <p>แรงบันดาลใจที่ผลักดันให้ผมเลือกเดินเส้นทางวิศวกร คือการก้าวกระโดดของเทคโนโลยียานยนต์ไฟฟ้าและระบบขับเคลื่อนอัตโนมัติ (Autonomous Systems) ผมจึงมีความปรารถนาที่จะเป็นส่วนหนึ่งของผู้พัฒนาเทคโนโลยีชิ้นนี้</p>
+          <p>เหตุผลที่ผมเลือกสมัครเข้าศึกษาต่อที่ คณะวิศวกรรมศาสตร์ สจล. เนื่องจากชื่อเสียงด้านความเป็นเลิศทางวิชาการและการปฏิบัติงานจริง ซึ่งตรงกับรูปแบบการเรียนรู้ของผมที่ชอบการทดลองและเผชิญหน้ากับโจทย์ที่ท้าทาย</p>
         </div>
-
-
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       04 — PROJECTS
-       ============================================ -->
-  <section class="section" id="projects" style="background:var(--bg-section);">
+  <!-- ===== PROJECTS ===== -->
+  <section class="section" id="projects">
     <div class="container">
-      <div class="section-label reveal-fade">
-        <span class="section-number">04</span>
-        <span class="section-line"></span>
-        <span class="section-name">โปรเจกต์</span>
-      </div>
-
-      <h2 class="section-title">
-        <span class="reveal-text"><span class="reveal-text-inner">ผลงานที่สะท้อน</span></span>
-        <span class="reveal-text delay-1"><span class="reveal-text-inner"><em>ทักษะ</em>ของผม</span></span>
-      </h2>
-
-      <div class="projects-list">
-        <!-- Project 0: Sign Language Glove -->
-        <div class="project-card reveal-fade delay-2">
-          <div class="project-card-image">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-              <circle cx="12" cy="13" r="3" />
-            </svg>
-          </div>
-          <div class="project-card-body">
-            <div class="project-card-role">Lead Innovator / Developer</div>
-            <h3 class="project-card-title">Echo Glove (Smart Sign Language)</h3>
-            <p class="project-card-desc">โครงงานสร้างและพัฒนาถุงมือแปลภาษามืออัจฉริยะเพื่อช่วยเหลือผู้พิการทางการได้ยิน
-              ได้รับรางวัลชนะเลิศการประกวดโครงงาน OTOP ภายในโรงเรียน ประจำปีการศึกษา 2568</p>
-            <div class="project-card-tags">
-              <span class="tag">Hardware</span>
-              <span class="tag">AI / ML</span>
-              <span class="tag">Innovation</span>
-            </div>
-            <div class="project-card-link">
-              อ่านเพิ่มเติม
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
-          </div>
+      <div class="section-label anim-reveal"><span class="section-number">03</span><span class="section-line"></span><span class="section-name">โปรเจกต์</span></div>
+      <h2 class="section-title anim-reveal">ผลงานที่สะท้อน<em>ทักษะ</em>ของผม</h2>
+      <div class="projects-grid">
+        <div class="project-card glass anim-reveal" data-tilt>
+          <div class="project-card-icon">🧤</div>
+          <div class="project-card-role">Lead Innovator</div>
+          <h3>Echo Glove</h3>
+          <p>ถุงมือแปลภาษามืออัจฉริยะเพื่อช่วยเหลือผู้พิการทางการได้ยิน ชนะเลิศ OTOP ระดับโรงเรียน</p>
+          <div class="project-tags"><span class="tag">Hardware</span><span class="tag">AI/ML</span><span class="tag">Innovation</span></div>
         </div>
-
-        <!-- Project 1 -->
-        <div class="project-card reveal-fade delay-2">
-          <div class="project-card-image">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <rect x="2" y="3" width="20" height="14" rx="2" />
-              <line x1="8" y1="21" x2="16" y2="21" />
-              <line x1="12" y1="17" x2="12" y2="21" />
-            </svg>
-          </div>
-          <div class="project-card-body">
-            <div class="project-card-role">Robotics Competitor</div>
-            <h3 class="project-card-title">EERC 2025: Educational Robot</h3>
-            <p class="project-card-desc">ออกแบบและประกอบหุ่นยนต์เข้าแข่งขันรายการ Engineering Education Robot Contest
-              2025 โดยความร่วมมือจากโครงการ SIET Young Innovators จนได้รับรางวัลรองชนะเลิศอันดับ 1</p>
-            <div class="project-card-tags">
-              <span class="tag">Robotics</span>
-              <span class="tag">Engineering</span>
-              <span class="tag">Competition</span>
-            </div>
-            <div class="project-card-link">
-              อ่านเพิ่มเติม
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
-          </div>
+        <div class="project-card glass anim-reveal" data-tilt>
+          <div class="project-card-icon">🤖</div>
+          <div class="project-card-role">Robotics Competitor</div>
+          <h3>EERC 2025</h3>
+          <p>ออกแบบหุ่นยนต์แข่งขัน Engineering Education Robot Contest 2025 รองชนะเลิศอันดับ 1</p>
+          <div class="project-tags"><span class="tag">Robotics</span><span class="tag">Engineering</span></div>
         </div>
-
-        <!-- Project 2 -->
-        <div class="project-card reveal-fade delay-2">
-          <div class="project-card-image">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <circle cx="12" cy="12" r="10" />
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
-            </svg>
-          </div>
-          <div class="project-card-body">
-            <div class="project-card-role">AI Developer</div>
-            <h3 class="project-card-title">AI Object Detection</h3>
-            <p class="project-card-desc">เทรนโมเดลปัญญาประดิษฐ์สำหรับคัดแยกและวิเคราะห์วัตถุจากรูปภาพโดยใช้ Roboflow
-              ควบคู่กับการรันผ่าน VSCode ด้วยภาษา Python ณ โครงการ iDektep Mini Coding Challenge (ม.เกษตร)</p>
-            <div class="project-card-tags">
-              <span class="tag">Python</span>
-              <span class="tag">Roboflow</span>
-              <span class="tag">Machine Learning</span>
-            </div>
-            <div class="project-card-link">
-              อ่านเพิ่มเติม
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
-          </div>
+        <div class="project-card glass anim-reveal" data-tilt>
+          <div class="project-card-icon">🧠</div>
+          <div class="project-card-role">AI Developer</div>
+          <h3>AI Object Detection</h3>
+          <p>เทรนโมเดล AI คัดแยกวัตถุจากรูปภาพ ใช้ Roboflow + Python ณ iDektep Mini Coding Challenge</p>
+          <div class="project-tags"><span class="tag">Python</span><span class="tag">Roboflow</span><span class="tag">ML</span></div>
         </div>
-
-        <!-- Project 3 -->
-        <div class="project-card reveal-fade delay-2">
-          <div class="project-card-image">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <path
-                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-            </svg>
-          </div>
-          <div class="project-card-body">
-            <div class="project-card-role">Hardware / Microcontroller</div>
-            <h3 class="project-card-title">Raspberry Pi Automation</h3>
-            <p class="project-card-desc">
-              ทดลองและเสริมสร้างทักษะการเขียนโปรแกรมควบคุมไมโครคอนโทรลเลอร์สั่งงานเซนเซอร์และฮาร์ดแวร์พื้นฐาน
-              ผ่านบอร์ดบัสเทอร์ Raspberry Pi ณ FIBO Workshop (มจธ.)</p>
-            <div class="project-card-tags">
-              <span class="tag">Raspberry Pi</span>
-              <span class="tag">Microcontroller</span>
-              <span class="tag">Hardware</span>
-            </div>
-            <div class="project-card-link">
-              อ่านเพิ่มเติม
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </div>
-          </div>
+        <div class="project-card glass anim-reveal" data-tilt>
+          <div class="project-card-icon">🔧</div>
+          <div class="project-card-role">Hardware / MCU</div>
+          <h3>Raspberry Pi Automation</h3>
+          <p>เขียนโปรแกรมควบคุม MCU สั่งงานเซนเซอร์ผ่าน Raspberry Pi ณ FIBO Workshop (มจธ.)</p>
+          <div class="project-tags"><span class="tag">Raspberry Pi</span><span class="tag">Hardware</span></div>
         </div>
-
-        <!-- Project 4 -->
-        <div class="project-card reveal-fade delay-2">
-          <div class="project-card-image">
-            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-              <polyline points="16 18 22 12 16 6" />
-              <polyline points="8 6 2 12 8 18" />
-            </svg>
-          </div>
-          <div class="project-card-body">
-            <div class="project-card-role">Robotics Firmware</div>
-            <h3 class="project-card-title">LiDAR & Arduino Systems</h3>
-            <p class="project-card-desc">เข้าร่วมฝึกปฏิบัติงานจริงใน K-Engineering World Tour (สจล.) ในการต่อวงจรหลอด
-              LED ผ่าน Arduino R3 และได้เรียนรู้การบังคับหุ่นยนต์ทำแผนที่ด้วยระบบเซนเซอร์ LiDAR</p>
-            <div class="project-card-tags">
-              <span class="tag">LiDAR</span>
-              <span class="tag">Arduino</span>
-              <span class="tag">Electronics</span>
-            </div>
-          </div>
+        <div class="project-card glass anim-reveal" data-tilt>
+          <div class="project-card-icon">📡</div>
+          <div class="project-card-role">Robotics Firmware</div>
+          <h3>LiDAR &amp; Arduino</h3>
+          <p>ต่อวงจร LED ผ่าน Arduino และบังคับหุ่นยนต์ทำแผนที่ด้วย LiDAR ณ K-Engineering World Tour</p>
+          <div class="project-tags"><span class="tag">LiDAR</span><span class="tag">Arduino</span></div>
         </div>
-
-
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       05 — ACHIEVEMENTS
-       ============================================ -->
-  <section class="section" id="achievements">
+  <!-- ===== ACHIEVEMENTS ===== -->
+  <section class="section section-alt" id="achievements">
     <div class="container">
-      <div class="section-label reveal-fade">
-        <span class="section-number">05</span>
-        <span class="section-line"></span>
-        <span class="section-name">ผลงานและเกียรติบัตร</span>
-      </div>
-
-      <h2 class="section-title">
-        <span class="reveal-text"><span class="reveal-text-inner">รางวัลและความสำเร็จ</span></span>
-        <span class="reveal-text delay-1"><span class="reveal-text-inner">ที่<em>ภาคภูมิใจ</em></span></span>
-      </h2>
-
+      <div class="section-label anim-reveal"><span class="section-number">04</span><span class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
+      <h2 class="section-title anim-reveal">รางวัลและความสำเร็จที่<em>ภาคภูมิใจ</em></h2>
       <div class="achievements-grid">
-        <div class="achievement-card reveal-fade delay-2">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">รางวัลชนะเลิศ โครงงาน OTOP โรงเรียน</h3>
-            <p class="achievement-card-desc">ชนะเลิศการประกวดโครงงานสิ่งประดิษฐ์และนวัตกรรม
-              "ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน" ระดับโรงเรียน</p>
-            <p class="achievement-card-year">2568</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">🏆</div><h3>ชนะเลิศ OTOP โรงเรียน</h3><p>ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน</p><span class="ach-year">2568</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-2">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">รางวัลรองชนะเลิศอันดับ 1</h3>
-            <p class="achievement-card-desc">การแข่งขันหุ่นยนต์จากโครงการ SIET Young Innovators 2025: Engineering
-              Education Robot Contest 2025 (ณ สจล.)</p>
-            <p class="achievement-card-year">2568</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">🥈</div><h3>รองชนะเลิศอันดับ 1</h3><p>SIET Young Innovators: EERC 2025 (ณ สจล.)</p><span class="ach-year">2568</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-3">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">Coding Thailand 2025</h3>
-            <p class="achievement-card-desc">เข้าร่วมอบรมหลักสูตร AI - Driven Future (ทักษะด้าน Basic IoT, Basic Python
-              และ Microcontroller)</p>
-            <p class="achievement-card-year">2568</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">💻</div><h3>Coding Thailand 2025</h3><p>AI-Driven Future: IoT, Python, MCU</p><span class="ach-year">2568</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-4">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">ระตับเหรียญทองแดง (ศิลปหัตถกรรมนักเรียน)</h3>
-            <p class="achievement-card-desc">เข้าร่วมการประกวดดนตรีวงดุริยางค์เครื่องลม (Wind Ensembles)
-              ระดับชั้นมัธยมต้น</p>
-            <p class="achievement-card-year">2566</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">🥉</div><h3>เหรียญทองแดง ศิลปหัตถกรรม</h3><p>ดนตรี Wind Ensembles ระดับ ม.ต้น</p><span class="ach-year">2566</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-5">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">Introduction to Python</h3>
-            <p class="achievement-card-desc">เข้าร่วมอบรมหลักสูตร Python for AI and Digital Twin จากคณะวิศวกรรมศาสตร์
-              มหาวิทยาลัยเกษตรศาสตร์</p>
-            <p class="achievement-card-year">2567</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">🐍</div><h3>Intro to Python</h3><p>Python for AI &amp; Digital Twin (ม.เกษตร)</p><span class="ach-year">2567</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-6">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">Bootcamps for Statistics Career 3</h3>
-            <p class="achievement-card-desc">เรียนรู้เกี่ยวกับสายงานสถิติ การวาดกราฟรูปแบบต่างๆ ผ่าน Google Colab
-              ด้วยภาษา Python โดยคณะวิทยาศาสตร์ สจล.</p>
-            <p class="achievement-card-year">2567</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">📊</div><h3>Bootcamps for Statistics 3</h3><p>กราฟ + Google Colab (วิทย์ สจล.)</p><span class="ach-year">2567</span></div>
         </div>
-
-        <div class="achievement-card reveal-fade delay-7">
-          <div class="achievement-card-image">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="12" cy="8" r="7" />
-              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-            </svg>
-          </div>
-          <div class="achievement-card-body">
-            <h3 class="achievement-card-title">SDGs Hackathon Pitching Camp</h3>
-            <p class="achievement-card-desc">เข้าร่วมค่ายฝึกอบรมและเตรียมตัวสู่เวทีพัฒนาแนวคิดเยาวชนเพื่อความยั่งยืน ณ
-              มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต</p>
-            <p class="achievement-card-year">2567</p>
-          </div>
+        <div class="achievement-card anim-reveal">
+          <div class="ach-cert-image"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6 21v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1"/></svg><span>ใส่รูปเกียรติบัตร</span></div>
+          <div class="ach-body"><div class="ach-icon">🌱</div><h3>SDGs Hackathon Camp</h3><p>ค่ายพัฒนาแนวคิดเยาวชน (ม.ธรรมศาสตร์)</p><span class="ach-year">2567</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============================================
-       06 — CONTACT
-       ============================================ -->
-  <section class="section" id="contact" style="background:var(--bg-section);">
+  <!-- ===== CONTACT ===== -->
+  <section class="section" id="contact">
     <div class="container">
-      <div class="section-label reveal-fade" style="justify-content:center;">
-        <span class="section-number">06</span>
-        <span class="section-line"></span>
-        <span class="section-name">ติดต่อ</span>
-      </div>
-
+      <div class="section-label anim-reveal" style="justify-content:center"><span class="section-number">05</span><span class="section-line"></span><span class="section-name">ติดต่อ</span></div>
       <div class="contact-wrapper">
-        <h2 class="contact-cta-text">
-          <span class="reveal-text"><span class="reveal-text-inner">พร้อมแล้ว —</span></span>
-          <span class="reveal-text delay-1"><span class="reveal-text-inner">มา<em>พูดคุย</em>กัน</span></span>
-        </h2>
-
-        <div class="contact-grid reveal-fade delay-3">
-          <div class="contact-item">
-            <div class="contact-item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
-            </div>
-            <span class="contact-item-label">อีเมล</span>
-            <span class="contact-item-value">phoomakmoosik@gmail.com</span>
-          </div>
-
-          <div class="contact-item">
-            <div class="contact-item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.362 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
-              </svg>
-            </div>
-            <span class="contact-item-label">โทรศัพท์</span>
-            <span class="contact-item-value">080-659-7161</span>
-          </div>
-
-          <div class="contact-item">
-            <div class="contact-item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path
-                  d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-            </div>
-            <span class="contact-item-label">LINE ID</span>
-            <span class="contact-item-value">phoo9597m</span>
-          </div>
+        <h2 class="contact-cta-text anim-reveal">พร้อมแล้ว — มา<em>พูดคุย</em>กัน</h2>
+        <div class="contact-grid anim-reveal">
+          <div class="contact-item"><div class="contact-icon">📧</div><span class="contact-label">อีเมล</span><span class="contact-value">phoomakmoosik@gmail.com</span></div>
+          <div class="contact-item"><div class="contact-icon">📱</div><span class="contact-label">โทรศัพท์</span><span class="contact-value">080-659-7161</span></div>
+          <div class="contact-item"><div class="contact-icon">💬</div><span class="contact-label">LINE ID</span><span class="contact-value">phoo9597m</span></div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2026 <span>ศุภณัฏฐ์ เมฆมูสิก</span> — Mechatronics Engineering Portfolio</p>
-  </footer>
+  <!-- FOOTER -->
+  <footer class="footer"><p>© 2026 <span>ศุภณัฏฐ์ เมฆมูสิก</span> — Mechatronics Engineering Portfolio</p></footer>
 
-  <!-- ============================================
-       CONCIERGE CHATBOT
-       ============================================ -->
-  <div class="concierge-greeting" id="conciergeGreeting">
-    👋 สวัสดีครับ! มีอะไรให้ช่วยแนะนำเกี่ยวกับ Portfolio นี้ไหมครับ?
-  </div>
-
+  <!-- CONCIERGE -->
+  <div class="concierge-greeting" id="conciergeGreeting">👋 สวัสดีครับ! มีอะไรให้ช่วยแนะนำไหมครับ?</div>
   <button class="concierge-fab" id="conciergeFab" aria-label="เปิดแชทผู้ช่วย">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
   </button>
-
   <div class="concierge-panel" id="conciergePanel">
-    <div class="concierge-panel-header">
-      <div class="concierge-avatar">🤖</div>
-      <div class="concierge-panel-header-info">
-        <h4>Portfolio Concierge</h4>
-        <p><span class="concierge-status-dot"></span>พร้อมช่วยเหลือ</p>
-      </div>
-    </div>
-    <div class="concierge-messages" id="conciergeMessages">
-      <div class="message bot">สวัสดีครับ! 👋 ผมเป็นผู้ช่วยประจำ Portfolio นี้ครับ ยินดีตอบคำถามเกี่ยวกับเจ้าของ
-        Portfolio ครับ</div>
-    </div>
+    <div class="concierge-header"><div class="concierge-avatar">🤖</div><div><h4>Portfolio Concierge</h4><p><span class="status-dot"></span>พร้อมช่วยเหลือ</p></div></div>
+    <div class="concierge-messages" id="conciergeMessages"><div class="message bot">สวัสดีครับ! 👋 ผมเป็นผู้ช่วยประจำ Portfolio ครับ</div></div>
     <div class="quick-replies" id="quickReplies">
-      <button class="quick-reply-btn" data-query="สรุป SOP">📄 สรุป SOP</button>
-      <button class="quick-reply-btn" data-query="โปรเจกต์เด่น">🚀 โปรเจกต์เด่น</button>
-      <button class="quick-reply-btn" data-query="ทักษะ">📊 ทักษะ</button>
-      <button class="quick-reply-btn" data-query="ผลงาน">🏆 ผลงาน</button>
+      <button class="qr-btn" data-query="สรุป SOP">📄 SOP</button>
+      <button class="qr-btn" data-query="โปรเจกต์เด่น">🚀 โปรเจกต์</button>
+      <button class="qr-btn" data-query="ทักษะ">📊 ทักษะ</button>
+      <button class="qr-btn" data-query="ผลงาน">🏆 ผลงาน</button>
     </div>
     <div class="concierge-input-area">
-      <input type="text" class="concierge-input" id="conciergeInput" placeholder="พิมพ์คำถามที่นี่..."
-        autocomplete="off">
-      <button class="concierge-send" id="conciergeSend" aria-label="ส่งข้อความ">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="22" y1="2" x2="11" y2="13" />
-          <polygon points="22 2 15 22 11 13 2 9 22 2" />
-        </svg>
+      <input type="text" class="concierge-input" id="conciergeInput" placeholder="พิมพ์คำถาม..." autocomplete="off">
+      <button class="concierge-send" id="conciergeSend">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=2.0"></script>
 </body>
-
 </html>
