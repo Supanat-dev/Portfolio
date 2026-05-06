@@ -12,6 +12,40 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
 <body>
+  <!-- Welcome Screen Overlay -->
+  <div class="welcome-screen" id="welcomeScreen">
+    <div class="welcome-container">
+      <!-- 3D Background Animation -->
+      <div class="welcome-3d-bg">
+        <canvas id="welcome3dCanvas"></canvas>
+      </div>
+      
+      <!-- Welcome Text with Typing Effect -->
+      <div class="welcome-content">
+        <h1 class="welcome-title">
+          <span class="typewriter-container">
+            <span class="welcome-text typewriter" data-text="ยินดีต้อนรับสู่"></span>
+            <span class="welcome-highlight typewriter" data-text="Portfolio"></span>
+          </span>
+        </h1>
+        <p class="welcome-subtitle">ศุภณัฏฐ์ เมฆมูสิก • Mechatronics Engineering</p>
+        <div class="welcome-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+      
+      <!-- Particle Effects Container -->
+      <div class="welcome-particles" id="welcomeParticles"></div>
+    </div>
+    
+    <!-- Loading Progress Bar -->
+    <div class="welcome-progress">
+      <div class="progress-bar"></div>
+    </div>
+  </div>
+
   <!-- Three.js Canvas -->
   <canvas id="threeBg"></canvas>
   <!-- Particle Canvas -->
