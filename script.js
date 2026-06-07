@@ -450,8 +450,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const navToggle = document.getElementById('navToggle');
   const navLinksEl = document.getElementById('navLinks');
-  navToggle.addEventListener('click', () => navLinksEl.classList.toggle('open'));
-  navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinksEl.classList.remove('open')));
+  navToggle.addEventListener('click', () => {
+    navLinksEl.classList.toggle('open');
+    navToggle.classList.toggle('open');
+  });
+  navLinksEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    navLinksEl.classList.remove('open');
+    navToggle.classList.remove('open');
+  }));
 
   // ===== 6. DOT NAV =====
   const dotItems = document.querySelectorAll('.dot-nav-item');
@@ -585,6 +591,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   greet.addEventListener('click', () => { greet.classList.remove('show'); isOpen = true; panel.classList.add('open'); fab.classList.add('open'); inp.focus(); });
 
+  const closeChatBtn = document.getElementById('conciergeCloseBtn');
+  if (closeChatBtn) {
+    closeChatBtn.addEventListener('click', () => {
+      isOpen = false;
+      panel.classList.remove('open');
+      fab.classList.remove('open');
+    });
+  }
+
   function send(text) {
     if (!text.trim()) return;
     addMsg(text, 'user'); inp.value = '';
@@ -650,6 +665,162 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== 10. SMOOTH SCROLL =====
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
+  });
+
+  // ===== 11. MODAL SYSTEM LOGIC =====
+  const projectData = {
+    'echo-glove': {
+      title: 'Echo Glove',
+      role: 'Lead Innovator',
+      icon: '🧤',
+      tags: ['Hardware', 'AI/ML', 'Innovation'],
+      desc: '<p><strong>ถุงมือแปลภาษามืออัจฉริยะ (Echo Glove)</strong> พัฒนาขึ้นเพื่อช่วยแก้ไขปัญหาช่องว่างในการสื่อสารของผู้พิการทางการได้ยิน โดยตัวถุงมือจะทำหน้าที่ตรวจจับการเคลื่อนไหวและการงอของนิ้วมือ รวมถึงทิศทางของมือ จากนั้นประมวลผลด้วยโมเดลปัญญาประดิษฐ์ (AI) เพื่อแปลเป็นคำพูดหรือข้อความเสียงผ่านแอปพลิเคชันบนสมาร์ตโฟน</p><p>โครงการนี้ได้รับรางวัลชนะเลิศการประกวด OTOP ระดับโรงเรียน และมีเป้าหมายในการพัฒนาต่อยอดไปสู่การแปลประโยคภาษาภาษามือที่ซับซ้อนขึ้นในระดับสากล</p>',
+      tech: ['ESP32 Microcontroller', 'Flex Sensors (เซนเซอร์วัดการงอ)', 'MPU6050 Accelerometer/Gyroscope', 'Python & TensorFlow (สำหรับฝึกคัดแยกท่าทาง)', 'Bluetooth SPP', 'Android Application']
+    },
+    'eerc-2025': {
+      title: 'EERC 2025',
+      role: 'Robotics Competitor',
+      icon: '🤖',
+      tags: ['Robotics', 'Engineering'],
+      desc: '<p>การออกแบบและสร้างหุ่นยนต์เพื่อเข้าร่วมการแข่งขัน <strong>Engineering Education Robot Contest 2025 (EERC)</strong> ณ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง โดยทีมของเราได้รับรางวัลรองชนะเลิศอันดับ 1</p><p>หุ่นยนต์ถูกพัฒนาด้วยแนวคิดการขับเคลื่อนอัตโนมัติความเร็วสูงเพื่อวิ่งทำภารกิจคัดแยกสิ่งของตามสีและระยะ โดยใช้เซนเซอร์วัดค่าต่างๆ นำมาเขียนโปรแกรมควบคุม PID ร่วมกับการออกแบบโครงสร้างทางกลที่ทนทานและกระจายน้ำหนักได้ดี</p>',
+      tech: ['C/C++ (Arduino IDE)', 'STM32 / Arduino Boards', 'DC Encoder Motors (ควบคุมความเร็วและทิศทางแม่นยำ)', 'Infrared Reflective Sensors (ตรวจจับเส้น)', 'Color Sensors', 'Custom Aluminum Chassis & 3D Printed Parts']
+    },
+    'ai-object-detection': {
+      title: 'AI Object Detection',
+      role: 'AI Developer',
+      icon: '🧠',
+      tags: ['Python', 'Roboflow', 'ML'],
+      desc: '<p>พัฒนาและทดสอบระบบตรวจจับวัตถุ <strong>Real-time Object Detection</strong> ในกิจกรรม iDektep Mini Coding Challenge โดยการรวบรวมข้อมูลรูปภาพ นำมาทำ Data Labeling บนแพลตฟอร์ม Roboflow จากนั้นเทรนโมเดลตรวจจับด้วยอัลกอริทึม YOLO</p><p>ระบบสามารถประมวลผลภาพจากกล้องวิดีโอแบบสดเพื่อระบุตำแหน่งและจำแนกประเภทของวัตถุเป้าหมายได้อย่างแม่นยำและมีความหน่วงต่ำ (Low Latency)</p>',
+      tech: ['Python', 'YOLOv8 / YOLOv5 (Ultralytics)', 'OpenCV (Image Processing)', 'Roboflow (Dataset Management)', 'Google Colab (GPU Training)']
+    },
+    'raspberry-pi-automation': {
+      title: 'Raspberry Pi Automation',
+      role: 'Hardware / MCU',
+      icon: '🔧',
+      tags: ['Raspberry Pi', 'Hardware'],
+      desc: '<p>พัฒนาระบบควบคุมอุปกรณ์และเซนเซอร์อัตโนมัติในโครงการเวิร์กชอปจัดโดย <strong>สถาบันวิทยาการหุ่นยนต์ภาคสนาม (FIBO)</strong> มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี</p><p>โครงการนี้เป็นการเขียนสคริปต์บน Raspberry Pi เพื่อทำหน้าที่เป็น IoT Gateway คอยรวบรวมข้อมูลจากเซนเซอร์ชนิดต่างๆ (เช่น อุณหภูมิ ความชื้น ระยะทาง) และสั่งการรีเลย์เพื่อควบคุมอุปกรณ์ไฟฟ้าภายนอก พร้อมส่งผ่านข้อมูลเข้าสู่คลาวด์ผ่านโปรโตคอลการสื่อสารของ IoT</p>',
+      tech: ['Raspberry Pi 4', 'Python Scripts', 'I2C, SPI & GPIO Interfaces', 'MQTT Communication Protocol', 'Node-RED Dashboard']
+    },
+    'lidar-arduino': {
+      title: 'LiDAR & Arduino SLAM',
+      role: 'Robotics Firmware',
+      icon: '📡',
+      tags: ['LiDAR', 'Arduino'],
+      desc: '<p>ศึกษาและพัฒนาโครงงานระบบการทำแผนที่และการนำทางสำหรับหุ่นยนต์อัตโนมัติเบื้องต้น ในงาน K-Engineering World Tour ณ สจล.</p><p>โดยการนำเซนเซอร์ <strong>LiDAR (Light Detection and Ranging)</strong> มาเชื่อมต่อเพื่อสแกนสภาพแวดล้อมรอบตัวแบบ 360 องศา และส่งค่าข้อมูลระยะทางแบบพอร์ตอนุกรม (Serial) นำมาพลอตกราฟจุดพิกัดเพื่อทำแผนที่และนำทางหลบหลีกสิ่งกีดขวางร่วมกับการควบคุมมอเตอร์ขับเคลื่อนด้วย Arduino</p>',
+      tech: ['Arduino Microcontroller', 'C++ Programming', 'LiDAR Sensor (YDLIDAR/RPLIDAR)', 'Processing (สำหรับแสดงผล Visualizer)', 'Serial Communication']
+    }
+  };
+
+  const projectModal = document.getElementById('projectModal');
+  const certModal = document.getElementById('certModal');
+
+  // Elements inside project modal
+  const pmTitle = document.getElementById('pmTitle');
+  const pmRole = document.getElementById('pmRole');
+  const pmFallbackVisual = document.getElementById('pmFallbackVisual');
+  const pmTags = document.getElementById('pmTags');
+  const pmBody = document.getElementById('pmBody');
+  const pmTechList = document.getElementById('pmTechList');
+
+  // Elements inside cert modal
+  const cmTitle = document.getElementById('cmTitle');
+  const cmDesc = document.getElementById('cmDesc');
+  const cmYear = document.getElementById('cmYear');
+  const cmMockTitle = document.getElementById('cmMockTitle');
+  const cmMockDesc = document.getElementById('cmMockDesc');
+  const cmMockYear = document.getElementById('cmMockYear');
+  const certRealImg = document.getElementById('certRealImg');
+  const certMockup = document.getElementById('certMockup');
+
+  function openModal(modal) {
+    modal.classList.add('active');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove('active');
+    if (!document.querySelector('.modal.active')) {
+      document.body.classList.remove('modal-open');
+    }
+  }
+
+  // Setup close events for all close buttons and backdrops
+  document.querySelectorAll('.modal').forEach(modal => {
+    const closeBtn = modal.querySelector('.modal-close');
+    const backdrop = modal.querySelector('.modal-backdrop');
+    
+    closeBtn.addEventListener('click', () => closeModal(modal));
+    backdrop.addEventListener('click', () => closeModal(modal));
+  });
+
+  // ESC key to close
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      const activeModal = document.querySelector('.modal.active');
+      if (activeModal) closeModal(activeModal);
+    }
+  });
+
+  // Project cards click handler
+  document.querySelectorAll('[data-project-id]').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.projectId;
+      const data = projectData[id];
+      if (!data) return;
+
+      pmTitle.textContent = data.title;
+      pmRole.textContent = data.role;
+      pmFallbackVisual.textContent = data.icon;
+      
+      pmTags.innerHTML = '';
+      data.tags.forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'tag';
+        span.textContent = tag;
+        pmTags.appendChild(span);
+      });
+
+      pmBody.innerHTML = data.desc;
+
+      pmTechList.innerHTML = '';
+      data.tech.forEach(t => {
+        const li = document.createElement('li');
+        li.textContent = t;
+        pmTechList.appendChild(li);
+      });
+
+      openModal(projectModal);
+    });
+  });
+
+  // Achievement cards click handler
+  document.querySelectorAll('.achievement-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const title = card.dataset.certTitle;
+      const desc = card.dataset.certDesc;
+      const year = card.dataset.certYear;
+      const imgSrc = card.dataset.certSrc;
+
+      if (!title) return;
+
+      cmTitle.textContent = title;
+      cmDesc.textContent = desc;
+      cmYear.textContent = year;
+
+      if (imgSrc && imgSrc !== '#' && imgSrc !== '') {
+        certRealImg.src = imgSrc;
+        certRealImg.style.display = 'block';
+        certMockup.style.display = 'none';
+      } else {
+        cmMockTitle.textContent = title;
+        cmMockDesc.textContent = desc;
+        cmMockYear.textContent = `ปีการศึกษา ${year}`;
+        certRealImg.style.display = 'none';
+        certMockup.style.display = 'flex';
+      }
+
+      openModal(certModal);
+    });
   });
 
   // Init
