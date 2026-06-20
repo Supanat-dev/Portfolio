@@ -14,35 +14,15 @@
 <body>
   <!-- Welcome Screen Overlay -->
   <div class="welcome-screen" id="welcomeScreen">
-    <div class="welcome-container">
-      <!-- 3D Background Animation -->
-      <div class="welcome-3d-bg">
-        <canvas id="welcome3dCanvas"></canvas>
-      </div>
-      
-      <!-- Welcome Text with Typing Effect -->
-      <div class="welcome-content">
-        <h1 class="welcome-title">
-          <span class="typewriter-container">
-            <span class="welcome-text typewriter" data-text="ยินดีต้อนรับสู่"></span>
-            <span class="welcome-highlight typewriter" data-text="Portfolio"></span>
-          </span>
-        </h1>
-        <p class="welcome-subtitle">ศุภณัฏฐ์ เมฆมูสิก • Mechatronics Engineering</p>
-        <div class="welcome-dots">
-          <span class="dot"></span>
-          <span class="dot"></span>
-          <span class="dot"></span>
-        </div>
-      </div>
-      
-      <!-- Particle Effects Container -->
-      <div class="welcome-particles" id="welcomeParticles"></div>
-    </div>
+    <!-- Particle Text Canvas -->
+    <canvas id="particleTextCanvas"></canvas>
     
-    <!-- Loading Progress Bar -->
-    <div class="welcome-progress">
-      <div class="progress-bar"></div>
+    <!-- Welcome Info Overlay -->
+    <div class="welcome-overlay" id="welcomeOverlay">
+      <button class="enter-btn" id="enterPortfolioBtn">
+        <span class="enter-btn-text">Enter Portfolio</span>
+        <span class="enter-btn-icon">→</span>
+      </button>
     </div>
   </div>
 

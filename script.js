@@ -4,261 +4,271 @@
    ============================================ */
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ===== WELCOME SCREEN =====
+  // ===== PARTICLE TEXT WELCOME SCREEN =====
   const welcomeScreen = document.getElementById('welcomeScreen');
-  const welcomeSkip = document.getElementById('welcomeSkip');
-  const welcomeParticles = document.getElementById('welcomeParticles');
-  
-  // Create floating particles
-  function createWelcomeParticles() {
-    const particleCount = 50;
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 8 + 's';
-      particle.style.animationDuration = (8 + Math.random() * 4) + 's';
-      welcomeParticles.appendChild(particle);
+  const ptCanvas = document.getElementById('particleTextCanvas');
+  const enterBtn = document.getElementById('enterPortfolioBtn');
+  const progressBarEl = document.getElementById('welcomeProgressBar');
+  const ptCtx = ptCanvas ? ptCanvas.getContext('2d') : null;
+
+  // Fixed internal canvas resolution (like original React code)
+  const CANVAS_W = 1200;
+  const CANVAS_H = 600;
+
+  if (ptCanvas) {
+    ptCanvas.width = CANVAS_W;
+    ptCanvas.height = CANVAS_H;
+  }
+
+  // -- Particle Class --
+  class WelcomeParticle {
+    constructor() {
+      this.posX = 0; this.posY = 0;
+      this.velX = 0; this.velY = 0;
+      this.accX = 0; this.accY = 0;
+      this.targetX = 0; this.targetY = 0;
+      this.closeEnoughTarget = 100;
+      this.maxSpeed = 1.0;
+      this.maxForce = 0.1;
+      this.isKilled = false;
+      this.sR = 0; this.sG = 0; this.sB = 0;
+      this.tR = 0; this.tG = 0; this.tB = 0;
+      this.colorWeight = 0;
+      this.colorBlendRate = 0.01;
+    }
+
+    move() {
+      let proximityMult = 1;
+      const dx = this.posX - this.targetX;
+      const dy = this.posY - this.targetY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < this.closeEnoughTarget) proximityMult = dist / this.closeEnoughTarget;
+
+      let twX = this.targetX - this.posX;
+      let twY = this.targetY - this.posY;
+      const mag = Math.sqrt(twX * twX + twY * twY);
+      if (mag > 0) {
+        twX = (twX / mag) * this.maxSpeed * proximityMult;
+        twY = (twY / mag) * this.maxSpeed * proximityMult;
+      }
+
+      let stX = twX - this.velX;
+      let stY = twY - this.velY;
+      const sMag = Math.sqrt(stX * stX + stY * stY);
+      if (sMag > 0) {
+        stX = (stX / sMag) * this.maxForce;
+        stY = (stY / sMag) * this.maxForce;
+      }
+
+      this.accX += stX;
+      this.accY += stY;
+      this.velX += this.accX;
+      this.velY += this.accY;
+      this.posX += this.velX;
+      this.posY += this.velY;
+      this.accX = 0;
+      this.accY = 0;
+    }
+
+    draw(ctx) {
+      if (this.colorWeight < 1.0) {
+        this.colorWeight = Math.min(this.colorWeight + this.colorBlendRate, 1.0);
+      }
+      const r = Math.round(this.sR + (this.tR - this.sR) * this.colorWeight);
+      const g = Math.round(this.sG + (this.tG - this.sG) * this.colorWeight);
+      const b = Math.round(this.sB + (this.tB - this.sB) * this.colorWeight);
+      ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
+      ctx.fillRect(this.posX, this.posY, 1, 1);
+    }
+
+    kill() {
+      if (!this.isKilled) {
+        const rp = ptRandomPos(CANVAS_W / 2, CANVAS_H / 2, (CANVAS_W + CANVAS_H) / 2);
+        this.targetX = rp.x;
+        this.targetY = rp.y;
+        this.sR = this.sR + (this.tR - this.sR) * this.colorWeight;
+        this.sG = this.sG + (this.tG - this.sG) * this.colorWeight;
+        this.sB = this.sB + (this.tB - this.sB) * this.colorWeight;
+        this.tR = 0; this.tG = 0; this.tB = 0;
+        this.colorWeight = 0;
+        this.isKilled = true;
+      }
     }
   }
-  
-  // Sound effects (using Web Audio API for simple beeps)
-  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  
-  function playSound(frequency, duration) {
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = frequency;
-    oscillator.type = 'sine';
-    
-    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + duration);
+
+  function ptRandomPos(cx, cy, mag) {
+    const rx = Math.random() * CANVAS_W;
+    const ry = Math.random() * CANVAS_H;
+    let dx = rx - cx, dy = ry - cy;
+    const m = Math.sqrt(dx * dx + dy * dy);
+    if (m > 0) { dx = (dx / m) * mag; dy = (dy / m) * mag; }
+    return { x: cx + dx, y: cy + dy };
   }
+
+  // -- State --
+  const ptParticles = [];
+  const ptColor = { r: 147, g: 197, b: 253 }; // Light blue particle core
+  let ptAnimId = null;
   
-  // Typewriter effect function
-  function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.textContent = '';
-    element.style.opacity = '1';
+  // Responsive Performance Optimization
+  const isMobile = window.innerWidth < 768;
+  const ptPixelSteps = isMobile ? 3 : 1; // Lower density (3x3 grid) on mobile, Maximum (1x1) on desktop
+
+  // Add CSS glow to the canvas (simplified on mobile to save GPU)
+  if (ptCanvas) {
+    if (isMobile) {
+      ptCanvas.style.filter = "drop-shadow(0 0 4px rgba(147, 197, 253, 0.4))";
+    } else {
+      ptCanvas.style.filter = "drop-shadow(0 0 4px rgba(147, 197, 253, 0.4)) drop-shadow(0 0 12px rgba(59, 130, 246, 0.3))";
+    }
+  }
+
+  function ptRenderText() {
+    // Offscreen canvas for text pixel scan
+    const offC = document.createElement('canvas');
+    offC.width = CANVAS_W;
+    offC.height = CANVAS_H;
+    const offCtx = offC.getContext('2d');
+
+    offCtx.fillStyle = 'white';
+    offCtx.textAlign = 'center';
+
+    // Increase font size and weight for better readability
+    // Line 1: "Welcome to"
+    offCtx.font = '900 65px Arial, sans-serif';
+    offCtx.fillText('Welcome to', CANVAS_W / 2, CANVAS_H * 0.28);
+
+    // Line 2: "Supanat Mekmosuik's"
+    offCtx.font = '900 85px Arial, sans-serif';
+    offCtx.fillText("Supanat Mekmosuik's", CANVAS_W / 2, CANVAS_H * 0.50);
+
+    // Line 3: "Portfolio"
+    offCtx.font = '900 95px Arial, sans-serif';
+    offCtx.fillText('Portfolio', CANVAS_W / 2, CANVAS_H * 0.72);
+
+    const imgData = offCtx.getImageData(0, 0, CANVAS_W, CANVAS_H);
+    const pixels = imgData.data;
+
+    let pIdx = 0;
+    const coords = [];
     
-    function type() {
-      if (i < text.length) {
-        element.textContent += text.charAt(i);
-        i++;
-        setTimeout(type, speed);
+    // Uniform 2D grid sampling
+    for (let y = 0; y < CANVAS_H; y += ptPixelSteps) {
+      for (let x = 0; x < CANVAS_W; x += ptPixelSteps) {
+        const idx = (y * CANVAS_W + x) * 4;
+        // Check alpha channel > 200 (only the sharpest core of the text)
+        if (pixels[idx + 3] > 200) {
+          coords.push({ x, y });
+        }
+      }
+    }
+
+    // Shuffle for fluid motion
+    for (let i = coords.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const tmp = coords[i]; coords[i] = coords[j]; coords[j] = tmp;
+    }
+
+    for (let ci = 0; ci < coords.length; ci++) {
+      const { x, y } = coords[ci];
+
+      let p;
+      if (pIdx < ptParticles.length) {
+        p = ptParticles[pIdx];
+        p.isKilled = false;
+        pIdx++;
       } else {
-        // Remove cursor when done
-        setTimeout(() => {
-          element.style.removeProperty('position');
-          element.classList.remove('typewriter');
-        }, 500);
+        p = new WelcomeParticle();
+        const rp = ptRandomPos(CANVAS_W / 2, CANVAS_H / 2, (CANVAS_W + CANVAS_H) / 2);
+        p.posX = rp.x;
+        p.posY = rp.y;
+        p.maxSpeed = Math.random() * 4 + 2; // Tighter speed
+        p.maxForce = p.maxSpeed * 0.1;      // Tighter snapping
+        p.colorBlendRate = Math.random() * 0.0275 + 0.0025;
+        ptParticles.push(p);
+      }
+
+      // Color — slight variation per particle for depth
+      const variation = (Math.random() - 0.5) * 40;
+      p.sR = p.sR + (p.tR - p.sR) * p.colorWeight;
+      p.sG = p.sG + (p.tG - p.sG) * p.colorWeight;
+      p.sB = p.sB + (p.tB - p.sB) * p.colorWeight;
+      p.tR = Math.min(255, Math.max(0, ptColor.r + variation));
+      p.tG = Math.min(255, Math.max(0, ptColor.g + variation * 0.6));
+      p.tB = Math.min(255, Math.max(0, ptColor.b + variation * 0.3));
+      p.colorWeight = 0;
+
+      p.targetX = x;
+      p.targetY = y;
+    }
+
+    // Kill remaining
+    for (let i = pIdx; i < ptParticles.length; i++) {
+      ptParticles[i].kill();
+    }
+  }
+
+  function ptAnimate() {
+    if (!ptCtx) return;
+
+    // Motion blur (lower alpha = longer trails/more glow)
+    ptCtx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+    ptCtx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+    // Update and draw
+    for (let i = ptParticles.length - 1; i >= 0; i--) {
+      const p = ptParticles[i];
+      p.move();
+      p.draw(ptCtx);
+
+      if (p.isKilled) {
+        if (p.posX < -50 || p.posX > CANVAS_W + 50 || p.posY < -50 || p.posY > CANVAS_H + 50) {
+          ptParticles.splice(i, 1);
+        }
       }
     }
-    type();
+
+    ptAnimId = requestAnimationFrame(ptAnimate);
   }
 
-  // Initialize welcome screen
-  function initWelcomeScreen() {
-    createWelcomeParticles();
-    initWelcome3D();
-    
-    // Start typewriter effect
-    const welcomeText = document.querySelector('.welcome-text');
-    const portfolioText = document.querySelector('.welcome-highlight');
-    
-    setTimeout(() => {
-      typeWriter(welcomeText, welcomeText.dataset.text, 80);
-      playSound(523, 0.1); // C5 note
-    }, 500);
-    
-    setTimeout(() => {
-      typeWriter(portfolioText, portfolioText.dataset.text, 80);
-      portfolioText.style.animation = 'glowPulse 2s ease forwards';
-    }, 2000);
-    
-    // Auto-hide welcome screen after 6 seconds
-    setTimeout(() => {
-      playSound(659, 0.15); // E5 note
-      hideWelcomeScreen();
-    }, 6000);
-  }
-
-  // Welcome screen 3D animation
-  function initWelcome3D() {
-    const canvas = document.getElementById('welcome3dCanvas');
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    camera.position.z = 30;
-
-    // Create multiple geometric groups
-    const mainGroup = new THREE.Group();
-    scene.add(mainGroup);
-
-    // Central icosahedron with glow effect
-    const icoGeo = new THREE.IcosahedronGeometry(8, 2);
-    const icoMat = new THREE.MeshBasicMaterial({ 
-      color: 0x3B82F6, 
-      wireframe: true, 
-      transparent: true, 
-      opacity: 0.4 
-    });
-    const ico = new THREE.Mesh(icoGeo, icoMat);
-    mainGroup.add(ico);
-
-    // Multiple rotating torus knots at different positions
-    const torusKnots = [];
-    for (let i = 0; i < 3; i++) {
-      const tkGeo = new THREE.TorusKnotGeometry(3 + i * 0.5, 0.4, 80, 12);
-      const tkMat = new THREE.MeshBasicMaterial({ 
-        color: i === 0 ? 0x60A5FA : i === 1 ? 0x93C5FD : 0x3B82F6,
-        wireframe: true, 
-        transparent: true, 
-        opacity: 0.3 - i * 0.05 
-      });
-      const tk = new THREE.Mesh(tkGeo, tkMat);
-      tk.position.set(
-        Math.cos(i * Math.PI * 2 / 3) * 12,
-        Math.sin(i * Math.PI * 2 / 3) * 12,
-        0
-      );
-      torusKnots.push(tk);
-      mainGroup.add(tk);
-    }
-
-    // Orbital rings
-    const rings = [];
-    for (let i = 0; i < 2; i++) {
-      const ringGeo = new THREE.RingGeometry(8 + i * 4, 9 + i * 4, 64);
-      const ringMat = new THREE.MeshBasicMaterial({
-        color: 0x60A5FA,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.1
-      });
-      const ring = new THREE.Mesh(ringGeo, ringMat);
-      ring.rotation.x = Math.PI / 2;
-      rings.push(ring);
-      mainGroup.add(ring);
-    }
-
-    // Enhanced particle system with multiple layers
-    const particleSystems = [];
-    for (let layer = 0; layer < 3; layer++) {
-      const pointsCount = 150;
-      const pointsGeo = new THREE.BufferGeometry();
-      const positions = new Float32Array(pointsCount * 3);
-      const colors = new Float32Array(pointsCount * 3);
-      
-      for (let i = 0; i < pointsCount; i++) {
-        const radius = 15 + layer * 10;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.random() * Math.PI;
-        
-        positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
-        positions[i * 3 + 2] = radius * Math.cos(phi);
-        
-        const color = new THREE.Color();
-        color.setHSL(0.6, 0.8, 0.5 + layer * 0.1);
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
-      }
-      
-      pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-      pointsGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-      
-      const pointsMat = new THREE.PointsMaterial({ 
-        size: 0.06 - layer * 0.01,
-        vertexColors: true,
-        transparent: true, 
-        opacity: 0.8 - layer * 0.2 
-      });
-      const points = new THREE.Points(pointsGeo, pointsMat);
-      particleSystems.push(points);
-      mainGroup.add(points);
-    }
-
-    // Add connecting lines between particles
-    const lineMaterial = new THREE.LineBasicMaterial({
-      color: 0x60A5FA,
-      transparent: true,
-      opacity: 0.1
-    });
-
-    // Animation with enhanced effects
-    let time = 0;
-    function animateWelcome3D() {
-      requestAnimationFrame(animateWelcome3D);
-      time += 0.01;
-
-      // Central icosahedron rotation with pulsing
-      ico.rotation.x += 0.003;
-      ico.rotation.y += 0.004;
-      ico.scale.setScalar(1 + Math.sin(time * 2) * 0.1);
-
-      // Orbital torus knots
-      torusKnots.forEach((tk, i) => {
-        const angle = time * 0.5 + (i * Math.PI * 2 / 3);
-        tk.position.x = Math.cos(angle) * 12;
-        tk.position.y = Math.sin(angle) * 12;
-        tk.rotation.x += 0.002 * (i + 1);
-        tk.rotation.y += 0.003 * (i + 1);
-      });
-
-      // Ring rotations
-      rings.forEach((ring, i) => {
-        ring.rotation.z += 0.001 * (i + 1);
-        ring.rotation.x = Math.PI / 2 + Math.sin(time + i) * 0.2;
-      });
-
-      // Particle system movements
-      particleSystems.forEach((particles, layer) => {
-        particles.rotation.y += 0.001 * (layer + 1);
-        particles.rotation.x += 0.0005 * (layer + 1);
-        
-        // Subtle floating motion
-        particles.position.y = Math.sin(time * 2 + layer) * 2;
-      });
-
-      renderer.render(scene, camera);
-    }
-
-    // Handle resize
-    function handleResize() {
-      camera.aspect = canvas.clientWidth / canvas.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    }
-    window.addEventListener('resize', handleResize);
-
-    animateWelcome3D();
-  }
-  
-  // Hide welcome screen
+  // -- Hide Welcome Screen --
   function hideWelcomeScreen() {
-    welcomeScreen.classList.add('fade-out');
-    setTimeout(() => {
-      welcomeScreen.style.display = 'none';
-      // Start main animations after welcome screen
-      startMainAnimations();
-    }, 800);
+    // Kill all particles for dramatic exit
+    for (let i = 0; i < ptParticles.length; i++) {
+      ptParticles[i].kill();
+    }
+
+    setTimeout(function() {
+      if (welcomeScreen) welcomeScreen.classList.add('fade-out');
+      setTimeout(function() {
+        if (welcomeScreen) welcomeScreen.style.display = 'none';
+        if (ptAnimId) cancelAnimationFrame(ptAnimId);
+        ptParticles.length = 0;
+        startMainAnimations();
+      }, 1000);
+    }, 500);
   }
-  
-    
-  // Start welcome screen
-  initWelcomeScreen();
+
+  // Enter button
+  if (enterBtn) {
+    enterBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      hideWelcomeScreen();
+    });
+  }
+
+  // -- Initialize Particle Text --
+  if (ptCanvas && ptCtx) {
+    ptRenderText();
+    ptAnimate();
+  }
+
+  // Auto-enter after ~20 seconds
+  setTimeout(function() {
+    if (welcomeScreen && !welcomeScreen.classList.contains('fade-out')) {
+      hideWelcomeScreen();
+    }
+  }, 20000);
 
   // ===== 1. THREE.JS 3D BACKGROUND =====
   const canvas3d = document.getElementById('threeBg');
