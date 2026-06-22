@@ -255,6 +255,21 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       hideWelcomeScreen();
     });
+
+    // Liquid Glass Button Mouse Tracking
+    if (typeof gsap !== 'undefined') {
+      const xTo = gsap.quickTo(enterBtn, "x", { duration: 0.8, ease: "elastic.out(1, 0.5)" });
+      const yTo = gsap.quickTo(enterBtn, "y", { duration: 0.8, ease: "elastic.out(1, 0.5)" });
+
+      window.addEventListener('mousemove', function(e) {
+        if (welcomeScreen.style.display !== 'none' && !welcomeScreen.classList.contains('fade-out')) {
+          const x = e.clientX - window.innerWidth / 2;
+          const y = e.clientY - window.innerHeight / 2;
+          xTo(x / 10);
+          yTo(y / 10);
+        }
+      });
+    }
   }
 
   // -- Initialize Particle Text --
