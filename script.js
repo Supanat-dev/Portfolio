@@ -224,9 +224,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function ptAnimate() {
     if (!ptCtx) return;
 
-    // Motion blur (lower alpha = longer trails/more glow)
-    ptCtx.fillStyle = 'rgba(0, 0, 0, 0.06)';
+    // Motion blur on transparent canvas
+    ptCtx.globalCompositeOperation = 'destination-out';
+    ptCtx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // 0.2 alpha determines trail length
     ptCtx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+    ptCtx.globalCompositeOperation = 'source-over';
 
     // Update and draw
     for (let i = ptParticles.length - 1; i >= 0; i--) {
