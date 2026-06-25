@@ -257,15 +257,7 @@ ul,ol{list-style:none}
   position: absolute;
   top: -50px; left: -50px; right: -50px; bottom: -50px;
   filter: url(#shadowoverlay) blur(4px);
-  background-color: rgba(59, 130, 246, 0.4);
-  mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
-  -webkit-mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
-  mask-size: cover;
-  -webkit-mask-size: cover;
-  mask-repeat: no-repeat;
-  -webkit-mask-repeat: no-repeat;
-  mask-position: center;
-  -webkit-mask-position: center;
+  background: radial-gradient(circle at center, rgba(59, 130, 246, 0.5) 0%, rgba(59, 130, 246, 0) 60%);
 }
 
 .shadow-overlay-noise {

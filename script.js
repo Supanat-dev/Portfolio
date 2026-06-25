@@ -276,11 +276,15 @@ document.addEventListener('DOMContentLoaded', () => {
       // Animate the shadow overlay hue rotation
       const hueMatrix = document.getElementById('hueMatrix');
       if (hueMatrix) {
-        gsap.to(hueMatrix, {
-          attr: { values: 360 },
+        const hueObj = { val: 0 };
+        gsap.to(hueObj, {
+          val: 360,
           duration: 40,
           repeat: -1,
-          ease: "none"
+          ease: "none",
+          onUpdate: function() {
+            hueMatrix.setAttribute('values', hueObj.val);
+          }
         });
       }
 
@@ -304,12 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ptAnimate();
   }
 
-  // Auto-enter after ~20 seconds
-  setTimeout(function() {
-    if (welcomeScreen && !welcomeScreen.classList.contains('fade-out')) {
-      hideWelcomeScreen();
-    }
-  }, 20000);
+  // (Auto-enter removed: waits for user to click Enter Portfolio)
 
   // ===== 1. ANIMATED PATHS BACKGROUND (Canvas 2D) =====
   const bgCanvas = document.getElementById('threeBg');
