@@ -36,7 +36,7 @@ ul,ol{list-style:none}
 ::selection{background:var(--accent);color:var(--text-dark)}
 .container{max-width:var(--container);margin:0 auto;padding:0 48px}
 
-/* ===== THREE.JS & PARTICLE CANVAS ===== */
+/* ===== BACKGROUND CANVAS & PARTICLE CANVAS ===== */
 #threeBg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
 #particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
 
@@ -239,6 +239,43 @@ ul,ol{list-style:none}
 .welcome-screen.fade-out{
   opacity:0;
   visibility:hidden;
+}
+
+/* Shadow Overlay Background */
+.shadow-overlay-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+  background-color: #0b1120; /* Dark background to keep particle text readable */
+}
+
+.shadow-overlay-content {
+  position: absolute;
+  top: -50px; left: -50px; right: -50px; bottom: -50px;
+  filter: url(#shadowoverlay) blur(4px);
+  background-color: rgba(30, 41, 59, 1);
+  mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
+  -webkit-mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-position: center;
+}
+
+.shadow-overlay-noise {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://framerusercontent.com/images/g0QcWrxr87K0ufOxIUFBakwYA8.png");
+  background-size: 200px;
+  background-repeat: repeat;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* Particle Text Canvas */

@@ -14,6 +14,24 @@
 <body>
   <!-- Welcome Screen Overlay -->
   <div class="welcome-screen" id="welcomeScreen">
+    
+    <!-- Animated Shadow Overlay Background -->
+    <div class="shadow-overlay-container" id="shadowOverlayBg">
+      <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+        <defs>
+          <filter id="shadowoverlay">
+            <feTurbulence result="undulation" numOctaves="2" baseFrequency="0.001,0.004" seed="0" type="turbulence" />
+            <feColorMatrix id="hueMatrix" in="undulation" type="hueRotate" values="0" />
+            <feColorMatrix in="dist" result="circulation" type="matrix" values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0" />
+            <feDisplacementMap in="SourceGraphic" in2="circulation" scale="50" result="dist" />
+            <feDisplacementMap in="dist" in2="undulation" scale="50" result="output" />
+          </filter>
+        </defs>
+      </svg>
+      <div class="shadow-overlay-content"></div>
+      <div class="shadow-overlay-noise"></div>
+    </div>
+
     <!-- Particle Text Canvas -->
     <canvas id="particleTextCanvas"></canvas>
     
@@ -37,7 +55,7 @@
     </div>
   </div>
 
-  <!-- Three.js Canvas -->
+  <!-- Animated Background Canvas -->
   <canvas id="threeBg"></canvas>
   <!-- Particle Canvas -->
   <canvas id="particleCanvas"></canvas>

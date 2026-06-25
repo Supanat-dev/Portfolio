@@ -269,8 +269,19 @@ document.addEventListener('DOMContentLoaded', () => {
       hideWelcomeScreen();
     });
 
-    // Liquid Glass Button Mouse Tracking
+    // Liquid Glass Button Mouse Tracking & Background Animation
     if (typeof gsap !== 'undefined') {
+      // Animate the shadow overlay hue rotation
+      const hueMatrix = document.getElementById('hueMatrix');
+      if (hueMatrix) {
+        gsap.to(hueMatrix, {
+          attr: { values: 360 },
+          duration: 40,
+          repeat: -1,
+          ease: "none"
+        });
+      }
+
       const xTo = gsap.quickTo(enterBtn, "x", { duration: 0.8, ease: "elastic.out(1, 0.5)" });
       const yTo = gsap.quickTo(enterBtn, "y", { duration: 0.8, ease: "elastic.out(1, 0.5)" });
 
