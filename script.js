@@ -11,9 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const progressBarEl = document.getElementById('welcomeProgressBar');
   const ptCtx = ptCanvas ? ptCanvas.getContext('2d') : null;
 
-  // Fixed internal canvas resolution (like original React code)
-  const CANVAS_W = 1200;
-  const CANVAS_H = 600;
+  // Responsive internal canvas resolution
+  const isMobileCanvas = window.innerWidth < 768;
+  const CANVAS_W = isMobileCanvas ? 600 : 1200;
+  const CANVAS_H = isMobileCanvas ? 1000 : 600;
 
   if (ptCanvas) {
     ptCanvas.width = CANVAS_W;
@@ -111,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
   let ptAnimId = null;
   
   // Responsive Performance Optimization
-  const isMobile = window.innerWidth < 768;
-  const ptPixelSteps = isMobile ? 3 : 1; // Lower density (3x3 grid) on mobile, Maximum (1x1) on desktop
+  const isMobile = isMobileCanvas;
+  const ptPixelSteps = isMobile ? 2 : 1; // Moderate density (2x2 grid) on mobile, Maximum (1x1) on desktop
 
   // Add CSS glow to the canvas (simplified on mobile to save GPU)
   if (ptCanvas) {
@@ -133,18 +134,30 @@ document.addEventListener('DOMContentLoaded', () => {
     offCtx.fillStyle = 'white';
     offCtx.textAlign = 'center';
 
-    // Increase font size and weight for better readability
-    // Line 1: "Welcome to"
-    offCtx.font = '900 65px Arial, sans-serif';
-    offCtx.fillText('Welcome to', CANVAS_W / 2, CANVAS_H * 0.28);
+    if (isMobileCanvas) {
+      // Mobile: Portrait layout (600x1000) — larger relative text, more lines
+      offCtx.font = '900 72px Arial, sans-serif';
+      offCtx.fillText('Welcome to', CANVAS_W / 2, CANVAS_H * 0.22);
 
-    // Line 2: "Supanat Mekmosuik's"
-    offCtx.font = '900 85px Arial, sans-serif';
-    offCtx.fillText("Supanat Mekmosuik's", CANVAS_W / 2, CANVAS_H * 0.50);
+      offCtx.font = '900 80px Arial, sans-serif';
+      offCtx.fillText('Supanat', CANVAS_W / 2, CANVAS_H * 0.38);
 
-    // Line 3: "Portfolio"
-    offCtx.font = '900 95px Arial, sans-serif';
-    offCtx.fillText('Portfolio', CANVAS_W / 2, CANVAS_H * 0.72);
+      offCtx.font = '900 68px Arial, sans-serif';
+      offCtx.fillText("Mekmosuik's", CANVAS_W / 2, CANVAS_H * 0.52);
+
+      offCtx.font = '900 90px Arial, sans-serif';
+      offCtx.fillText('Portfolio', CANVAS_W / 2, CANVAS_H * 0.68);
+    } else {
+      // Desktop: Landscape layout (1200x600) — original
+      offCtx.font = '900 65px Arial, sans-serif';
+      offCtx.fillText('Welcome to', CANVAS_W / 2, CANVAS_H * 0.28);
+
+      offCtx.font = '900 85px Arial, sans-serif';
+      offCtx.fillText("Supanat Mekmosuik's", CANVAS_W / 2, CANVAS_H * 0.50);
+
+      offCtx.font = '900 95px Arial, sans-serif';
+      offCtx.fillText('Portfolio', CANVAS_W / 2, CANVAS_H * 0.72);
+    }
 
     const imgData = offCtx.getImageData(0, 0, CANVAS_W, CANVAS_H);
     const pixels = imgData.data;
@@ -285,69 +298,86 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 20000);
 
-  // ===== 1. THREE.JS 3D BACKGROUND =====
-  const canvas3d = document.getElementById('threeBg');
-  const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-  const renderer = new THREE.WebGLRenderer({ canvas: canvas3d, alpha: true, antialias: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  camera.position.z = 30;
+  // ===== 1. ANIMATED PATHS BACKGROUND (Canvas 2D) =====
+  const bgCanvas = document.getElementById('threeBg');
+  if (bgCanvas) {
+    const bgCtx = bgCanvas.getContext('2d');
 
-  // Mouse tracking
-  const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
-  document.addEventListener('mousemove', e => {
-    mouse.tx = (e.clientX / window.innerWidth - 0.5) * 2;
-    mouse.ty = (e.clientY / window.innerHeight - 0.5) * 2;
-  });
+    function resizeBgCanvas() {
+      bgCanvas.width = window.innerWidth;
+      bgCanvas.height = window.innerHeight;
+    }
+    resizeBgCanvas();
 
-  // Create abstract geometry group
-  const group = new THREE.Group();
-  scene.add(group);
+    // Pre-calculate all path control points (same curves as original)
+    const bgPaths = [];
+    [1, -1].forEach(function(position) {
+      for (let i = 0; i < 36; i++) {
+        bgPaths.push({
+          // moveTo
+          mx: -(380 - i * 5 * position),
+          my: -(189 + i * 6),
+          // first bezierCurveTo
+          c1x: -(380 - i * 5 * position),
+          c1y: -(189 + i * 6),
+          c2x: -(312 - i * 5 * position),
+          c2y: 216 - i * 6,
+          ex:  152 - i * 5 * position,
+          ey:  343 - i * 6,
+          // second bezierCurveTo
+          c3x: 616 - i * 5 * position,
+          c3y: 470 - i * 6,
+          c4x: 684 - i * 5 * position,
+          c4y: 875 - i * 6,
+          // rendering properties
+          opacity: 0.02 + i * 0.005,
+          width: 0.5 + i * 0.03,
+          speed: 12 + (i % 7) * 4,
+          offset: i * 60,
+        });
+      }
+    });
 
-  // Icosahedron wireframe
-  const icoGeo = new THREE.IcosahedronGeometry(8, 1);
-  const icoMat = new THREE.MeshBasicMaterial({ color: 0x3B82F6, wireframe: true, transparent: true, opacity: 0.15 });
-  const ico = new THREE.Mesh(icoGeo, icoMat);
-  group.add(ico);
+    const DASH = 600;
 
-  // Torus knot
-  const tkGeo = new THREE.TorusKnotGeometry(5, 0.8, 100, 16);
-  const tkMat = new THREE.MeshBasicMaterial({ color: 0x60A5FA, wireframe: true, transparent: true, opacity: 0.08 });
-  const tk = new THREE.Mesh(tkGeo, tkMat);
-  group.add(tk);
+    function animateBgPaths(time) {
+      requestAnimationFrame(animateBgPaths);
+      const w = bgCanvas.width, h = bgCanvas.height;
+      if (w === 0 || h === 0) return;
 
-  // Floating dots
-  const dotCount = 200;
-  const dotGeo = new THREE.BufferGeometry();
-  const positions = new Float32Array(dotCount * 3);
-  for (let i = 0; i < dotCount * 3; i++) positions[i] = (Math.random() - 0.5) * 60;
-  dotGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const dotMat = new THREE.PointsMaterial({ color: 0x60A5FA, size: 0.12, transparent: true, opacity: 0.4 });
-  const dots = new THREE.Points(dotGeo, dotMat);
-  group.add(dots);
+      bgCtx.clearRect(0, 0, w, h);
 
-  // Animate Three.js
-  function animate3D() {
-    requestAnimationFrame(animate3D);
-    mouse.x += (mouse.tx - mouse.x) * 0.05;
-    mouse.y += (mouse.ty - mouse.y) * 0.05;
-    group.rotation.y += 0.002;
-    group.rotation.x += 0.001;
-    group.rotation.y += mouse.x * 0.01;
-    group.rotation.x += mouse.y * 0.01;
-    ico.rotation.z += 0.003;
-    tk.rotation.x += 0.004;
-    tk.rotation.y += 0.002;
-    renderer.render(scene, camera);
+      // Map viewBox(0 0 696 316) → fill entire canvas (like SVG slice)
+      const scale = Math.max(w / 696, h / 316);
+      const ox = (w - 696 * scale) / 2;
+      const oy = (h - 316 * scale) / 2;
+
+      bgCtx.save();
+      bgCtx.translate(ox, oy);
+      bgCtx.scale(scale, scale);
+      bgCtx.lineCap = 'round';
+
+      const t = time / 1000;
+
+      for (let j = 0; j < bgPaths.length; j++) {
+        const p = bgPaths[j];
+        bgCtx.beginPath();
+        bgCtx.moveTo(p.mx, p.my);
+        bgCtx.bezierCurveTo(p.c1x, p.c1y, p.c2x, p.c2y, p.ex, p.ey);
+        bgCtx.bezierCurveTo(p.c3x, p.c3y, p.c4x, p.c4y, p.c4x, p.c4y);
+        bgCtx.strokeStyle = 'rgba(59,130,246,' + p.opacity + ')';
+        bgCtx.lineWidth = p.width;
+        bgCtx.setLineDash([DASH * 0.35, DASH * 0.65]);
+        bgCtx.lineDashOffset = -(t * p.speed) + p.offset;
+        bgCtx.stroke();
+      }
+
+      bgCtx.restore();
+    }
+
+    requestAnimationFrame(animateBgPaths);
+    window.addEventListener('resize', resizeBgCanvas);
   }
-  animate3D();
-
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  });
 
   // ===== 2. INTERACTIVE PARTICLES =====
   const pCanvas = document.getElementById('particleCanvas');
