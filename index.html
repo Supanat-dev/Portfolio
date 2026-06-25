@@ -19,24 +19,24 @@
       <svg id="shadowOverlayBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 1;">
         <defs>
           <filter id="etherealWaves" x="-20%" y="-20%" width="140%" height="140%">
-            <!-- 1. Generate sweeping fluid noise -->
-            <feTurbulence type="fractalNoise" baseFrequency="0.003 0.005" numOctaves="3" result="noise" />
-            <!-- 2. HueRotate to animate the noise smoothly over time -->
+            <!-- 1. Generate smooth sweeping noise (1 octave for silk-like smoothness) -->
+            <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="1" result="noise" />
+            <!-- 2. HueRotate to animate -->
             <feColorMatrix id="hueMatrix" in="noise" type="hueRotate" values="0" result="animated" />
-            <!-- 3. Extract Red channel, boost contrast for sharp light/dark bands -->
+            <!-- 3. Extreme contrast to create distinct light and dark sweeping bands -->
             <feColorMatrix in="animated" type="matrix" values="
-              3 0 0 0 -1.2
-              3 0 0 0 -1.2
-              3 0 0 0 -1.2
-              3 0 0 0 -1.2" result="contrast" />
-            <!-- 4. Blur to soften the harsh edges into silk-like folds -->
-            <feGaussianBlur in="contrast" stdDeviation="6" result="blurred" />
-            <!-- 5. Tint to a beautiful ethereal blue to match the particle text -->
+              5 0 0 0 -2.2
+              5 0 0 0 -2.2
+              5 0 0 0 -2.2
+              5 0 0 0 -2.2" result="contrast" />
+            <!-- 4. Heavy blur to make the bands look like smooth fabric/liquid folds -->
+            <feGaussianBlur in="contrast" stdDeviation="20" result="blurred" />
+            <!-- 5. Tint to a dark ethereal gray-blue to match the reference but fit the theme -->
             <feColorMatrix in="blurred" type="matrix" values="
-              0.1 0 0 0 0
-              0.3 0 0 0 0.02
-              0.6 0 0 0 0.05
-              0.8 0 0 0 0" />
+              0.15 0 0 0 0
+              0.20 0 0 0 0.01
+              0.30 0 0 0 0.03
+              1 0 0 0 0" />
           </filter>
         </defs>
         <!-- The filter replaces the rect completely with the moving waves -->

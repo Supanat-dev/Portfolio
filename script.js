@@ -279,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const hueObj = { val: 0 };
         gsap.to(hueObj, {
           val: 360,
-          duration: 40,
+          duration: 15,
           repeat: -1,
           ease: "none",
           onUpdate: function() {
