@@ -21,8 +21,8 @@
         <defs>
           <filter id="shadowoverlay">
             <feTurbulence result="undulation" numOctaves="2" baseFrequency="0.001,0.004" seed="0" type="turbulence" />
-            <feColorMatrix id="hueMatrix" in="undulation" type="hueRotate" values="0" />
-            <feColorMatrix in="dist" result="circulation" type="matrix" values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0" />
+            <feColorMatrix id="hueMatrix" in="undulation" result="hueRotated" type="hueRotate" values="0" />
+            <feColorMatrix in="hueRotated" result="circulation" type="matrix" values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0" />
             <feDisplacementMap in="SourceGraphic" in2="circulation" scale="50" result="dist" />
             <feDisplacementMap in="dist" in2="undulation" scale="50" result="output" />
           </filter>

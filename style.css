@@ -257,7 +257,7 @@ ul,ol{list-style:none}
   position: absolute;
   top: -50px; left: -50px; right: -50px; bottom: -50px;
   filter: url(#shadowoverlay) blur(4px);
-  background-color: rgba(30, 41, 59, 1);
+  background-color: rgba(59, 130, 246, 0.4);
   mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
   -webkit-mask-image: url('https://framerusercontent.com/images/ceBGguIpUU8luwByxuQz79t7To.png');
   mask-size: cover;
