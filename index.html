@@ -19,11 +19,12 @@
       <svg id="shadowOverlayBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.8;">
         <defs>
           <filter id="shadowoverlay" x="-20%" y="-20%" width="140%" height="140%">
-            <feTurbulence result="undulation" numOctaves="2" baseFrequency="0.001,0.004" seed="0" type="turbulence" />
-            <feColorMatrix id="hueMatrix" in="undulation" result="hueRotated" type="hueRotate" values="0" />
-            <feColorMatrix in="hueRotated" result="circulation" type="matrix" values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0" />
-            <feDisplacementMap in="SourceGraphic" in2="circulation" scale="50" result="dist" />
-            <feDisplacementMap in="dist" in2="undulation" scale="50" result="output" />
+            <!-- Generate a static noise pattern -->
+            <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="2" result="noise" />
+            <!-- Animate the colors of the noise to create smoothly shifting X/Y displacement values -->
+            <feColorMatrix id="hueMatrix" in="noise" result="rotatedNoise" type="hueRotate" values="0" />
+            <!-- Displace the blob using the R and G channels of the shifting noise -->
+            <feDisplacementMap in="SourceGraphic" in2="rotatedNoise" scale="150" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           <radialGradient id="blobGrad" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stop-color="rgba(59, 130, 246, 0.6)" />
