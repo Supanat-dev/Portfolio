@@ -15,22 +15,25 @@
   <!-- Welcome Screen Overlay -->
   <div class="welcome-screen" id="welcomeScreen">
     
-    <!-- Animated Shadow Overlay Background -->
-    <div class="shadow-overlay-container" id="shadowOverlayBg">
-      <svg aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+      <!-- Animated Shadow Overlay Background -->
+      <svg id="shadowOverlayBg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0.8;">
         <defs>
-          <filter id="shadowoverlay">
+          <filter id="shadowoverlay" x="-20%" y="-20%" width="140%" height="140%">
             <feTurbulence result="undulation" numOctaves="2" baseFrequency="0.001,0.004" seed="0" type="turbulence" />
             <feColorMatrix id="hueMatrix" in="undulation" result="hueRotated" type="hueRotate" values="0" />
             <feColorMatrix in="hueRotated" result="circulation" type="matrix" values="4 0 0 0 1  4 0 0 0 1  4 0 0 0 1  1 0 0 0 0" />
             <feDisplacementMap in="SourceGraphic" in2="circulation" scale="50" result="dist" />
             <feDisplacementMap in="dist" in2="undulation" scale="50" result="output" />
           </filter>
+          <radialGradient id="blobGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="rgba(59, 130, 246, 0.6)" />
+            <stop offset="60%" stop-color="rgba(59, 130, 246, 0)" />
+          </radialGradient>
         </defs>
+        <!-- The rect uses the radial gradient and the filter applies the wave distortion -->
+        <rect width="100%" height="100%" fill="url(#blobGrad)" filter="url(#shadowoverlay)" />
       </svg>
-      <div class="shadow-overlay-content"></div>
       <div class="shadow-overlay-noise"></div>
-    </div>
 
     <!-- Particle Text Canvas -->
     <canvas id="particleTextCanvas"></canvas>
