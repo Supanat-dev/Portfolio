@@ -312,7 +312,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== 1. ANIMATED PATHS BACKGROUND (Canvas 2D) =====
   const bgCanvas = document.getElementById('threeBg');
-  if (bgCanvas) {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (bgCanvas && !prefersReducedMotion) {
     const bgCtx = bgCanvas.getContext('2d');
 
     function resizeBgCanvas() {
@@ -321,29 +323,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     resizeBgCanvas();
 
-    // Pre-calculate all path control points (same curves as original)
+    // Pre-calculate path control points — use every other path (36 → 18 per side) to halve draw calls
     const bgPaths = [];
     [1, -1].forEach(function(position) {
-      for (let i = 0; i < 36; i++) {
+      for (let i = 0; i < 36; i += 2) { // step 2 = half the paths
         bgPaths.push({
-          // moveTo
           mx: -(380 - i * 5 * position),
           my: -(189 + i * 6),
-          // first bezierCurveTo
           c1x: -(380 - i * 5 * position),
           c1y: -(189 + i * 6),
           c2x: -(312 - i * 5 * position),
           c2y: 216 - i * 6,
           ex:  152 - i * 5 * position,
           ey:  343 - i * 6,
-          // second bezierCurveTo
           c3x: 616 - i * 5 * position,
           c3y: 470 - i * 6,
           c4x: 684 - i * 5 * position,
           c4y: 875 - i * 6,
-          // rendering properties
-          opacity: 0.02 + i * 0.005,
-          width: 0.5 + i * 0.03,
+          opacity: 0.025 + i * 0.006, // slightly higher opacity to compensate fewer paths
+          width: 0.5 + i * 0.04,
           speed: 12 + (i % 7) * 4,
           offset: i * 60,
         });
@@ -351,15 +349,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const DASH = 600;
+    const BG_FPS = 30;
+    const BG_INTERVAL = 1000 / BG_FPS;
+    let bgLastTime = 0;
+    let bgAnimId = null;
+    let bgPaused = false;
 
     function animateBgPaths(time) {
-      requestAnimationFrame(animateBgPaths);
+      bgAnimId = requestAnimationFrame(animateBgPaths);
+      if (bgPaused) return;
+
+      // Throttle to 30fps
+      if (time - bgLastTime < BG_INTERVAL) return;
+      bgLastTime = time;
+
       const w = bgCanvas.width, h = bgCanvas.height;
       if (w === 0 || h === 0) return;
 
       bgCtx.clearRect(0, 0, w, h);
 
-      // Map viewBox(0 0 696 316) → fill entire canvas (like SVG slice)
       const scale = Math.max(w / 696, h / 316);
       const ox = (w - 696 * scale) / 2;
       const oy = (h - 316 * scale) / 2;
@@ -387,15 +395,27 @@ document.addEventListener('DOMContentLoaded', () => {
       bgCtx.restore();
     }
 
-    requestAnimationFrame(animateBgPaths);
+    bgAnimId = requestAnimationFrame(animateBgPaths);
     window.addEventListener('resize', resizeBgCanvas);
+
+    // Pause when tab is not visible
+    document.addEventListener('visibilitychange', () => {
+      bgPaused = document.hidden;
+    });
   }
 
   // ===== 2. INTERACTIVE PARTICLES =====
   const pCanvas = document.getElementById('particleCanvas');
   const pCtx = pCanvas.getContext('2d');
   let particles = [];
-  const pMouse = { x: -1000, y: -1000 };
+  const pMouse = { x: -9999, y: -9999 };
+  const isMobileParticle = window.innerWidth < 768;
+  // Disable connections on mobile to save GPU; use smaller connection radius on desktop
+  const P_CONNECT_RADIUS = isMobileParticle ? 0 : 80;
+  const P_FPS = 30;
+  const P_INTERVAL = 1000 / P_FPS;
+  let pLastTime = 0;
+  let pPaused = false;
 
   function resizeParticles() {
     pCanvas.width = window.innerWidth;
@@ -405,31 +425,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initParticles() {
     particles = [];
-    const count = Math.min(80, Math.floor(window.innerWidth * window.innerHeight / 15000));
+    // Cap at 50 on desktop, 25 on mobile (was 80)
+    const maxCount = isMobileParticle ? 25 : 50;
+    const count = Math.min(maxCount, Math.floor(window.innerWidth * window.innerHeight / 22000));
     for (let i = 0; i < count; i++) {
       particles.push({
         x: Math.random() * pCanvas.width,
         y: Math.random() * pCanvas.height,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: (Math.random() - 0.5) * 0.4,
-        r: Math.random() * 2 + 1,
-        alpha: Math.random() * 0.3 + 0.1
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.8 + 0.8,
+        alpha: Math.random() * 0.25 + 0.08
       });
     }
   }
 
-  function drawParticles() {
+  function drawParticles(time) {
+    requestAnimationFrame(drawParticles);
+    if (pPaused) return;
+
+    // Throttle to 30fps
+    if (time - pLastTime < P_INTERVAL) return;
+    pLastTime = time;
+
     pCtx.clearRect(0, 0, pCanvas.width, pCanvas.height);
-    particles.forEach((p, i) => {
-      // Mouse repulsion
+
+    // Batch all connection lines into one path per alpha level to reduce state changes
+    if (P_CONNECT_RADIUS > 0) {
+      pCtx.beginPath();
+      pCtx.lineWidth = 0.5;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < P_CONNECT_RADIUS * P_CONNECT_RADIUS) {
+            const alpha = 0.06 * (1 - Math.sqrt(d2) / P_CONNECT_RADIUS);
+            pCtx.strokeStyle = `rgba(59,130,246,${alpha})`;
+            pCtx.beginPath();
+            pCtx.moveTo(p.x, p.y);
+            pCtx.lineTo(p2.x, p2.y);
+            pCtx.stroke();
+          }
+        }
+      }
+    }
+
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+
+      // Mouse repulsion (reduced radius 150→100)
       const dx = p.x - pMouse.x;
       const dy = p.y - pMouse.y;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 150) {
-        const force = (150 - dist) / 150;
-        p.vx += (dx / dist) * force * 0.3;
-        p.vy += (dy / dist) * force * 0.3;
+      const dist2 = dx * dx + dy * dy;
+      if (dist2 < 10000) { // 100px radius
+        const dist = Math.sqrt(dist2);
+        const force = (100 - dist) / 100;
+        p.vx += (dx / dist) * force * 0.25;
+        p.vy += (dy / dist) * force * 0.25;
       }
+
       p.vx *= 0.98; p.vy *= 0.98;
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0) p.x = pCanvas.width;
@@ -441,28 +498,20 @@ document.addEventListener('DOMContentLoaded', () => {
       pCtx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       pCtx.fillStyle = `rgba(59,130,246,${p.alpha})`;
       pCtx.fill();
-
-      // Connect nearby particles
-      for (let j = i + 1; j < particles.length; j++) {
-        const p2 = particles[j];
-        const d = Math.hypot(p.x - p2.x, p.y - p2.y);
-        if (d < 120) {
-          pCtx.beginPath();
-          pCtx.moveTo(p.x, p.y);
-          pCtx.lineTo(p2.x, p2.y);
-          pCtx.strokeStyle = `rgba(59,130,246,${0.06 * (1 - d / 120)})`;
-          pCtx.lineWidth = 0.5;
-          pCtx.stroke();
-        }
-      }
-    });
-    requestAnimationFrame(drawParticles);
+    }
   }
 
-  document.addEventListener('mousemove', e => { pMouse.x = e.clientX; pMouse.y = e.clientY; });
+  document.addEventListener('mousemove', e => { pMouse.x = e.clientX; pMouse.y = e.clientY; }, { passive: true });
   resizeParticles();
-  drawParticles();
+  if (!prefersReducedMotion) {
+    requestAnimationFrame(drawParticles);
+  }
   window.addEventListener('resize', resizeParticles);
+
+  // Pause particles when tab is hidden
+  document.addEventListener('visibilitychange', () => {
+    pPaused = document.hidden;
+  });
 
   // ===== 3. GSAP SCROLL ANIMATIONS =====
   gsap.registerPlugin(ScrollTrigger);
@@ -741,6 +790,7 @@ document.addEventListener('DOMContentLoaded', () => {
       role: 'Lead Innovator',
       icon: '🧤',
       tags: ['Hardware', 'AI/ML', 'Innovation'],
+      websiteUrl: 'https://supanat-dev.github.io/echo-glove/',
       desc: '<p><strong>ถุงมือแปลภาษามืออัจฉริยะ (Echo Glove)</strong> พัฒนาขึ้นเพื่อช่วยแก้ไขปัญหาช่องว่างในการสื่อสารของผู้พิการทางการได้ยิน โดยตัวถุงมือจะทำหน้าที่ตรวจจับการเคลื่อนไหวและการงอของนิ้วมือ รวมถึงทิศทางของมือ จากนั้นประมวลผลด้วยโมเดลปัญญาประดิษฐ์ (AI) เพื่อแปลเป็นคำพูดหรือข้อความเสียงผ่านแอปพลิเคชันบนสมาร์ตโฟน</p><p>โครงการนี้ได้รับรางวัลชนะเลิศการประกวด OTOP ระดับโรงเรียน และมีเป้าหมายในการพัฒนาต่อยอดไปสู่การแปลประโยคภาษาภาษามือที่ซับซ้อนขึ้นในระดับสากล</p>',
       tech: ['ESP32 Microcontroller', 'Flex Sensors (เซนเซอร์วัดการงอ)', 'MPU6050 Accelerometer/Gyroscope', 'Python & TensorFlow (สำหรับฝึกคัดแยกท่าทาง)', 'Bluetooth SPP', 'Android Application']
     },
@@ -856,6 +906,16 @@ document.addEventListener('DOMContentLoaded', () => {
         li.textContent = t;
         pmTechList.appendChild(li);
       });
+
+      // Show/hide website link button
+      const pmLinkWrapper = document.getElementById('pmLinkWrapper');
+      const pmWebsiteLink = document.getElementById('pmWebsiteLink');
+      if (data.websiteUrl && pmLinkWrapper && pmWebsiteLink) {
+        pmWebsiteLink.href = data.websiteUrl;
+        pmLinkWrapper.style.display = 'block';
+      } else if (pmLinkWrapper) {
+        pmLinkWrapper.style.display = 'none';
+      }
 
       openModal(projectModal);
     });
