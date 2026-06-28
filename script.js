@@ -798,6 +798,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cmMockYear = document.getElementById('cmMockYear');
   const certRealImg = document.getElementById('certRealImg');
   const certMockup = document.getElementById('certMockup');
+  const certGalleryThumbs = document.getElementById('certGalleryThumbs');
 
   function openModal(modal) {
     modal.classList.add('active');
@@ -867,6 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const desc = card.dataset.certDesc;
       const year = card.dataset.certYear;
       const imgSrc = card.dataset.certSrc;
+      const gallerySrcsRaw = card.dataset.gallerySrcs;
 
       if (!title) return;
 
@@ -874,7 +876,47 @@ document.addEventListener('DOMContentLoaded', () => {
       cmDesc.textContent = desc;
       cmYear.textContent = year;
 
-      if (imgSrc && imgSrc !== '#' && imgSrc !== '') {
+      // Reset gallery
+      certGalleryThumbs.innerHTML = '';
+      certGalleryThumbs.style.display = 'none';
+
+      let gallerySrcs = [];
+      try {
+        if (gallerySrcsRaw) {
+          gallerySrcs = JSON.parse(gallerySrcsRaw);
+        }
+      } catch (e) {
+        console.error("Error parsing gallery srcs:", e);
+      }
+
+      if (gallerySrcs && gallerySrcs.length > 0) {
+        // We have a gallery
+        certRealImg.src = gallerySrcs[0];
+        certRealImg.style.display = 'block';
+        certMockup.style.display = 'none';
+        
+        if (gallerySrcs.length > 1) {
+          certGalleryThumbs.style.display = 'flex';
+          gallerySrcs.forEach((src, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'cert-thumb' + (index === 0 ? ' active' : '');
+            thumb.innerHTML = `<img src="${src}" alt="Gallery Thumb ${index + 1}">`;
+            
+            thumb.addEventListener('click', () => {
+              // Update main image
+              certRealImg.style.opacity = '0.3';
+              setTimeout(() => {
+                certRealImg.src = src;
+                certRealImg.style.opacity = '1';
+              }, 150);
+              // Update active state
+              certGalleryThumbs.querySelectorAll('.cert-thumb').forEach(t => t.classList.remove('active'));
+              thumb.classList.add('active');
+            });
+            certGalleryThumbs.appendChild(thumb);
+          });
+        }
+      } else if (imgSrc && imgSrc !== '#' && imgSrc !== '') {
         certRealImg.src = imgSrc;
         certRealImg.style.display = 'block';
         certMockup.style.display = 'none';
