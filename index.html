@@ -81,8 +81,7 @@
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" data-section="about">เกี่ยวกับ</a></li>
         <li><a href="#sop" data-section="sop">SOP</a></li>
-        <li><a href="#projects" data-section="projects">ผลงาน</a></li>
-        <li><a href="#achievements" data-section="achievements">รางวัล</a></li>
+        <li><a href="#achievements" data-section="achievements">ผลงาน & รางวัล</a></li>
         <li><a href="#contact" data-section="contact">ติดต่อ</a></li>
       </ul>
       <button class="nav-toggle" id="navToggle" aria-label="เปิดเมนู"><span></span><span></span><span></span></button>
@@ -94,8 +93,7 @@
     <div class="dot-nav-item active" data-target="#hero"><span class="dot-tooltip">หน้าแรก</span></div>
     <div class="dot-nav-item" data-target="#about"><span class="dot-tooltip">เกี่ยวกับ</span></div>
     <div class="dot-nav-item" data-target="#sop"><span class="dot-tooltip">SOP</span></div>
-    <div class="dot-nav-item" data-target="#projects"><span class="dot-tooltip">ผลงาน</span></div>
-    <div class="dot-nav-item" data-target="#achievements"><span class="dot-tooltip">รางวัล</span></div>
+    <div class="dot-nav-item" data-target="#achievements"><span class="dot-tooltip">ผลงาน & รางวัล</span></div>
     <div class="dot-nav-item" data-target="#contact"><span class="dot-tooltip">ติดต่อ</span></div>
   </div>
 
@@ -105,11 +103,18 @@
       <div class="hero-content">
         <div class="hero-brand-group anim-reveal">
           <div class="hero-logos">
-            <div class="hero-logo-item floating-element" title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
+            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper" title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
               <div class="hero-logo-inner"><img src="assets/tupp-logo-v3.png" alt="TUPP Logo" /></div>
+              <div class="logo-dropdown">
+                <a href="https://www.tupp.ac.th/" target="_blank">เว็บไซต์โรงเรียน</a>
+                <a href="https://www.facebook.com/Iam.TUPP/?locale=th_TH" target="_blank">เพจ Facebook โรงเรียน</a>
+              </div>
             </div>
-            <div class="hero-logo-item floating-element anim-delay-1" title="Gifted Science Research And AI">
+            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper anim-delay-1" title="Gifted Science Research And AI">
               <div class="hero-logo-inner"><img src="assets/gsrt-ai-logo.png" alt="GSRT AI Logo" /></div>
+              <div class="logo-dropdown">
+                <a href="https://www.facebook.com/aigsrttupp/" target="_blank">เพจ Facebook ของสายการเรียน</a>
+              </div>
             </div>
           </div>
           <div class="hero-badge">โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</div>
@@ -118,7 +123,7 @@
         <h1 class="hero-name anim-reveal">ศุภณัฏฐ์<em>เมฆมูสิก</em></h1>
         <p class="hero-tagline anim-reveal">ผู้หลงใหลในเทคโนโลยีปัญญาประดิษฐ์และการควบคุมหุ่นยนต์<br>พร้อมก้าวกระโดดสู่วิศวกรเมคคาทรอนิกส์</p>
         <p class="hero-dept anim-reveal">วศ.บ. เมคคาทรอนิกส์และออโตเมชัน • KMITL</p>
-        <a href="#projects" class="hero-cta anim-reveal">ดูผลงาน <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <a href="#achievements" class="hero-cta anim-reveal">ดูผลงาน <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
       </div>
       <div class="hero-visual anim-reveal">
         <div class="hero-profile-container" data-tilt>
@@ -193,59 +198,10 @@
     </div>
   </section>
 
-  <!-- ===== PROJECTS ===== -->
-  <section class="section" id="projects">
-    <div class="container">
-      <div class="section-label anim-reveal"><span class="section-number">03</span><span class="section-line"></span><span class="section-name">โปรเจกต์</span></div>
-      <h2 class="section-title anim-reveal">ผลงานที่สะท้อน<em>ทักษะ</em>ของผม</h2>
-      <div class="projects-grid">
-        <div class="project-card glass anim-reveal" data-tilt data-project-id="echo-glove">
-          <div class="project-card-icon">🧤</div>
-          <div class="project-card-role">Lead Innovator</div>
-          <h3>Echo Glove</h3>
-          <p>ถุงมือแปลภาษามืออัจฉริยะเพื่อช่วยเหลือผู้พิการทางการได้ยิน ชนะเลิศ OTOP ระดับโรงเรียน และส่งเข้าประกวดสิ่งประดิษฐ์ฯ มจพ.</p>
-          <div class="project-tags"><span class="tag">Hardware</span><span class="tag">AI/ML</span><span class="tag">Innovation</span></div>
-          <a href="https://supanat-dev.github.io/echo-glove/" target="_blank" rel="noopener noreferrer" class="project-website-btn" onclick="event.stopPropagation()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-            ดูเว็บโครงงาน
-          </a>
-        </div>
-        <div class="project-card glass anim-reveal" data-tilt data-project-id="eerc-2025">
-          <div class="project-card-icon">🤖</div>
-          <div class="project-card-role">Robotics Competitor</div>
-          <h3>EERC 2025</h3>
-          <p>ออกแบบหุ่นยนต์แข่งขัน Engineering Education Robot Contest 2025 รองชนะเลิศอันดับ 1</p>
-          <div class="project-tags"><span class="tag">Robotics</span><span class="tag">Engineering</span></div>
-        </div>
-        <div class="project-card glass anim-reveal" data-tilt data-project-id="ai-object-detection">
-          <div class="project-card-icon">🧠</div>
-          <div class="project-card-role">AI Developer</div>
-          <h3>AI Object Detection</h3>
-          <p>เทรนโมเดล AI คัดแยกวัตถุจากรูปภาพ ใช้ Roboflow + Python ณ iDektep Mini Coding Challenge</p>
-          <div class="project-tags"><span class="tag">Python</span><span class="tag">Roboflow</span><span class="tag">ML</span></div>
-        </div>
-        <div class="project-card glass anim-reveal" data-tilt data-project-id="raspberry-pi-automation">
-          <div class="project-card-icon">🔧</div>
-          <div class="project-card-role">Hardware / MCU</div>
-          <h3>Raspberry Pi Automation</h3>
-          <p>เขียนโปรแกรมควบคุม MCU สั่งงานเซนเซอร์ผ่าน Raspberry Pi ณ FIBO Workshop (มจธ.)</p>
-          <div class="project-tags"><span class="tag">Raspberry Pi</span><span class="tag">Hardware</span></div>
-        </div>
-        <div class="project-card glass anim-reveal" data-tilt data-project-id="lidar-arduino">
-          <div class="project-card-icon">📡</div>
-          <div class="project-card-role">Robotics Firmware</div>
-          <h3>LiDAR &amp; Arduino</h3>
-          <p>ต่อวงจร LED ผ่าน Arduino และบังคับหุ่นยนต์ทำแผนที่ด้วย LiDAR ณ K-Engineering World Tour</p>
-          <div class="project-tags"><span class="tag">LiDAR</span><span class="tag">Arduino</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- ===== ACHIEVEMENTS ===== -->
   <section class="section section-alt" id="achievements">
     <div class="container">
-      <div class="section-label anim-reveal"><span class="section-number">04</span><span class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
+      <div class="section-label anim-reveal"><span class="section-number">03</span><span class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
       <h2 class="section-title anim-reveal">รางวัลและความสำเร็จที่<em>ภาคภูมิใจ</em></h2>
       <div class="achievements-grid">
         <div class="achievement-card anim-reveal" data-cert-title="ชนะเลิศ OTOP ระดับโรงเรียน" data-cert-desc="ได้รับรางวัลชนะเลิศอันดับ 1 ในการประกวดโครงงานวิชาการ ประจำปีการศึกษา 2568 ณ โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ จากโครงงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ และได้ส่งผลงานเข้างานประกวดสิ่งประดิษฐ์และนวัตกรรม มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.) ประจำปี 2569" data-cert-year="2568" data-gallery-srcs='["Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113040_05b.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113044_590.jpg"]'>
@@ -319,13 +275,28 @@
   <!-- ===== CONTACT ===== -->
   <section class="section" id="contact">
     <div class="container">
-      <div class="section-label anim-reveal" style="justify-content:center"><span class="section-number">05</span><span class="section-line"></span><span class="section-name">ติดต่อ</span></div>
+      <div class="section-label anim-reveal" style="justify-content:center"><span class="section-number">04</span><span class="section-line"></span><span class="section-name">ติดต่อ</span></div>
       <div class="contact-wrapper">
-        <h2 class="contact-cta-text anim-reveal">พร้อมแล้ว — มา<em>พูดคุย</em>กัน</h2>
+        <h2 class="contact-cta-text anim-reveal">ช่องทางการ<em>ติดต่อ</em></h2>
         <div class="contact-grid anim-reveal">
-          <div class="contact-item"><div class="contact-icon">📧</div><span class="contact-label">อีเมล</span><span class="contact-value">phoomakmoosik@gmail.com</span></div>
-          <div class="contact-item"><div class="contact-icon">📱</div><span class="contact-label">โทรศัพท์</span><span class="contact-value">080-659-7161</span></div>
-          <div class="contact-item"><div class="contact-icon">💬</div><span class="contact-label">LINE ID</span><span class="contact-value">phoo9597m</span></div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <span class="contact-label">อีเมล</span><span class="contact-value">phoomakmoosik@gmail.com</span>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+            <span class="contact-label">โทรศัพท์</span><span class="contact-value">080-659-7161</span>
+          </div>
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 320 320"><defs><style>.lc1{fill:#06c755}.lc2{fill:#fff}</style></defs><rect class="lc1" width="320" height="320" rx="72.14"/><path class="lc2" d="M266.66,144.92c0-47.74-47.86-86.58-106.69-86.58S53.28,97.18,53.28,144.92c0,42.8,38,78.65,89.22,85.42,3.48.75,8.21,2.29,9.4,5.26,1.08,2.7.71,6.93.35,9.65,0,0-1.25,7.53-1.52,9.13-.47,2.7-2.15,10.55,9.24,5.76s61.44-36.18,83.82-61.95h0C259.25,181.24,266.66,164,266.66,144.92Z"/><path class="lc1" d="M231.16,172.49h-30a2,2,0,0,1-2-2v0h0V123.94h0v0a2,2,0,0,1,2-2h30a2,2,0,0,1,2,2v7.57a2,2,0,0,1-2,2H210.79v7.85h20.37a2,2,0,0,1,2,2V151a2,2,0,0,1-2,2H210.79v7.86h20.37a2,2,0,0,1,2,2v7.56A2,2,0,0,1,231.16,172.49Z"/><path class="lc1" d="M120.29,172.49a2,2,0,0,0,2-2v-7.56a2,2,0,0,0-2-2H99.92v-37a2,2,0,0,0-2-2H90.32a2,2,0,0,0-2,2v46.53h0v0a2,2,0,0,0,2,2h30Z"/><rect class="lc1" x="128.73" y="121.85" width="11.64" height="50.64" rx="2.04"/><path class="lc1" d="M189.84,121.85h-7.56a2,2,0,0,0-2,2v27.66l-21.3-28.77a1.2,1.2,0,0,0-.17-.21v0l-.12-.12,0,0-.11-.09-.06,0-.11-.08-.06,0-.11-.06-.07,0-.11,0-.07,0-.12,0-.08,0-.12,0h-.08l-.11,0h-7.71a2,2,0,0,0-2,2v46.56a2,2,0,0,0,2,2h7.57a2,2,0,0,0,2-2V142.81l21.33,28.8a2,2,0,0,0,.52.52h0l.12.08.06,0,.1.05.1,0,.07,0,.14,0h0a2.42,2.42,0,0,0,.54.07h7.52a2,2,0,0,0,2-2V123.89A2,2,0,0,0,189.84,121.85Z"/></svg>
+            </div>
+            <span class="contact-label">LINE ID</span><span class="contact-value">phoo9597m</span>
+          </div>
         </div>
       </div>
     </div>
@@ -351,9 +322,8 @@
     <div class="concierge-messages" id="conciergeMessages"><div class="message bot">สวัสดีครับ! 👋 ผมเป็นผู้ช่วยประจำ Portfolio ครับ</div></div>
     <div class="quick-replies" id="quickReplies">
       <button class="qr-btn" data-query="สรุป SOP">📄 SOP</button>
-      <button class="qr-btn" data-query="โปรเจกต์เด่น">🚀 โปรเจกต์</button>
       <button class="qr-btn" data-query="ทักษะ">📊 ทักษะ</button>
-      <button class="qr-btn" data-query="ผลงาน">🏆 ผลงาน</button>
+      <button class="qr-btn" data-query="ผลงานและรางวัล">🏆 ผลงาน & รางวัล</button>
     </div>
     <div class="concierge-input-area">
       <input type="text" class="concierge-input" id="conciergeInput" placeholder="พิมพ์คำถาม..." autocomplete="off">
@@ -411,7 +381,7 @@
     </div>
   </div>
 
-  <!-- ===== CERTIFICATE LIGHTBOX MODAL ===== -->
+  <!-- ===== CERTIFICATE FAN CAROUSEL MODAL ===== -->
   <div class="modal" id="certModal">
     <div class="modal-backdrop"></div>
     <div class="modal-wrapper modal-wrapper-cert">
@@ -421,29 +391,26 @@
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </button>
-      <div class="modal-content">
-        <div class="cert-modal-content">
-          <div class="cert-modal-preview">
-            <div class="cert-mockup" id="certMockup">
-              <div class="cert-mockup-border">
-                <div class="cert-mockup-seal">🏅</div>
-                <h3 class="cert-mockup-title" id="cmMockTitle">เกียรติบัตร</h3>
-                <p class="cert-mockup-recipient">มอบให้แก่ <strong>ศุภณัฏฐ์ เมฆมูสิก</strong></p>
-                <p class="cert-mockup-desc" id="cmMockDesc">สำหรับผลงาน...</p>
-                <div class="cert-mockup-footer">
-                  <span id="cmMockYear">ปีการศึกษา 2568</span>
-                  <span>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</span>
-                </div>
-              </div>
-            </div>
-            <img src="" alt="เกียรติบัตรตัวเต็ม" class="cert-real-img" id="certRealImg" style="display:none">
+      <div class="modal-content cert-modal-content">
+        <!-- Fan Carousel Section -->
+        <div class="cert-fan-section">
+          <div class="cert-fan-container" id="certFanContainer"></div>
+          <!-- Pagination controls (shown only when >7 images) -->
+          <div class="cert-fan-pagination" id="certFanPagination" style="display:none;">
+            <button class="cert-fan-arrow" id="certFanPrev" aria-label="Previous">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <div class="cert-fan-dots" id="certFanDots"></div>
+            <button class="cert-fan-arrow" id="certFanNext" aria-label="Next">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
           </div>
-          <div class="cert-gallery-thumbs" id="certGalleryThumbs" style="display:none;"></div>
-          <div class="cert-modal-info">
-            <h3 class="cert-modal-title" id="cmTitle">ชื่อรางวัล</h3>
-            <p class="cert-modal-desc" id="cmDesc">รายละเอียดเกียรติบัตร...</p>
-            <span class="ach-year" id="cmYear">2568</span>
-          </div>
+        </div>
+        <!-- Info Section -->
+        <div class="cert-modal-info">
+          <h3 class="cert-modal-title" id="cmTitle">ชื่อรางวัล</h3>
+          <p class="cert-modal-desc" id="cmDesc">รายละเอียดเกียรติบัตร...</p>
+          <span class="ach-year" id="cmYear">2568</span>
         </div>
       </div>
     </div>

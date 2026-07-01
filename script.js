@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== 6. DOT NAV =====
   const dotItems = document.querySelectorAll('.dot-nav-item');
-  const sectionIds = ['hero', 'about', 'sop', 'projects', 'achievements', 'contact'];
+  const sectionIds = ['hero', 'about', 'sop', 'achievements', 'contact'];
 
   function updateDots() {
     let idx = 0;
@@ -759,12 +759,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const l = q.toLowerCase().trim();
     if (l.includes('sop') || l.includes('จุดมุ่งหมาย') || l.includes('statement'))
       return '📄 SOP เน้นแรงบันดาลใจด้าน Autonomous Systems และเป้าหมายเข้าวิศวกรรมศาสตร์ สจล. อ่านฉบับเต็มได้เลยครับ [[NAV:sop]]';
-    if (l.includes('โปรเจกต์') || l.includes('project') || l.includes('ผลงาน'))
-      return '🚀 มีโปรเจกต์เด่น 5 ชิ้น ครอบคลุม IoT, AI/ML, Robotics และ Web Dev ครับ [[NAV:projects]]';
+    if (l.includes('ผลงาน') || l.includes('รางวัล') || l.includes('เกียรติบัตร') || l.includes('achievement') || l.includes('project') || l.includes('โปรเจกต์'))
+      return '🏆 มีรางวัลและความสำเร็จ เช่น ชนะเลิศ OTOP ระดับโรงเรียน จากโครงงาน Echo Glove และรองชนะเลิศอันดับ 1 การแข่งขันหุ่นยนต์ EERC 2025 ครับ [[NAV:achievements]]';
     if (l.includes('ทักษะ') || l.includes('skill'))
       return '📊 ทักษะหลัก: Python 85%, Web Dev 80%, Robotics 75%, C/C++ 70%, IoT 65%, AI/ML 60% ดู Radar Chart ได้ครับ [[NAV:about]]';
-    if (l.includes('รางวัล') || l.includes('เกียรติบัตร') || l.includes('achievement'))
-      return '🏆 มีรางวัลจากการแข่งขันหลากหลาย ทั้ง OTOP, EERC และเกียรติบัตรอบรมครับ [[NAV:achievements]]';
     if (l.includes('ติดต่อ') || l.includes('contact') || l.includes('อีเมล'))
       return '📧 ติดต่อผ่าน Email, โทรศัพท์ หรือ LINE ได้เลยครับ [[NAV:contact]]';
     if (l.includes('สวัสดี') || l.includes('hello') || l.includes('hi'))
@@ -843,12 +841,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cmTitle = document.getElementById('cmTitle');
   const cmDesc = document.getElementById('cmDesc');
   const cmYear = document.getElementById('cmYear');
-  const cmMockTitle = document.getElementById('cmMockTitle');
-  const cmMockDesc = document.getElementById('cmMockDesc');
-  const cmMockYear = document.getElementById('cmMockYear');
-  const certRealImg = document.getElementById('certRealImg');
-  const certMockup = document.getElementById('certMockup');
-  const certGalleryThumbs = document.getElementById('certGalleryThumbs');
+  // (certMockup, certRealImg, certGalleryThumbs, cmMockTitle/Desc/Year removed — handled by fan carousel engine)
 
   function openModal(modal) {
     modal.classList.add('active');
@@ -921,76 +914,336 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Achievement cards click handler
-  document.querySelectorAll('.achievement-card').forEach(card => {
-    card.addEventListener('click', () => {
-      const title = card.dataset.certTitle;
-      const desc = card.dataset.certDesc;
-      const year = card.dataset.certYear;
-      const imgSrc = card.dataset.certSrc;
-      const gallerySrcsRaw = card.dataset.gallerySrcs;
+  // ===== CERTIFICATE FAN CAROUSEL ENGINE =====
+  (function () {
+    const MAX_VISIBLE = 7;
+    const HALF = 3;
 
-      if (!title) return;
+    // Fan position presets for 7 slots (index 0-6, slot 3 = center)
+    // x/y in px, already final values (no multiplier needed)
+    const FAN_POSITIONS = [
+      { rot: -21, scale: 0.776, x: -240, y: 16, zIndex: 1  },
+      { rot: -14, scale: 0.850, x: -160, y: 8,  zIndex: 2  },
+      { rot: -7,  scale: 0.935, x: -80,  y: 2,  zIndex: 3  },
+      { rot: 0,   scale: 1.0,   x:   0,  y: 0,  zIndex: 10 },
+      { rot: 7,   scale: 0.935, x:  80,  y: 2,  zIndex: 3  },
+      { rot: 14,  scale: 0.850, x:  160, y: 8,  zIndex: 2  },
+      { rot: 21,  scale: 0.776, x:  240, y: 16, zIndex: 1  },
+    ];
 
-      cmTitle.textContent = title;
-      cmDesc.textContent = desc;
-      cmYear.textContent = year;
+    function getSlotConfig(totalSlots, slot) {
+      if (totalSlots >= MAX_VISIBLE) return FAN_POSITIONS[slot];
+      const center = totalSlots >> 1;
+      const distance = totalSlots > 1 ? (slot - center) / center : 0;
+      const abs = Math.abs(distance);
+      return {
+        rot: distance * 21,
+        scale: 1.0 - 0.2244 * abs * abs,
+        x: distance * 240,
+        y: abs * abs * 16,
+        zIndex: 10 - Math.abs(slot - center),
+      };
+    }
 
-      // Reset gallery
-      certGalleryThumbs.innerHTML = '';
-      certGalleryThumbs.style.display = 'none';
+    // State
+    let allCards = [];           // { src, isCert }
+    let cardEls = [];            // DOM elements
+    let centerIndex = 0;
+    let isAnimating = false;
+    let hasEntered = false;
+    let direction = null;
+    let prevVisibleSet = new Set();
+    let activeHoverSlot = null;
+    let hoverCleanupFns = [];
+    let leaveTimer = null;
 
-      let gallerySrcs = [];
-      try {
-        if (gallerySrcsRaw) {
-          gallerySrcs = JSON.parse(gallerySrcsRaw);
+    const container  = document.getElementById('certFanContainer');
+    const pagination = document.getElementById('certFanPagination');
+    const dotsWrap   = document.getElementById('certFanDots');
+    const prevBtn    = document.getElementById('certFanPrev');
+    const nextBtn    = document.getElementById('certFanNext');
+    const certModal  = document.getElementById('certModal');
+    const cmTitle    = document.getElementById('cmTitle');
+    const cmDesc     = document.getElementById('cmDesc');
+    const cmYear     = document.getElementById('cmYear');
+
+    // Build the visible map: cardIndex → slot index
+    function getVisibleMap(center) {
+      const map = new Map();
+      const total = allCards.length;
+      const needsPag = total > MAX_VISIBLE;
+      if (!needsPag) {
+        allCards.forEach((_, i) => map.set(i, i));
+        return map;
+      }
+      for (let slot = 0; slot < MAX_VISIBLE; slot++) {
+        const idx = ((center + slot - HALF) % total + total) % total;
+        map.set(idx, slot);
+      }
+      return map;
+    }
+
+    // Apply GSAP animation based on entry type
+    function applyFanLayout(center, isFirst, dir) {
+      const total = allCards.length;
+      const needsPag = total > MAX_VISIBLE;
+      const slotCount = needsPag ? MAX_VISIBLE : total;
+      const visibleMap = getVisibleMap(center);
+      const prev = prevVisibleSet;
+
+      let done = 0;
+      const visCount = visibleMap.size;
+
+      function onDone() {
+        if (++done >= visCount) {
+          isAnimating = false;
+          if (isFirst) hasEntered = true;
+          setupHover(visibleMap, slotCount);
         }
-      } catch (e) {
-        console.error("Error parsing gallery srcs:", e);
       }
 
-      if (gallerySrcs && gallerySrcs.length > 0) {
-        // We have a gallery
-        certRealImg.src = gallerySrcs[0];
-        certRealImg.style.display = 'block';
-        certMockup.style.display = 'none';
-        
-        if (gallerySrcs.length > 1) {
-          certGalleryThumbs.style.display = 'flex';
-          gallerySrcs.forEach((src, index) => {
-            const thumb = document.createElement('div');
-            thumb.className = 'cert-thumb' + (index === 0 ? ' active' : '');
-            thumb.innerHTML = `<img src="${src}" alt="Gallery Thumb ${index + 1}">`;
-            
-            thumb.addEventListener('click', () => {
-              // Update main image
-              certRealImg.style.opacity = '0.3';
-              setTimeout(() => {
-                certRealImg.src = src;
-                certRealImg.style.opacity = '1';
-              }, 150);
-              // Update active state
-              certGalleryThumbs.querySelectorAll('.cert-thumb').forEach(t => t.classList.remove('active'));
-              thumb.classList.add('active');
-            });
-            certGalleryThumbs.appendChild(thumb);
+      cardEls.forEach((el, cardIdx) => {
+        const slot = visibleMap.get(cardIdx);
+        const wasVisible = prev.has(cardIdx);
+
+        if (slot !== undefined) {
+          const cfg = getSlotConfig(slotCount, slot);
+          const target = {
+            x: cfg.x,
+            y: -cfg.y,   // negative = upward (GSAP y-axis is downward)
+            rotation: cfg.rot,
+            scale: cfg.scale,
+            opacity: 1,
+            zIndex: cfg.zIndex,
+          };
+
+          if (isFirst) {
+            gsap.set(el, { x: 0, y: 80, rotation: 0, scale: 0.5, opacity: 0 });
+            gsap.to(el, { ...target, duration: 1.2, ease: 'elastic.out(1.05,0.78)', delay: 0.15 + slot * 0.06, onComplete: onDone });
+          } else if (!wasVisible) {
+            const ex = dir === 'right' ? 400 : -400;
+            gsap.set(el, { x: ex, y: target.y, rotation: dir === 'right' ? 30 : -30, scale: 0.5, opacity: 0 });
+            gsap.to(el, { ...target, duration: 0.6, ease: 'power2.out', onComplete: onDone });
+          } else {
+            gsap.to(el, { ...target, duration: 0.5, ease: 'power2.out', onComplete: onDone });
+          }
+        } else if (wasVisible) {
+          const ex = dir === 'right' ? -400 : 400;
+          gsap.to(el, { x: ex, opacity: 0, scale: 0.5, rotation: dir === 'right' ? -30 : 30, duration: 0.4, ease: 'power2.in', zIndex: 0 });
+        } else if (isFirst) {
+          gsap.set(el, { opacity: 0, scale: 0.3, x: 0, y: 0, zIndex: 0 });
+        }
+      });
+
+      prevVisibleSet = new Set(visibleMap.keys());
+    }
+
+    // Hover spread logic
+    function setupHover(visibleMap, slotCount) {
+      // Cleanup previous listeners
+      hoverCleanupFns.forEach(fn => fn());
+      hoverCleanupFns = [];
+
+      const entries = [];
+      cardEls.forEach((el, i) => {
+        const slot = visibleMap.get(i);
+        if (slot !== undefined) entries.push({ el, slot });
+      });
+      entries.sort((a, b) => a.slot - b.slot);
+
+      const centerSlot = entries.length >> 1;
+
+      function updateHover(hoveredSlot) {
+        entries.forEach(({ el, slot }) => {
+          const base = getSlotConfig(slotCount, slot);
+          let tx = base.x;
+          let ty = -base.y;
+          let tr = base.rot;
+          let ts = base.scale;
+          let delay = 0;
+
+          if (hoveredSlot !== null) {
+            const dist = Math.abs(slot - hoveredSlot);
+            delay = dist * 0.02;
+            if (slot === hoveredSlot) {
+              ty -= 30;
+              ts *= 1.08;
+            } else {
+              const norm = centerSlot > 0 ? (slot - centerSlot) / centerSlot : 0;
+              const push = 60 * (1 - Math.abs(norm)) * (1 + 0.2 * Math.max(0, 3 - dist));
+              if (slot < hoveredSlot) { tx -= push; tr -= 3 / (dist + 1); }
+              else                     { tx += push; tr += 3 / (dist + 1); }
+            }
+          } else {
+            delay = Math.abs(slot - centerSlot) * 0.02;
+          }
+
+          gsap.to(el, {
+            x: tx, y: ty, rotation: tr, scale: ts,
+            duration: 0.5, delay, ease: 'elastic.out(1,0.75)', overwrite: 'auto',
           });
-        }
-      } else if (imgSrc && imgSrc !== '#' && imgSrc !== '') {
-        certRealImg.src = imgSrc;
-        certRealImg.style.display = 'block';
-        certMockup.style.display = 'none';
-      } else {
-        cmMockTitle.textContent = title;
-        cmMockDesc.textContent = desc;
-        cmMockYear.textContent = `ปีการศึกษา ${year}`;
-        certRealImg.style.display = 'none';
-        certMockup.style.display = 'flex';
+          gsap.set(el, { zIndex: base.zIndex });
+        });
       }
 
+      entries.forEach(({ el, slot }) => {
+        function onEnter() {
+          if (isAnimating) return;
+          if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
+          if (activeHoverSlot !== slot) { activeHoverSlot = slot; updateHover(slot); }
+        }
+        el.addEventListener('mouseenter', onEnter);
+        hoverCleanupFns.push(() => el.removeEventListener('mouseenter', onEnter));
+      });
+
+      function onLeave() {
+        if (isAnimating) return;
+        if (leaveTimer) clearTimeout(leaveTimer);
+        leaveTimer = setTimeout(() => { activeHoverSlot = null; updateHover(null); }, 50);
+      }
+      container.addEventListener('mouseleave', onLeave);
+      hoverCleanupFns.push(() => container.removeEventListener('mouseleave', onLeave));
+    }
+
+    // Render card DOM
+    function buildCards() {
+      container.innerHTML = '';
+      cardEls = allCards.map((card, i) => {
+        const el = document.createElement('div');
+        el.className = 'cert-fan-card' + (card.isCert ? ' is-cert' : '');
+        const img = document.createElement('img');
+        img.src = card.src;
+        img.alt = card.isCert ? 'เกียรติบัตร' : `รูปกิจกรรม ${i + 1}`;
+        img.loading = 'lazy';
+        el.appendChild(img);
+
+        // Click → cycle card to center
+        el.addEventListener('click', () => {
+          if (i !== centerIndex) {
+            cycleTo(i);
+          }
+        });
+
+        container.appendChild(el);
+        return el;
+      });
+    }
+
+    // Build pagination dots
+    function buildDots() {
+      dotsWrap.innerHTML = '';
+      allCards.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'cert-fan-dot' + (i === centerIndex ? ' active' : '');
+        dot.addEventListener('click', () => cycleTo(i));
+        dotsWrap.appendChild(dot);
+      });
+    }
+
+    function updateDots() {
+      dotsWrap.querySelectorAll('.cert-fan-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === centerIndex);
+      });
+    }
+
+    function cycleTo(targetCenter) {
+      if (isAnimating || targetCenter === centerIndex) return;
+      isAnimating = true;
+      direction = targetCenter > centerIndex ? 'right' : 'left';
+      // handle wrap
+      const total = allCards.length;
+      const fwd  = ((targetCenter - centerIndex) + total) % total;
+      const back = ((centerIndex - targetCenter) + total) % total;
+      direction  = fwd <= back ? 'right' : 'left';
+      centerIndex = targetCenter;
+      updateDots();
+      applyFanLayout(centerIndex, false, direction);
+    }
+
+    function cycle(dir) {
+      if (isAnimating || allCards.length <= MAX_VISIBLE) return;
+      isAnimating = true;
+      direction = dir;
+      const total = allCards.length;
+      centerIndex = dir === 'right'
+        ? (centerIndex + 1) % total
+        : (centerIndex - 1 + total) % total;
+      updateDots();
+      applyFanLayout(centerIndex, false, dir);
+    }
+
+    prevBtn.addEventListener('click', () => cycle('left'));
+    nextBtn.addEventListener('click', () => cycle('right'));
+
+    // Public opener called by achievement cards
+    function openCertFan(gallerySrcs, certSrcs, title, desc, year) {
+      // Reset state
+      isAnimating = false;
+      hasEntered = false;
+      direction = null;
+      prevVisibleSet = new Set();
+      activeHoverSlot = null;
+      hoverCleanupFns.forEach(fn => fn());
+      hoverCleanupFns = [];
+
+      // Combine: cert images first (gold), then activity images
+      allCards = [
+        ...certSrcs.map(src => ({ src, isCert: true })),
+        ...gallerySrcs.map(src => ({ src, isCert: false })),
+      ];
+
+      const total = allCards.length;
+      const needsPag = total > MAX_VISIBLE;
+      centerIndex = needsPag ? HALF : (total >> 1);
+
+      // Info
+      cmTitle.textContent = title;
+      cmDesc.textContent  = desc;
+      cmYear.textContent  = year;
+
+      // Pagination
+      if (needsPag) {
+        pagination.style.display = 'flex';
+        buildDots();
+      } else {
+        pagination.style.display = 'none';
+        dotsWrap.innerHTML = '';
+      }
+
+      buildCards();
+
+      // Trigger open THEN animate (so container is visible)
       openModal(certModal);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          isAnimating = true;
+          applyFanLayout(centerIndex, true, null);
+        });
+      });
+    }
+
+    // Achievement card click → parse gallery srcs → open fan
+    document.querySelectorAll('.achievement-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.dataset.certTitle;
+        const desc  = card.dataset.certDesc;
+        const year  = card.dataset.certYear;
+        const gallerySrcsRaw = card.dataset.gallerySrcs;
+
+        if (!title) return;
+
+        let gallerySrcs = [];
+        try { if (gallerySrcsRaw) gallerySrcs = JSON.parse(gallerySrcsRaw); }
+        catch (e) { console.error('Gallery parse error:', e); }
+
+        // Separate cert images (first folder usually named เกียรติบัตร) from activity photos
+        const certSrcs    = gallerySrcs.filter(s => s.includes('เกียรติบัตร'));
+        const activitySrcs = gallerySrcs.filter(s => !s.includes('เกียรติบัตร'));
+
+        openCertFan(activitySrcs, certSrcs, title, desc, year);
+      });
     });
-  });
+  })();
 
   // Init
   updateNav();
