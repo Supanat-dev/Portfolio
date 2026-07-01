@@ -931,17 +931,34 @@ document.addEventListener('DOMContentLoaded', () => {
       { rot: 21,  scale: 0.776, x:  240, y: 16, zIndex: 1  },
     ];
 
+    function getSpreadMultiplier() {
+      const w = window.innerWidth;
+      if (w < 480) return 0.35;
+      if (w < 768) return 0.55;
+      if (w < 1024) return 0.8;
+      return 1.0;
+    }
+
     function getSlotConfig(totalSlots, slot) {
-      if (totalSlots >= MAX_VISIBLE) return FAN_POSITIONS[slot];
-      const center = totalSlots >> 1;
-      const distance = totalSlots > 1 ? (slot - center) / center : 0;
-      const abs = Math.abs(distance);
+      const m = getSpreadMultiplier();
+      let base;
+      if (totalSlots >= MAX_VISIBLE) {
+        base = FAN_POSITIONS[slot];
+      } else {
+        const center = totalSlots >> 1;
+        const distance = totalSlots > 1 ? (slot - center) / center : 0;
+        const abs = Math.abs(distance);
+        base = {
+          rot: distance * 21,
+          scale: 1.0 - 0.2244 * abs * abs,
+          x: distance * 240,
+          y: abs * abs * 16,
+          zIndex: 10 - Math.abs(slot - center),
+        };
+      }
       return {
-        rot: distance * 21,
-        scale: 1.0 - 0.2244 * abs * abs,
-        x: distance * 240,
-        y: abs * abs * 16,
-        zIndex: 10 - Math.abs(slot - center),
+        ...base,
+        x: base.x * m
       };
     }
 
@@ -1021,14 +1038,14 @@ document.addEventListener('DOMContentLoaded', () => {
             gsap.set(el, { x: 0, y: 80, rotation: 0, scale: 0.5, opacity: 0 });
             gsap.to(el, { ...target, duration: 1.2, ease: 'elastic.out(1.05,0.78)', delay: 0.15 + slot * 0.06, onComplete: onDone });
           } else if (!wasVisible) {
-            const ex = dir === 'right' ? 400 : -400;
+            const ex = dir === 'right' ? 400 * getSpreadMultiplier() : -400 * getSpreadMultiplier();
             gsap.set(el, { x: ex, y: target.y, rotation: dir === 'right' ? 30 : -30, scale: 0.5, opacity: 0 });
             gsap.to(el, { ...target, duration: 0.6, ease: 'power2.out', onComplete: onDone });
           } else {
             gsap.to(el, { ...target, duration: 0.5, ease: 'power2.out', onComplete: onDone });
           }
         } else if (wasVisible) {
-          const ex = dir === 'right' ? -400 : 400;
+          const ex = dir === 'right' ? -400 * getSpreadMultiplier() : 400 * getSpreadMultiplier();
           gsap.to(el, { x: ex, opacity: 0, scale: 0.5, rotation: dir === 'right' ? -30 : 30, duration: 0.4, ease: 'power2.in', zIndex: 0 });
         } else if (isFirst) {
           gsap.set(el, { opacity: 0, scale: 0.3, x: 0, y: 0, zIndex: 0 });
@@ -1054,6 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const centerSlot = entries.length >> 1;
 
       function updateHover(hoveredSlot) {
+        const m = getSpreadMultiplier();
         entries.forEach(({ el, slot }) => {
           const base = getSlotConfig(slotCount, slot);
           let tx = base.x;
@@ -1066,11 +1084,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const dist = Math.abs(slot - hoveredSlot);
             delay = dist * 0.02;
             if (slot === hoveredSlot) {
-              ty -= 30;
+              ty -= 30 * m;
               ts *= 1.08;
             } else {
               const norm = centerSlot > 0 ? (slot - centerSlot) / centerSlot : 0;
-              const push = 60 * (1 - Math.abs(norm)) * (1 + 0.2 * Math.max(0, 3 - dist));
+              const push = 60 * m * (1 - Math.abs(norm)) * (1 + 0.2 * Math.max(0, 3 - dist));
               if (slot < hoveredSlot) { tx -= push; tr -= 3 / (dist + 1); }
               else                     { tx += push; tr += 3 / (dist + 1); }
             }
@@ -1174,6 +1192,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prevBtn.addEventListener('click', () => cycle('left'));
     nextBtn.addEventListener('click', () => cycle('right'));
+
+    // Swipe gesture support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    container.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    container.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      const swipeDistance = touchStartX - touchEndX;
+      if (Math.abs(swipeDistance) > 50) {
+        if (swipeDistance > 0) cycle('right'); // Swipe left -> next image
+        else cycle('left'); // Swipe right -> previous image
+      }
+    }, { passive: true });
 
     // Public opener called by achievement cards
     function openCertFan(gallerySrcs, certSrcs, title, desc, year) {

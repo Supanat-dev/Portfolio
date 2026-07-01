@@ -868,12 +868,17 @@ body.modal-open {
     font-size: 1.7rem;
   }
   .cert-fan-container {
-    height: 260px;
-    padding-top: 40px;
+    height: 280px;
+    padding-top: 30px;
   }
   .cert-fan-card {
-    width: 120px;
-    height: 165px;
+    /* override any fixed values if they exist */
+    width: auto;
+    height: auto;
+  }
+  .cert-fan-card img {
+    max-width: 85vw;
+    max-height: 240px;
   }
   .cert-modal-title {
     font-size: 1.3rem;
