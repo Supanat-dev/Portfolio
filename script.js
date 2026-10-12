@@ -577,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== 6. DOT NAV =====
   const dotItems = document.querySelectorAll('.dot-nav-item');
-  const sectionIds = ['hero', 'about', 'sop', 'achievements', 'contact'];
+  const sectionIds = ['hero', 'about', 'achievements', 'contact'];
 
   function updateDots() {
     let idx = 0;
@@ -758,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function getReply(q) {
     const l = q.toLowerCase().trim();
     if (l.includes('sop') || l.includes('จุดมุ่งหมาย') || l.includes('statement'))
-      return '📄 SOP เน้นแรงบันดาลใจด้าน Autonomous Systems และเป้าหมายเข้าวิศวกรรมศาสตร์ สจล. อ่านฉบับเต็มได้เลยครับ [[NAV:sop]]';
+      return '📄 สามารถดูรายละเอียดเกี่ยวกับประวัติ ทักษะ และผลงานในแต่ละส่วนของเว็บได้เลยครับ [[NAV:about]]';
     if (l.includes('ผลงาน') || l.includes('รางวัล') || l.includes('เกียรติบัตร') || l.includes('achievement') || l.includes('project') || l.includes('โปรเจกต์'))
       return '🏆 มีรางวัลและความสำเร็จ เช่น ชนะเลิศ OTOP ระดับโรงเรียน จากโครงงาน Echo Glove และรองชนะเลิศอันดับ 1 การแข่งขันหุ่นยนต์ EERC 2025 ครับ [[NAV:achievements]]';
     if (l.includes('ทักษะ') || l.includes('skill'))
@@ -767,9 +767,9 @@ document.addEventListener('DOMContentLoaded', () => {
       return '📧 ติดต่อผ่าน Email, โทรศัพท์ หรือ LINE ได้เลยครับ [[NAV:contact]]';
     if (l.includes('สวัสดี') || l.includes('hello') || l.includes('hi'))
       return 'สวัสดีครับ! 😊 ยินดีต้อนรับสู่ Portfolio มีอะไรให้ช่วยแนะนำไหมครับ?';
-    if (l.includes('ใคร') || l.includes('เจ้าของ') || l.includes('who'))
-      return '👤 เจ้าของ Portfolio คือ "ภู" นักเรียน ม.5 ผู้สมัครเข้าวิศวกรรมศาสตร์ สจล. มีทักษะ Programming, Robotics และ IoT ครับ [[NAV:about]]';
-    return '🤔 ลองถามเกี่ยวกับ SOP, โปรเจกต์, ทักษะ, ผลงาน หรือข้อมูลติดต่อ หรือกดปุ่มด้านบนได้เลยครับ';
+    if (l.includes('ใคร') || l.includes('เจ้าของ') || l.includes('who') || l.includes('เกี่ยวกับ'))
+      return '👤 เจ้าของ Portfolio คือ "ภู" นักเรียน ม.5 ที่มีความสนใจและทักษะด้าน Programming, Robotics และ IoT ครับ [[NAV:about]]';
+    return '🤔 ลองถามเกี่ยวกับ โปรเจกต์, ทักษะ, ผลงาน หรือข้อมูลติดต่อ หรือกดปุ่มด้านบนได้เลยครับ';
   }
 
   sendBtn.addEventListener('click', () => send(inp.value));
