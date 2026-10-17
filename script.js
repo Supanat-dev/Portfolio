@@ -1,6 +1,6 @@
 /* ============================================
    SCRIPT.JS — Portfolio v2
-   Three.js + GSAP + Particles + Concierge
+   Three.js + GSAP + Particles
    ============================================ */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -686,156 +686,13 @@ document.addEventListener('DOMContentLoaded', () => {
     rObs.observe(rc);
   }
 
-  // ===== 9. CONCIERGE =====
-  const fab = document.getElementById('conciergeFab');
-  const panel = document.getElementById('conciergePanel');
-  const greet = document.getElementById('conciergeGreeting');
-  const msgs = document.getElementById('conciergeMessages');
-  const inp = document.getElementById('conciergeInput');
-  const sendBtn = document.getElementById('conciergeSend');
-  const qrs = document.querySelectorAll('.qr-btn');
-  let isOpen = false, greeted = false;
-
-  setTimeout(() => { if (!isOpen && !greeted) { greet.classList.add('show'); greeted = true; setTimeout(() => greet.classList.remove('show'), 8000); } }, 5000);
-
-  fab.addEventListener('click', () => {
-    isOpen = !isOpen;
-    panel.classList.toggle('open', isOpen);
-    fab.classList.toggle('open', isOpen);
-    greet.classList.remove('show');
-    if (isOpen) inp.focus();
-  });
-  greet.addEventListener('click', () => { greet.classList.remove('show'); isOpen = true; panel.classList.add('open'); fab.classList.add('open'); inp.focus(); });
-
-  const closeChatBtn = document.getElementById('conciergeCloseBtn');
-  if (closeChatBtn) {
-    closeChatBtn.addEventListener('click', () => {
-      isOpen = false;
-      panel.classList.remove('open');
-      fab.classList.remove('open');
-    });
-  }
-
-  function send(text) {
-    if (!text.trim()) return;
-    addMsg(text, 'user'); inp.value = '';
-    // Typing indicator
-    const typing = document.createElement('div');
-    typing.classList.add('message', 'bot');
-    typing.textContent = '...';
-    typing.style.opacity = '0.5';
-    msgs.appendChild(typing);
-    msgs.scrollTop = msgs.scrollHeight;
-    setTimeout(() => { typing.remove(); addMsg(getReply(text), 'bot'); }, 600);
-  }
-  function addMsg(text, sender) {
-    const m = document.createElement('div');
-    m.classList.add('message', sender);
-    // Check if reply contains navigation
-    if (sender === 'bot' && text.includes('[[NAV:')) {
-      const match = text.match(/\[\[NAV:(\w+)\]\]/);
-      if (match) {
-        text = text.replace(/\[\[NAV:\w+\]\]/, '');
-        m.textContent = text;
-        const navBtn = document.createElement('button');
-        navBtn.textContent = '➡️ ไปที่ส่วนนี้';
-        navBtn.style.cssText = 'display:block;margin-top:8px;padding:6px 16px;background:rgba(37,99,235,0.1);color:#2563EB;border:1px solid rgba(37,99,235,0.2);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit';
-        navBtn.addEventListener('click', () => {
-          const target = document.getElementById(match[1]);
-          if (target) target.scrollIntoView({ behavior: 'smooth' });
-          isOpen = false; panel.classList.remove('open'); fab.classList.remove('open');
-        });
-        m.appendChild(navBtn);
-      } else {
-        m.textContent = text;
-      }
-    } else {
-      m.textContent = text;
-    }
-    msgs.appendChild(m);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-  function getReply(q) {
-    const l = q.toLowerCase().trim();
-    if (l.includes('sop') || l.includes('จุดมุ่งหมาย') || l.includes('statement'))
-      return '📄 สามารถดูรายละเอียดเกี่ยวกับประวัติ ทักษะ และผลงานในแต่ละส่วนของเว็บได้เลยครับ [[NAV:about]]';
-    if (l.includes('ผลงาน') || l.includes('รางวัล') || l.includes('เกียรติบัตร') || l.includes('achievement') || l.includes('project') || l.includes('โปรเจกต์'))
-      return '🏆 มีรางวัลและความสำเร็จ เช่น ชนะเลิศ OTOP ระดับโรงเรียน จากโครงงาน Echo Glove และรองชนะเลิศอันดับ 1 การแข่งขันหุ่นยนต์ EERC 2025 ครับ [[NAV:achievements]]';
-    if (l.includes('ทักษะ') || l.includes('skill'))
-      return '📊 ทักษะหลัก: Python 85%, Web Dev 80%, Robotics 75%, C/C++ 70%, IoT 65%, AI/ML 60% ดู Radar Chart ได้ครับ [[NAV:about]]';
-    if (l.includes('ติดต่อ') || l.includes('contact') || l.includes('อีเมล'))
-      return '📧 ติดต่อผ่าน Email, โทรศัพท์ หรือ LINE ได้เลยครับ [[NAV:contact]]';
-    if (l.includes('สวัสดี') || l.includes('hello') || l.includes('hi'))
-      return 'สวัสดีครับ! 😊 ยินดีต้อนรับสู่ Portfolio มีอะไรให้ช่วยแนะนำไหมครับ?';
-    if (l.includes('ใคร') || l.includes('เจ้าของ') || l.includes('who') || l.includes('เกี่ยวกับ'))
-      return '👤 เจ้าของ Portfolio คือ "ภู" นักเรียน ม.5 ที่มีความสนใจและทักษะด้าน Programming, Robotics และ IoT ครับ [[NAV:about]]';
-    return '🤔 ลองถามเกี่ยวกับ โปรเจกต์, ทักษะ, ผลงาน หรือข้อมูลติดต่อ หรือกดปุ่มด้านบนได้เลยครับ';
-  }
-
-  sendBtn.addEventListener('click', () => send(inp.value));
-  inp.addEventListener('keydown', e => { if (e.key === 'Enter') send(inp.value); });
-  qrs.forEach(b => b.addEventListener('click', () => send(b.dataset.query)));
-
   // ===== 10. SMOOTH SCROLL =====
   document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => { e.preventDefault(); const t = document.querySelector(a.getAttribute('href')); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
   });
 
   // ===== 11. MODAL SYSTEM LOGIC =====
-  const projectData = {
-    'echo-glove': {
-      title: 'Echo Glove',
-      role: 'Lead Innovator',
-      icon: '🧤',
-      tags: ['Hardware', 'AI/ML', 'Innovation'],
-      websiteUrl: 'https://supanat-dev.github.io/echo-glove/',
-      desc: '<p><strong>ถุงมือแปลภาษามืออัจฉริยะ (Echo Glove)</strong> พัฒนาขึ้นเพื่อช่วยแก้ไขปัญหาช่องว่างในการสื่อสารของผู้พิการทางการได้ยิน โดยตัวถุงมือจะทำหน้าที่ตรวจจับการเคลื่อนไหวและการงอของนิ้วมือ รวมถึงทิศทางของมือ จากนั้นประมวลผลด้วยโมเดลปัญญาประดิษฐ์ (AI) เพื่อแปลเป็นคำพูดหรือข้อความเสียงผ่านแอปพลิเคชันบนสมาร์ตโฟน</p><p>โครงการนี้ได้รับรางวัลชนะเลิศการประกวด OTOP ระดับโรงเรียน และมีเป้าหมายในการพัฒนาต่อยอดไปสู่การแปลประโยคภาษาภาษามือที่ซับซ้อนขึ้นในระดับสากล</p>',
-      tech: ['ESP32 Microcontroller', 'Flex Sensors (เซนเซอร์วัดการงอ)', 'MPU6050 Accelerometer/Gyroscope', 'Python & TensorFlow (สำหรับฝึกคัดแยกท่าทาง)', 'Bluetooth SPP', 'Android Application']
-    },
-    'eerc-2025': {
-      title: 'EERC 2025',
-      role: 'Robotics Competitor',
-      icon: '🤖',
-      tags: ['Robotics', 'Engineering'],
-      desc: '<p>การออกแบบและสร้างหุ่นยนต์เพื่อเข้าร่วมการแข่งขัน <strong>Engineering Education Robot Contest 2025 (EERC)</strong> ณ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง โดยทีมของเราได้รับรางวัลรองชนะเลิศอันดับ 1</p><p>หุ่นยนต์ถูกพัฒนาด้วยแนวคิดการขับเคลื่อนอัตโนมัติความเร็วสูงเพื่อวิ่งทำภารกิจคัดแยกสิ่งของตามสีและระยะ โดยใช้เซนเซอร์วัดค่าต่างๆ นำมาเขียนโปรแกรมควบคุม PID ร่วมกับการออกแบบโครงสร้างทางกลที่ทนทานและกระจายน้ำหนักได้ดี</p>',
-      tech: ['C/C++ (Arduino IDE)', 'STM32 / Arduino Boards', 'DC Encoder Motors (ควบคุมความเร็วและทิศทางแม่นยำ)', 'Infrared Reflective Sensors (ตรวจจับเส้น)', 'Color Sensors', 'Custom Aluminum Chassis & 3D Printed Parts']
-    },
-    'ai-object-detection': {
-      title: 'AI Object Detection',
-      role: 'AI Developer',
-      icon: '🧠',
-      tags: ['Python', 'Roboflow', 'ML'],
-      desc: '<p>พัฒนาและทดสอบระบบตรวจจับวัตถุ <strong>Real-time Object Detection</strong> ในกิจกรรม iDektep Mini Coding Challenge โดยการรวบรวมข้อมูลรูปภาพ นำมาทำ Data Labeling บนแพลตฟอร์ม Roboflow จากนั้นเทรนโมเดลตรวจจับด้วยอัลกอริทึม YOLO</p><p>ระบบสามารถประมวลผลภาพจากกล้องวิดีโอแบบสดเพื่อระบุตำแหน่งและจำแนกประเภทของวัตถุเป้าหมายได้อย่างแม่นยำและมีความหน่วงต่ำ (Low Latency)</p>',
-      tech: ['Python', 'YOLOv8 / YOLOv5 (Ultralytics)', 'OpenCV (Image Processing)', 'Roboflow (Dataset Management)', 'Google Colab (GPU Training)']
-    },
-    'raspberry-pi-automation': {
-      title: 'Raspberry Pi Automation',
-      role: 'Hardware / MCU',
-      icon: '🔧',
-      tags: ['Raspberry Pi', 'Hardware'],
-      desc: '<p>พัฒนาระบบควบคุมอุปกรณ์และเซนเซอร์อัตโนมัติในโครงการเวิร์กชอปจัดโดย <strong>สถาบันวิทยาการหุ่นยนต์ภาคสนาม (FIBO)</strong> มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี</p><p>โครงการนี้เป็นการเขียนสคริปต์บน Raspberry Pi เพื่อทำหน้าที่เป็น IoT Gateway คอยรวบรวมข้อมูลจากเซนเซอร์ชนิดต่างๆ (เช่น อุณหภูมิ ความชื้น ระยะทาง) และสั่งการรีเลย์เพื่อควบคุมอุปกรณ์ไฟฟ้าภายนอก พร้อมส่งผ่านข้อมูลเข้าสู่คลาวด์ผ่านโปรโตคอลการสื่อสารของ IoT</p>',
-      tech: ['Raspberry Pi 4', 'Python Scripts', 'I2C, SPI & GPIO Interfaces', 'MQTT Communication Protocol', 'Node-RED Dashboard']
-    },
-    'lidar-arduino': {
-      title: 'LiDAR & Arduino SLAM',
-      role: 'Robotics Firmware',
-      icon: '📡',
-      tags: ['LiDAR', 'Arduino'],
-      desc: '<p>ศึกษาและพัฒนาโครงงานระบบการทำแผนที่และการนำทางสำหรับหุ่นยนต์อัตโนมัติเบื้องต้น ในงาน K-Engineering World Tour ณ สจล.</p><p>โดยการนำเซนเซอร์ <strong>LiDAR (Light Detection and Ranging)</strong> มาเชื่อมต่อเพื่อสแกนสภาพแวดล้อมรอบตัวแบบ 360 องศา และส่งค่าข้อมูลระยะทางแบบพอร์ตอนุกรม (Serial) นำมาพลอตกราฟจุดพิกัดเพื่อทำแผนที่และนำทางหลบหลีกสิ่งกีดขวางร่วมกับการควบคุมมอเตอร์ขับเคลื่อนด้วย Arduino</p>',
-      tech: ['Arduino Microcontroller', 'C++ Programming', 'LiDAR Sensor (YDLIDAR/RPLIDAR)', 'Processing (สำหรับแสดงผล Visualizer)', 'Serial Communication']
-    }
-  };
-
-  const projectModal = document.getElementById('projectModal');
   const certModal = document.getElementById('certModal');
-
-  // Elements inside project modal
-  const pmTitle = document.getElementById('pmTitle');
-  const pmRole = document.getElementById('pmRole');
-  const pmFallbackVisual = document.getElementById('pmFallbackVisual');
-  const pmTags = document.getElementById('pmTags');
-  const pmBody = document.getElementById('pmBody');
-  const pmTechList = document.getElementById('pmTechList');
 
   // Elements inside cert modal
   const cmTitle = document.getElementById('cmTitle');
@@ -870,48 +727,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const activeModal = document.querySelector('.modal.active');
       if (activeModal) closeModal(activeModal);
     }
-  });
-
-  // Project cards click handler
-  document.querySelectorAll('[data-project-id]').forEach(card => {
-    card.addEventListener('click', () => {
-      const id = card.dataset.projectId;
-      const data = projectData[id];
-      if (!data) return;
-
-      pmTitle.textContent = data.title;
-      pmRole.textContent = data.role;
-      pmFallbackVisual.textContent = data.icon;
-      
-      pmTags.innerHTML = '';
-      data.tags.forEach(tag => {
-        const span = document.createElement('span');
-        span.className = 'tag';
-        span.textContent = tag;
-        pmTags.appendChild(span);
-      });
-
-      pmBody.innerHTML = data.desc;
-
-      pmTechList.innerHTML = '';
-      data.tech.forEach(t => {
-        const li = document.createElement('li');
-        li.textContent = t;
-        pmTechList.appendChild(li);
-      });
-
-      // Show/hide website link button
-      const pmLinkWrapper = document.getElementById('pmLinkWrapper');
-      const pmWebsiteLink = document.getElementById('pmWebsiteLink');
-      if (data.websiteUrl && pmLinkWrapper && pmWebsiteLink) {
-        pmWebsiteLink.href = data.websiteUrl;
-        pmLinkWrapper.style.display = 'block';
-      } else if (pmLinkWrapper) {
-        pmLinkWrapper.style.display = 'none';
-      }
-
-      openModal(projectModal);
-    });
   });
 
   // ===== CERTIFICATE FAN CAROUSEL ENGINE =====
