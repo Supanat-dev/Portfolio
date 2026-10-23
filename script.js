@@ -538,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
+
   // Initialize animations immediately if welcome screen is not present
   if (!welcomeScreen || welcomeScreen.style.display === 'none') {
     startMainAnimations();
@@ -577,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== 6. DOT NAV =====
   const dotItems = document.querySelectorAll('.dot-nav-item');
-  const sectionIds = ['hero', 'about', 'achievements', 'contact'];
+  const sectionIds = ['hero', 'about', 'echo-glove', 'achievements', 'contact'];
 
   function updateDots() {
     let idx = 0;
@@ -1072,7 +1073,19 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Achievement card click → parse gallery srcs → open fan
+  
+  // ===== 11. ECHO GLOVE POSTER MODAL =====
+  (function() {
+    var btn = document.getElementById('openEchoPosterBtn');
+    var modal = document.getElementById('echoPosterModal');
+    if (btn && modal) {
+      btn.addEventListener('click', function() {
+        openModal(modal);
+      });
+    }
+  })();
+
+  // Achievement card click → parse gallery srcs → open fan
     document.querySelectorAll('.achievement-card').forEach(card => {
       card.addEventListener('click', () => {
         const title = card.dataset.certTitle;
@@ -1093,7 +1106,47 @@ document.addEventListener('DOMContentLoaded', () => {
         openCertFan(activitySrcs, certSrcs, title, desc, year);
       });
     });
+
+    // KMUTNB Innovation Award badge in the featured project section
+    const kmutnbCertificateBtn = document.getElementById('openKmutnbCertificate');
+    if (kmutnbCertificateBtn) {
+      kmutnbCertificateBtn.addEventListener('click', () => {
+        openCertFan(
+          [],
+          ['Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png'],
+          'KMUTNB Innovation Award 2569',
+          'ได้ร่วมส่งผลงานเข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ',
+          '2569'
+        );
+      });
+    }
+
+    const schoolAwardCertificateBtn = document.getElementById('openSchoolAwardCertificate');
+    if (schoolAwardCertificateBtn) {
+      schoolAwardCertificateBtn.addEventListener('click', () => {
+        openCertFan(
+          [
+            'Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113040_05b.jpg',
+            'Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113044_590.jpg'
+          ],
+          ['Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg'],
+          'ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน',
+          'ได้รับรางวัลชนะเลิศอันดับ 1 ในการประกวดโครงงานวิชาการ ประจำปีการศึกษา 2568 ณ โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ จากโครงงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ',
+          '2568'
+        );
+      });
+    }
   })();
+
+
+  // ===== 11. ECHO GLOVE POSTER MODAL =====
+  const openEchoPosterBtn = document.getElementById('openEchoPosterBtn');
+  const echoPosterModal = document.getElementById('echoPosterModal');
+  if (openEchoPosterBtn && echoPosterModal) {
+    openEchoPosterBtn.addEventListener('click', () => {
+      openModal(echoPosterModal);
+    });
+  }
 
   // Init
   updateNav();

@@ -1,58 +1,66 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Portfolio สำหรับยื่นเข้าคณะวิศวกรรมศาสตร์ สจล. โดย ศุภณัฏฐ์ เมฆมูสิก">
   <title>ศุภณัฏฐ์ เมฆมูสิก — Engineering Portfolio</title>
-  <link rel="stylesheet" href="style.css?v=2.1">
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2.3">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 </head>
+
 <body>
   <!-- Welcome Screen Overlay -->
   <div class="welcome-screen" id="welcomeScreen">
-    
-      <!-- Animated Shadow Overlay Background -->
-      <svg id="shadowOverlayBg" style="position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; pointer-events: none; z-index: 0; opacity: 1; filter: blur(15px); transform: translate3d(0, 0, 0); will-change: transform;">
-        <defs>
-          <filter id="etherealWaves" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
-            <!-- 1. Generate smooth sweeping noise (1 octave for silk-like smoothness) -->
-            <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="1" result="noise" />
-            <!-- 2. HueRotate to animate -->
-            <feColorMatrix id="hueMatrix" in="noise" type="hueRotate" values="0" result="animated" />
-            <!-- 3. Softer contrast to create distinct sweeping bands with smooth transitions -->
-            <feColorMatrix in="animated" type="matrix" values="
+
+    <!-- Animated Shadow Overlay Background -->
+    <svg id="shadowOverlayBg"
+      style="position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; pointer-events: none; z-index: 0; opacity: 1; filter: blur(15px); transform: translate3d(0, 0, 0); will-change: transform;">
+      <defs>
+        <filter id="etherealWaves" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+          <!-- 1. Generate smooth sweeping noise (1 octave for silk-like smoothness) -->
+          <feTurbulence type="fractalNoise" baseFrequency="0.002 0.004" numOctaves="1" result="noise" />
+          <!-- 2. HueRotate to animate -->
+          <feColorMatrix id="hueMatrix" in="noise" type="hueRotate" values="0" result="animated" />
+          <!-- 3. Softer contrast to create distinct sweeping bands with smooth transitions -->
+          <feColorMatrix in="animated" type="matrix" values="
               3.5 0 0 0 -1.2
               3.5 0 0 0 -1.2
               3.5 0 0 0 -1.2
               3.5 0 0 0 -1.2" result="contrast" />
-            <!-- 4. Heavy blur to make the bands look like smooth fabric/liquid folds -->
-            <feGaussianBlur in="contrast" stdDeviation="25" result="blurred" />
-            <!-- 5. Tint to a dark ethereal gray-blue, make it semi-transparent (alpha max 0.70) -->
-            <feColorMatrix in="blurred" type="matrix" values="
+          <!-- 4. Heavy blur to make the bands look like smooth fabric/liquid folds -->
+          <feGaussianBlur in="contrast" stdDeviation="25" result="blurred" />
+          <!-- 5. Tint to a dark ethereal gray-blue, make it semi-transparent (alpha max 0.70) -->
+          <feColorMatrix in="blurred" type="matrix" values="
               0.15 0 0 0 0
               0.22 0 0 0 0
               0.35 0 0 0 0
               0.70 0 0 0 0" />
-          </filter>
-        </defs>
-        <!-- The filter replaces the rect completely with the moving waves -->
-        <rect width="100%" height="100%" filter="url(#etherealWaves)" />
-      </svg>
-      <div class="shadow-overlay-noise"></div>
+        </filter>
+      </defs>
+      <!-- The filter replaces the rect completely with the moving waves -->
+      <rect width="100%" height="100%" filter="url(#etherealWaves)" />
+    </svg>
+    <div class="shadow-overlay-noise"></div>
 
     <!-- Particle Text Canvas -->
     <canvas id="particleTextCanvas"></canvas>
-    
+
     <!-- Welcome Info Overlay -->
     <div class="welcome-overlay" id="welcomeOverlay">
       <!-- Hidden SVG Filter for Liquid Glass -->
-      <svg class="liquid-glass-svg" aria-hidden="true" style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
+      <svg class="liquid-glass-svg" aria-hidden="true"
+        style="position: absolute; width: 0; height: 0; overflow: hidden; pointer-events: none;">
         <filter id="liquid-glass-filter" primitiveUnits="objectBoundingBox">
-          <feImage result="map" width="100%" height="100%" x="0" y="0" href="data:image/webp;base64,UklGRq4vAABXRUJQVlA4WAoAAAAQAAAA5wEAhwAAQUxQSOYWAAABHAVpGzCrf9t7EiJCYdIGTDpvURGm9n7K+YS32rZ1W8q0LSSEBCQgAQlIwEGGA3CQOAAHSEDCJSEk4KDvUmL31vrYkSX3ufgXEb4gSbKt2LatxlqIgNBBzbM3ikHVkvUvq7btKpaOBCQgIRIiAQeNg46DwgE4oB1QDuKgS0IcXBykXieHkwdjX/4iAhZtK3ErSBYGEelp+4aM/5/+z14+//jLlz/++s/Xr4//kl9C8Ns8DaajU+lPX/74+viv/eWxOXsO+eHL3/88/ut/2b0zref99evjX8NLmNt1fP7178e/jJcw9k3G//XP49/Iy2qaa7328Xkk9ZnWx0VUj3bcyCY4Pi7C6reeEagEohnRCbQQwFmUp9ggYQj8MChjTSI0Ck7G/bh6P5ykNU9yP+10G8I2UAwXeQ96DQwNjqyPu/c4tK+5CtGOK0oM7AH5f767lHpotXVYYI66B+HjMhHj43C5wok3YDH4/vZFZRkB7rNnEfC39WS2Q3K78y525wFNTPf5f+/fN9YI1YyDvjuzV5rQtsfn1Ez1ka3PkeGxOZ6IODxDJqCLpF7vdb9Z3s/ufLr6jf/55zbW3LodwwVVg7Lmao+p3eGcqDFDGuuKnlBZAPSbnkYtTX+mZl2y57Gq85F3tDv7m7/yzpjXHoVA3YUObsHz80W3IUK1E8yRqggxTMzD4If2230ys7RDxWrLu9o9GdSWNwNRC2yMIg+HkTVT3BOZER49XLBMdljemLFMjw8VwZ8OdBti4lWdt7c7dzaSc5yILtztsTMT1GFGn/tysM23nF3xbOsnh/eQGKkxhWGEalljCvWZ+LDE+9t97uqEfb08rdYwZGhheLzG2SJzKS77OIAVgPDjf9jHt6c+0mjinS/v13iz9RV3vsPdmbNG1E+nD6s83jBrBEnlBiTojuJogGJNtzxtsIoD2CFuXYipzhGWHhWqCBSqd7l7GMrnuHzH6910FO+XYwgcDxoFRJNk2GUcpQ6I/GhLmqisuBS6uSFpfAz3Yb9Yatyed7r781ZYfr3+3FfXs1MykSbVcg4GiOKX19SZ9xFRwhG+UZGiROjsXhePVu12fCZTJ3CJ4Z3uXnyxz28RutHa5yCKG6jgfTBPuA9jHL7YdlAa2trNEr7BLANd3qNYcWZqnkvlDe8+F5Q/9k8jCFk17ObrIf0O/5U/iDnqcqA70mURr8FUN5pmQEzDcxuWvOPd1+KrbO4fd0vXK5OTtYEy5C2TA5L4ok6Y31WHR9ZR9lQr6IjwruSd775W6NVa2zz1fir2k1GWnT573Eu3mfMjIikYZkM4MDCnTWbmLrpK/Hs0KD5C8rZ3n0tnw0j76WuU8P1YBIjsvcESbnOQMY+gGC/sd/gG+hKKtDijJHhrcSj/GHa/FZ8oGLXeLx1IW+cgU8pqD0PzMzU3oG5lQ/ZaDPDMYq+aAPSEmHN+JiVIp0haHTvPt77732z5ed2K7NHs9FtCIk4BdNkKLRLvOKlFcw+UiovM4OB5sGgepyML+a4TEu/I29/dFtjJulojJR4Tg71ybApEdca0TSnaumNJyCWH2pjENASlQS/NIXMWtiPV9CHsvuftev08/lemYIcUnHSu6XEMvaBq41tqf/m0siLj7xeXsnBmhxY5z+nCwX4Iu4euTPaE4EQorgogisHrBtsAMdX+Huje7nlx3hMpKovdf+YftDQqytChXfEh7D5nyC8rzNTICINmpK5Ni0ngcAMzpmiYDwOMtmUTiCjvx2S2dIeSguP/QHZ3xYIeGhTt1CsCOIiEuVw8pGjVznDJppuojl30i9RvXccXzmXGj2b3H3XM38c/PZseyeOdplXhFekzZMZ2fUGuIBsKCcgQg4Ikqt4PDTkQiWQtMUBFAEhUH8vuvoAvnvGMCEP4/vMmZA2PnkmAJsQsHeFAIk43F00OS3sa/1TDJTPss2698T+i3V22L3PsIeFAHmWWi1FUh29TqpniVOt5hGA/q40Yubt4yXDEQomvldUNhfuuSvjHzPBysYhBMSmRrpuIUHJhQk5uw5V4EwpMp1NvklGkc03WYeC0KETcZ409HkEcwnEaE3EdNnIcfCb1jjWNfZyhhGH48AvsJ4WL+mYTM5i+yFNyM6PhbkuMGYREv48VihVyHXb9RjoE0HvoOuaO7fxxUYnQj1wB0DOZUagcEXfVkJ/nBgV+vl5yMfFaJs0myb9BjyNSsY9FbwZNq21wEFOEJ8Pk/vO1fSa6bOPZFCMc7grz9YXf8rBBPaK3qUJEfJG1A8nuytO1jg8CvWGEY1Z4o1gb3uEjILmNm5YfMXH3GtvyETX+j4jAXkkaA7FDQIdPzLZOcUJsqLQFxboX/MZ95f7MqPku/6IAGXer6xchZyiqcG2Tw4oSVcO0Q0vqOlmEcpsyBw2pwzcifb6t2th64vASkXGXzY9U7aFvkqJEOWSkEU0oL0FrnOfr432tJ5OtPUG1T0cg5yqNTNFAqKFxl80fxGGPFzIiASv+sEPaGMmewBjUEZNFtVCwzaG3PVSe5l+AIRNeFCzu2+H/7Cp2pbOjRUjNFFMX8ZEGl0D4uNWi4ykocIgBkGF+HAIHRNjAqioi4y7vjPtlTPTMXwl7aQD7gu9yVk+VdBwmVMnljIx4++8hq0qOtmjkwT1+RW4N0LhPQuahKrjGVIMy2hW3lgO8lqoLLBHAaTvRIgaPLNFx5ChJ8hTcsBdO383ouHspeqwelcvfEOELFMF0a+jWZJzZYWqZQlj9FnUeMq37zGWfbwRbvkDKOR0OKzAUNO5y8O+H24nczTdDZniPDwMUgIJDV1sEJn7xWMscorAcT3niXE+kcQS0NUMjkkoiNu43cbvQGGagTd6ycWgkkPbSb0Fi0iiYKTpXlKyTCKKHsWssGuM4dhzIaZqIjXvg2w1xqK8sqkQKhJUqWoGxcXTK4gi12ecTaa8+jmMYItoS41KhA4pbAWS2MyLk3n/lS0c4Cq4KcdLYTv4c3OPQZWJx+B9dSytYPUmGUKbKpg+Oy/g0iGuMDw+WRMjdCftaM30PxVSEW8Y6IeUpcGDoTFyDExFIC0coBCNDjx8XXBMWW53qAz2LgJA7G/zPcBcq5mjyfMo/dYTJMBQ3mkxItV2HHpsltIs49LLZK4w6TscoK/1x8FCEkPvP90Y3XVDu468z/HBkAdUMZLNwt3AqNiHOLQM/EYqMbxAWcgW1Rd5PFOnuX08+iNwt7wFWBWYdpDb3F5inFIe4vlXFLkUO3zVjzvJJWXGJOhyBSxV4O8z1FPBmVgZA7p+Ov5oh0XYD5DazDBODdJHHK3O3U5k2REDOWh7ZQSw6fDLBl4P4hixhuzJpGLmv9Ok/12dnFEMDomZm9pikmMevpvEAvZSq1rPziRSaXHMokc0TwRInpAVh5B7os8LBX4+z8rYaZxxQViQ7bndIOnucpgFahg7nBRTv9mUP1epZ+zzFYkXJvfvxUmkdewGhR3FtEE5gGUdAz8DbBFDQypm3jgUlFMru4RG5VIXGaThK7uZnNNDVq3igkGgQVnnSqodKgLGNEPnkAH3YgM0ABowQ5RsDpa4C8wuMrXP8JeioiBC5//ltLZOuePmXgZauU9FcpsvPvYH5yWt8P65HuRjLI62+zmNH28fZZ4odgbjp6AswlNzd74PbIkojkpXSKKF8h79BOJxhZFhDeSWAvb3D5jw2NtUDppI4eRSg5L7+5bTUdm0e7FZh2BgmZdVY/+WE7DLuqWZm3YvOEoQ0WcIIlI8bckcO2SkgZcHI/f63KJb0uWUR6gtorxgCE5ytH3wRr3kiWHlcdGk/SZO0UU+RYuFrCTjCdUAwGdEouf//Si1AhNmg7ZFRuMR+5qeQAaAdwKrG5O5pUnNAa8Ecb9Y2b6B8Rejwcffv5ii5h69Dhm55nhpJ3o/FYpTL1AWgmLIAG4t3qK8ocYnXxF06Fe0Dtv9kvv/LJZTcg/D4OB1FEtaC+mvh3RNhPLlOg3QniC0jov2Qjw3adeA/2GAIohAxCwSGlTsJ+pkOHU6K0EyY5osnN6tVyv56/OJNAOP9Kvi1wZx55EIcz0F2IYWAkvvDRypWSXUuGExX4QjQt4o5ptXHEaXK4z5RYV1C7cs6aLTigJYW8Lwcrv/R9cHuLsl1cfKzRlB5hgWzp/tpPDUF2sWA4tApdUKqSRX+TTogKnATAH44OLk7d36DCknABBAqTWQQz1QgQeq3EImJiwWdYSahYYXVOJmPCa6LqAvdEojcVT+xjjtNZoCcsYRHnvdK7bf2GreoKKsKDtgn5emh3lGmCdDzkDJPGid3PFAb/Bbwj1MCf2pdZqkSUBwWXgGpLWaUEjFG+0PmcDzclQBH2FDsA+UcILmHrzrHY6DKev0bBOYPD6lGy0Nw60gIAeP8HXWq0vZo5rbFGsYXSDtNb+QnSu7hPyLzvfMcaBTM2oF6rLx2CQaaYSljdEeodTvY2uqwUYvPtFlqNo0wxoWSu/8rQgNHO9WjggPFdxIG3socz0BCkQY1umhJ1oHI/lta72+zuU9tESX3+5++GF3dZeON4RZCnaoHjExonNAkjSXSyOtbbjmATzeZJBoWDR202FweApL78uWpYAitcpVDELbG9a7R9zukHUYYLTBBrysZM7cj0rgs1lgo1EXNwwmS+3P65ZvqICNr2C+AXNaOP04VKUZtyPItDaBCa2hawRB761AYFwgNmPsZRZDcn8OPBuIoKsjgxJOUP9x8f2TEHH5pcKqZXyCi2eduB3r9o1Kg1SSC0/OkCBEld/O5E6gWQmJ1s8jYY4HW5KGgNvD9RZpUY+3vwYBZfyHIM+koswIT86IJ6xCDjzuvo/v0laJA06ySyQbx7adCMiTg4oCWrHkUBFHcAAw8Zs1e1fEhrXkE0UDh/hoYuT/o0/OBjuEg97O4QpJ5B8QMB2u4oo/SPDGuW4Z3fnTbzgoUmpQCeZMIdAzBYuR+p09f9lD88wtshQ9yqJEpJnSslPMpqdjN/n61ba2dIiF+IoGkABIBlxnhcWdVOnY9rvmGIYoJgyI98CQrWXxRfWGzDi3jICiEzX2N3Fgp89vN2GmbsTN0uhJG7la4vt78WCwjaJc8uu+EUg7rMkghSWwuHuP0+4fLvRC0swGQZXSKb5yFmAFyf+7sfhkWMMId2oT4bFT06oNHcBJhNmNZ4dgZrb1ZOFoetT1gjgje0l51XkfExz25Q90Xc0it+06TRIXW1fHOGfK4RQxx2dNtriJ8cyns0pG11RrpikqJIlyA3J8uvXvsBRnhre1fOT2hASX6pqQf5xrRQaPAjJmaCvRIxI85yzm0mnXYKSWHxj0pwsjPavDyPJkuhnWPvoKptc/U9bt8HISJ2y1ag/TVNA6kOmIWEhbSWk0xPEBA4y7en+7Tb3oQPoAj9t+tzyxTpIkdIZ9pEVbOohduiU53ry0Vdw2hDhAgz99R4XF/Llx+Ov+OVrAv3zmzaX2m4cHVUcIP+dEs+U7Yx0qioIrQHrW3QJTXDR2cb3X4uBvxqRw5j5I1q1w2CLsuEwtNSVNQMAZ4l+lziBHy8eAjYEeK3DclFBt3tp1sbmNUO+KqVwSSpcbAdb4ns6h1mxhKtLTEQqgYuMP5RggqzoFXsQYHx/05pvL5HySE1MM6T9QLUUoxv5Rm4OLcKHkl9lvjEAib4QmNwyNqkwjk8uM7LO5cekr1LytEk045FrgejisDNO0G2yPXcEMVzVjdaWEgF5p+JmrETExrlwOEIAkb95UE+WntFZTua82BrGaS6C5uOI6HwKMzADyxqDQTVeqUgUIOyVivuQBABGN8SVzcWbTi+WjiH7EAB35nAKMGup7f4dQVE6QhErT0bSeowYYcX6D4DVExZm3wjn+8cMYf1u78CaZHxkeSIil45UfK3e2eUG8kDbJGM7cVHhlrwU3q84RUQOcXIHaeIjI+ot3Tsgbd44jjvRE0Sksd1EhDvHUEP7nF1H32sz52Ou4/UWAJX9cwEuQF5KSwdFpORCCr5KPanWVWGtGdgg8bevpjyXVDslUNnA/DnQoE2oRFQuKJx2/9es1eAUWd+aB251ZhQl3QkSPbMGRCIbVR05huHlcaC62eRAQ8yoymNW0RTZtFryPwnOa6MH9Iu/N+hZGVgrFO6fcbLFQMgtqHO2MMExdtMOI8penvNgQ1kIf4tBoOgFT0Qe3+7I/l0++DKIjLczbIN4MgrE9g9bqlDsi8G8mke4qmdN3Mr50dzcClH+dbCvsD2v3of3b7ZRzsY/wRMxriY36nlzDfVgswAhnCYDtsSITFClQM1Kw1BvFyTmnCh7J7OkZj+x+cGj7Kji60BplH5QypyMurm06L3JxRmfET0Wv/mVW3PZDnsYbrg9n9aI+6agYZuPj748JQugCkYc+RvXhLjKrSKTAeEiCFdV1FOd3vh1jaUTFO6uPZ3ZNSfvjncFtE0encKTkeU2SWsbhvKL54q0BTvpx8Ti1dAw1jVXKBa56NjOg+jt0Fn851+17mLainZ5viWtCEOleMm9X30Mddnx+59DpVNDZ7JjAlsQHC66PYXeHTJFyTEDDsci4KjA4Gm/ki8gMLEH8cAI19miOaUDWciVwEg9oedUDAYxMuYGDkg9j9e5ZShnz+um4PqZiL1oUkJWXtqlDHJzacvb8wGbkCU/j4Auefwb95hKV5xT+c7Q2St78793VM8mK+z2mks8fKOne2NtQqxRtHTuHsICa4macwO7QASsGcqINdIqT3v3tm0At/A67o6BD2mVbfCoYVAc/XfiLkfHN8rxcO7SdByZqHA6HYXgsUrnS65BP2vndP65L3p5dL4JvF5xtXJnIOMU5DKuStoQ59dsATxnO+RbuizcMTcpgkzqzV3vjuXCbK1992KMc5EaQ7Ko2M49wTsJALU9zDbDFpe/be9XF78rg+Oe4kanJF9J53V665yUcaP84L7vcNeXIJhe4tGIgJWv5jbZSoiER6FyriakY5YRv2d7y7IAuV0T8vu8UYaKk0e0YDJIZmiMqsuvDFQHqGc5+uWA5JAWgdQMxEgsmgUomN/m53l+QfUeGFqWaIFQ8Z0r/Db5DtM6WPYRwvFOKIqbL4QjcoQYF7EAb+drA6XfwI3+Pu6rVGZ1iDEeTq0hU4GHuciUHR1EmRacJiw44+IgA2QerjHCcOfFymK5L9VndX95ZL5g1hteUCIgDBHLwKiBOTJvQJXwTCg64VTcq4koFWfBAr2bA/K84nFQO/zd0PstVbLk/ww2bAWDaGICruS5Qm3DEcBDZyM+2I1hmlALKEAiOA6Tnf9yKl5/3tfiiOSuvPX8+PDV8fTJK7VCZaNqXFT0z547T10hzRrbfkj1XwHDimUYtJnJC3trtCd0vl9Yf5P2OfFR07o5s1Poxa1028bQ179kADrFZAtP9gb6SyIwYRZWxnqICqBkHmbeyuKVfcyVpDP/9+/mH1+HNU7v8q2qebw40v0IIQGEKJGwH8AvcDJTujYPFfR1BukLyb3TX5O6qkv9g7D3WyQHxRpWVIVeTqAXZ06Ik1CG5TYho7ooYOl8j3VEdQmnOwv4vdVWEj1dMf/v5O/6hOboXnGsZRQyDbyxz+Xwe+2Af8OE9IOupywuEhObDNAnhyy2fiFgkvvSuR72B3lfgkrCnn4W6047HzdQMUiyI4mufKTtUzyOEmp+F4SnkqZoeDS61FIyWjwF0GPQ337Hd+d1Rbf/jz8S/jpUDOqoP+/VzeUiM6hCvUaqbhL02rMTXXZLp9U7SamG4MlyN+6qhVNcuFcIQpiW/X4fx+AX5NeNfTKdS67fGL//mxOkun0s4M07L5EH7NH6vw2FY3mnp/CRBWUDggohgAADCGAJ0BKugBiAA+CQKBQIFmAAAQljaJLsWP/evrr7yi95IzsLxfJF/2VI9gDe9A/k2qd8QY6lh2+t9N/1LcuP1fYJiMX2v6T+M3b3zv9d/bfkx+Rn0Ocj+C3kPvH+7P+c/NK5S/Dy9+dr9B/gvyE+hv/b9af55/3fuC/pz/jv7B+7n9s+kHqs84v7oevB6XP8Z6hH9o/ynW0f0z/S+wj+zvrWf+v92fic/s/+2/c34DP2L///sAf//1AOi/9c+ADsaf1P4GnCn+Ht64N1GgnpjzX+f/yvRF9M+wT+q//L7AHoHfqOOffdUrKzVBhoFjf+JrTNIbKavxIA43AGpRqNz94rvyITk0o7pDGdWKgSfGnuMbT2yi7ALm4hyj6CcOnqm+n+fcJzmlIX9LduCbKqsU70TXwY3VVr0DFnyXcrzU/mHGg5O9KxgeBQidY8s/wX6gwOv4tUAPB8UFY38s/ahNxIMAbSmfoMUSx7t22EEj1+nJW7W36fP95EmUdMpkp3MTnc8vK/FrxQyHosWJTsvFYL+aHJU7JPsURW6LHIoqFllL+X5eFH0c1Ou+dkkOAUNUYQdDOTOWSm8ox3d7KJRwfMq2gEoo1LtS6tp+6zT/DKeqNJc2lNngkj0YRY484IxStFHED0Wz85S7YcIGM5ujhLXWdKPSO9Z6fZg2+ACpQeNvZ8/BRPUgOo6nklsaa3T8bJR8sC1Bh4OJ9I7mTlCz9Si1sNw7YB0T5rMvo6pDOR7xBIob/J0Bk/WGqwiUUvSIxTVR6g9I2kFpZyMB7h31vzWJOeBT3Lqew9hkH7bTdyUX9oXvzKE1S3WEjn7/iqwuVhztoPLzOPmnNerBqi+/sBGkTd/eRE5haqeHZOF4ybepTNf166A0arLq7d5qnpp5YXS9BCHyCsI0qG5xv4M2wKD3+maQE/x9Cdk+bUUVhpnvxHvDQ2wUccLKtOgDDtYX94D75aC+scPRaQGIUdXT9gL3vlhEAM4U27J4y1CfTIBqegwfuawnGNwgU3hNT69pVnz9gLuP0eqFQRc8DLwg3K/8Jn4YoLJ1lCaMy38fuYM2PTBp6vgHz/HtLKUD5xknyudwUb2Tqjnq5x2wL8PWRt65WlWXOJVLJkVFM3mv4Y+Jf5uaHwCGTf2/HrWszu2Ak4XD+xIo+g5TymY5uVfyfoFW439EWi22Q+QeY4zSh0T8OCbyXLh3nvr05tqxBMSLicoK3AgUSqDSksUZEe5dk3wR+0sUjXrh2erGdfuRwcGndYZxAnno4UWkNujHNUIU1WlT1nHfS7oB5qtLosyS2rNAIHkrSKilUP+MjaFPgWrwGg5fvVDWrWHHU8j37w3L9edYPoZqs5gJ3VREhecIWw59tAKLU2IuHpO7ZM8ydy2/ixnvTazHkX+HrCcadQ1YJcznZQDQDmtXpUlb0XBlDr7T9S/GDjR4AP7yZyAN///VgzJQHDWO7JErTE6Q/8CVSeWGd1zi72rvaZweKvqG52uuIv/9lVLpodKLbPcHXy86eQPaxQvGFy7n79F8J19siKJBMyFeMWwCk1osPBOI2uIu/0ExgOZAf9W332Lz2lYrHy9osPBOI7tdLZMzfb4RIgFpmExg5YeWn2/kUjSmPn2gZJwrXsevSwM6M4acUqOt2NFT6VwXXWLTC/zlWgCkmrg8ENPmBdISa5IRf9qwwc/v7+p7GDfRuWnwUW01Ey2TtAKd6HPgaNTND7wz05JMYG5FO7jrJI3360LRBoQisvpNEmktubHAth8V+QZ2WHqNA/EEmPZ3s2GzECfkO4vF3yFZZsCOP7y5QN+sH6VVrBXw6jpT6+Ou8IuVPS70ncDlsVE1eizPy11GQsswbduvja3hUe502hsaRRfW6eiOi3jvc99GEULqUTGu1kO+SpGHbmGypsVOQRX/MWqXFNz0e5dCRQvx7iY0DaC41xQOchtLl0t9IZMNNUNM4uhev47e4eJ983TdZ46veF6igpbAOx+B+OPipJUMRuHVAWOmo+yM0OHpdu7rFF8+6PfPlba/sfAjG/PMMWR8pafMsGcLbEfwxR+I4eFefK3rnowrEztg5/opz6sgCnTk3wdhjQcWRyZ5wDThXfXkLW35kjwP8XazddeGgtmSli1NJGpuiNjL//tS2Gb7vvbFKxjd5r8Efb2wFS/8X1i/ycBAIovjZaDO5rejgWIe8M/zwvvkRCRpvXQ26djqnZ3gbVe5pd6SzZwE+MtG7EqjrkvtDpWWNwPx2pI90+IwwphAABe//6iX/c1yZu7yAkGhNE1SoElwtyedmjmMsYC90jLx1jKEH//qJhEYR+Anbn92bXoKoC9POJ1A0jXjBWCRN3AGUuyQp461MBAfArnmbWdvCGvYWnWdycn61UYXYlyu3GuPxrd2pOFoF0kp+3tBOteItlFykyHZN0IHG1qaqyhprA7WnnQjYfhwe/K5FQsjeGxl0IiopkLbH6zvlC1O7oNIQNtLYuW/9y4W3LLoEp8qPtkUEnFmHX9Q71XVJqiuAEGnJ05arcEWpQJ+B9XO1vNkg61BD25ad6DU7V5XKrNEFurlwj7SBRAxV0ddpukTklX+VHeaaL2IBWdVBxEFoPerNNDWalYqO5kWpcRiLh71ClcjXwVqDePqPCSppvPjqN0rFqh+jMR5jrJcA3BI9av0RVeiOISKeesvvovvN7VzyxVOPnZuai7uhQ9ARrOFjEmYEUIA5Ck668QMT+h10WZxO5MOQcIoSUkVLe60jYgHb+dIVdDrG7lXaZdbrgXRYR1zxNy+qRr+hTVxeIBfmZJceN6sppr0OhaIjVtNalIr7euJFAHtZRKc/05i2Zyuwd6ohqW/zjFlNVAyS72/mHeo3sFqDO68T3XRouaKIoigOvekhgawA12lE+vyV8zYrzeoshDs2PA/XINrlBzCBW1Dd+4Yy/nUSjsfYAshLy1V/HjF6/0jXqwcYS1ztA/CQXivW9bZpN0JUOmBpb8UfU2g73GSp7TndPBHlP36XYM/fwawslzjMExtd9kGwelcXR/4Lj1MYtcil7QlG5IzQjMGgQQ3sb7R3QRMffX5cov5HJ9jXnfx2BX8Wwa8sIYezPyGQoqa3f8RI7JHk0mHSyqLksQg1AB2//0DbqDX20Yi6lYerVNFW/TSDwKwzYAmSGji6qmaoLzY/lHc7xZlo/0UahT3OTCWW1JuCWCiRuHmzlKtvcxxjf5k7HzojsFMz5MG2w3GHa+QiNjB9ssLhgMnxcSP+R2KbFmDADKD5yAI5LhAUNE0OL2WjaQ/jz2BwC/cIbb4iNnEv2/xrSlZAt+xgwNnoUuecP2nrYI2qPIEMs4zUca+YhLnMGv6mRGVNv95oribYJW84iuKWiuI2pjSPDBu4b4fKrkqB11/w9YBF9wE0DrAsIDi6Qb3a+e2p+T4dh9fRyj2DG07p8ZSy2PP9lxReMJhrurEwpgUMd+kxE9tUH6w2MXFM9aaxw0sUc88WHo9J32IroFH9pl0zlXEBtdtdobPVhJlilkLyRIEJ2PeJiUs4T03Pbx3T5L2aJ3nENQFD8+5ZmmoItfvh/KD7+74j1PiKMfpGvETStnoqG9OFN7yDP+uzDc9QV1qChSo9CQFabEZy1nqDBXr9q8hdIO+nfioC1JnRywRApGoL0INympsaeUKa8K+Aeq/etDYmdge/sAWALCUDee4xoxQnZPHqhQ9G+0d2eb/ZKOsq06z8FgmuDLWLckr3RPoSxWbNbzu8IUMn5g5lkrWKQjlsvzpsJp5nfmxwATK0gM1HVodoOVt//CC1VHAkEjpRC/HXPw9PvSu/g9PeZ/hP9AM+I3qepTNa3Fw5h3mkeE8ctflAx+rYRohuXGLj9wyPC7lWGtHTD+mZhrXP7EKOCnhSeX2JXD1ckY2+qbF+UNniELgAjxBpe+d0nSlPclyQ1vf02W22OWe6tgE4fpzZLpFH19VCl6MAw5jVG0Yfrfxdt/4PJ6fciOdJFUKNWiPVFxQqGHl44hfESLyV0KAvwVh3wHQgH753B5VYT0r5fjpZswNubx2tD8aCcT3BwoCktAjXzgBluKeV9KVtD5cIZCTU5qniHgU1IJGEfseEfSnBiNAKi1GkNXqb025Djdhg54SX/ZiDy9qUTN3K5AAHhmivTTjfObrVrF/lTUJOdXfPUDONVE8RCavJ3VEVV7V/PuVmgfjfwTfpX2uL02YCcaQvTt8Js+6z6F6bhJXSG8vbIh6q+/GBJFUjp/T4CfhW45bL9ET2WNf3SDBwslbjtlYu8Y1d0rsC4Sr4Ms1qReyaJ6+hYhZrGc+rDDLZ8itVMMEEXqTlGVgtqLlZNwrXZfzSpHbksZYeamBldwy3aFYlgoe6agXUIGXoHs/WfnmRmqjhMSU1LrRX7Ur1lpYpmhUbaXxZQ+tjCpao5xE30OSwgo8ItFsTt3h1eN8O2hI16IFcey81Mqjaa4JJZpEYmFe6hKObPaF4+2ogGHMJt9mQIbHEfpKihu2ekNLoExJtq3TByI84fzLVmGV7nO+Ub9AqCwiCtnbBLZSYRHh1MOiEmqUT/qN94PjnCdBPbInn3Qe/G5hhhqtqdLFyBjMSyWoCoDiEZTeurhc2vRD9yOBhCe+eL1K3rKpQZoN79+/w5/qK6WyN8nK/xHyousGN/RuH7tP+H8h6h0WymgzNS2TeIYwwBma/iLQ5+K52/Tv/+ESwqKjPJZQXCxgVWbYvK7ttdrsD3WSajikrvZ4TORd/gnxtFGm8iv4w/CxIgJ8iJsIVr4PNSnXTQI5Jx7T5y2dOyCsdj8nH6QK9ZqI6X4vQB2lSc3yOuJ9vuOPcgtEY3npHAJtqotqH6UVBAk/f0u7tz04wQ7UsJ/jGi0dwO8Thrw1zn0GeGn4Yonv92g9xSj+5WHsnwLjiTHG0RbgIbPZExOpmZbPfP+JlRmLBL6rZRpr4kpYTCgtlmt1JIp3bFHSTkvKNbEYjFxNCV6pnbM9Vd4J5NRT4MGXRyr7Uh8ASGnQvQlVoal8esOq4gJ/BRdaIjLIZDr3cJFFi03+mXkDC7rk0foA78kwWplSi2Bj5c2zv64KWAhYRiYffzJF3s0Gv7nGwchgy+0uLS42RCJ/rQ8HSsyHph7GBF8F2Cu1UtCbfCsPzbD5AG2xHTM4o5/ZeuXvoGgCZKe4DeXvxsURC9I7e7ykXJtCpWvlRf9JyKk9oYcF0YKnlDctspM8zjCv/FV7PkeospbI1Ja14j0ezgpuzohbjhiTF7c7v4+Fe3SYyb0EF/a6PIIk6I+D/Beb6mIhzUvVV/mnfjatzoc4W17kdNZek8QD1fdtX7i80RwbPn4NMCJresfSz3x1qpypg4LR0CgjLk8LQVrxXj1tzWhuGJ+6pQuTiJ4X3JeTjoU0VYuo55ZnLKnirh1CEvzkmoQ6VkoNAMeZrjPC7na07UHkadYWPDibMyt+OQ5VKs4SjvRqT4pu3Z89kSJBjPM4e06IsFmSqr1tdygMTLn82/KssPGApDHZEZKXzJkbQCnRiK8+17uBmmvRAzDQP+WrMjNi87v6tU6pwbRjSzjbKowMMd1AthO83+uCZ7SQcq8lUzaCb8pgJfxTngJno0WJr+lUjVEp9BHAqJ1DKp3cmZjr4/OoLbkkFt8YW1jLzCJdk6KuB4/2hLTCK4dTzpiLvxyFxskuySJKxftyF5wpA0JxN/+ClYCcisFeOoYu/tsgaVBe33i4vc3OxY7rakkVqdxqfza6eik7Ik5bTgx5hVC+8sBQIEyfVWlSGUq/txNTH7CBPdqgB0GUIzeJEQDEd314WANa1jQ5OwPXx0P5GASXo40M9HdK9QmJTe1+F3oXaQ8rxnUcXcQuNH+QyxdR0xt9fn3tReRpUg1zRk0UQN6aGr/iyW2sZKI2+QcA0jxav2Wu2G38T96nALwknFHwv6p7wx5zT8mjdpOff1AcZp9RsbiGEh5aT96KOVk6numlJmNeBJJ4KCjWi1g9YJKlJlstu8loc7oRv1xVd52+JsliVl5rUAue8Yysuy8oywiTfPtN6QbzbnQ3UGf1s5+Anq5bWGsaPxfVgGDjh8NTf0vvDuvos/vvzz9lKDoDVL9/zKqxfyvg8Suli1JHOKENdR1TQwyAL1426NY5Xtvc+L6XhHgxaL3vm2227BzEXWGM7vmi0e2MTma6SKn/+g59MLDbgobZC5QfwuOzKkLMcdldE1XBd4qYgf3itU0UmiQhxjX9M92YKOpPWQJf47frjeaCsd9Ck9BiSwVJGChTnIuF35WM5a14R+RXTbXOZdMsPNOwpOtI4p/th2PG0q/aEAoUKPfauCJxLBol/KU9lFn7jX6rnnNj6vQycRXiJVMatMWso3AFyE+XDPlZMmXxNOjABHwwsPMY0A4PrZn3BwBrWu5ytpA6zZEyacL5NLkivpuC3WT2uZvy48J7HGXC2NHSWbEWNxDutXEJIqUSD5YtyAy2tpNXK8YJldVLPqSUNQVQb+ryBJd/BT4+BbZfcvp6jZyJLueG9hHYte9C4pNQiM+AqoPTTzq3i4++9ar+ZTEwTvtp0omx2JhQCbVw9A2V0X4qEqXSBUewag0BBvIPGyb2xn9m1ryFDiUWPBQ4X76rFnmQGPuJR3Rm2tdlaJXlsOq23MP8oxZrU+OxiOJhTvVkynDerx5PuLnWG+8i1JYMPKjRPXZwZYsUPAKO8JrdptcLZ57M7nEmw/zKmKyhdeOjFC9WZ9QHCmYnXoB6BPq45Kwr8QmQJDZdbV355yi2in3RFIlpOVI1phHqv3aRqRSspZgDX6WcsMQgSKtkhZuAvyU5E1r9sCOnXe3n5jm3DQjcI64f6Jbaua4BKzmCnTGMiPaA1GgVtYQ+Se/ayJ2df3KZVFLsabDAkbqZyROEN3KHoAHOJobNVXYzkML+BqHKtaiFycwpkbntr3m/ocfs3jIXaTE1ficzPVB/85+6ICzmJzNnO3SWnCkxdINqfx8sz+8jxESCECbmN+0jnQDbi3+qg2NZp9HUlHxaVkmdl87DlE/yX0w6d5/G2v705ZZ+D85C9Z8GOSYTNO7+3PAVVHerlJ064ZT/nns1XE6H0p6zPAiGiht81bxpelObALTxFfES5//2Es+Ba/WU6aarmpAQPwksJoaFWG4iiKfqjt41Rv8aMw+NsH8Sbm/42pjCnttQd34yxVtD/T2xK4wqqnErqzLWBybKJqB77YX3JyRiVv5EHtXYMbKmkSAeO5zzsnfMS0FpQGEQCj1uSeAnujYZprjQNqNUAW8b5Q1dyFdT6q3wsoTgUV1bbkZg4V2hMmxmpAepAGLXbyoiVMN3k/3w0Jri7AFKFUwF9VNTX0kSlMvb1f7akoPC9aZyBEl+SLntnihC9vfBhNDJny2Qj7cCaI7EkK8IVwkACWYuKaGIW2Q15qZJuMnh4zgBCQm7KBMwWbbIJamIxgPtbzxIl5Ae7BW+n7txDNBZV43MIjgieXPYU7uTE17HknT7vxOeLO9fAQa7LQZSMCW387r0ei3R4IkzZJ5UrsPvlKq0fhJ8T29rGzlKS4n4MwuiruiTphOI/aATXDPq/dP/OLX6DU1ddyKQQ3jRxQe/Et1y/QnEMsolK/JoiQ0vYJio7SqosjFnBZIyQP39OG89r4f+Fnq8eXHfbTwVb5E0KXwf3WpPeKN3khkv0PRJJZmN7dsxkxGHLPmL70YgZweduYDTlE050bJsjQ3Tm8GfZvwPDew5sF8eYUBw3WjTeQqnxwgInrsUhtZYn0SZyfJ9///1fKxw9/8J1/J4X/0KEvAbVYsCV93mOlxsJ/+eY5CCUKygaAAAAAAA7YNi3HNYm68tdNCZKFjl2Gi8z9vaHjzOfbK5A0XLtfbQUTHoMcHfx0X+hZYIDKsG7ftQW/BAAQKh+jt9Tg//s6ZspKVp+BQOd+6aqGBkPAlViEZEaXLPLcRqsGNRwaDX+dTxP8dQ/0M+gtWLSf+Lh/F0C3c5FZ4CqFHe8va7ViehM4ENJOsXSkeBAtKBqwM1373DUjaeVZbgEJd5dMUfD1F7+xKN1bMJRaxnWQIDR6XHcCEOrdJcRsODH9UWSAMQIflMzTDD7MYsmzX+NxzlK6a4uHXiQNAmGoko23f+XQaxN2JaMM7YPNqm5Bq2PjAhmm/HW94ap41ZlBo6YCyvUd19/5DQawyUmIczRBdcQA19yxjvSMwR4WP3GTVWAnYmT/EKRw5EHnovBEXEhGhI43usyHHOQxJhOzjYZAQ2YyFVajfwN+2+gL0o14wMk8OQgCAl5J17ETpAnlSObY9MzP9W2gDrS9sAT7uB2yvsDfYslLmyPOdT0+nuK/jZk3fbZA8pc67mAHovryD/rsA1WFz6Wzo947pY9at/nv2VMf/xt///8wP52PpbzXZFkqu+6Yb0Qbu6o8HRXu9sU62+bAAAAAAAAA==" preserveAspectRatio="none" />
+          <feImage result="map" width="100%" height="100%" x="0" y="0"
+            href="data:image/webp;base64,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"
+            preserveAspectRatio="none" />
           <feGaussianBlur in="SourceGraphic" stdDeviation="0.01" result="blur" />
           <feDisplacementMap id="disp" in="blur" in2="map" scale="0.5" xChannelSelector="R" yChannelSelector="G" />
         </filter>
@@ -80,6 +88,7 @@
       <a href="#hero" class="nav-logo">Portfolio</a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#about" data-section="about">เกี่ยวกับ</a></li>
+        <li><a href="#echo-glove" data-section="echo-glove">โครงงานเด่น</a></li>
         <li><a href="#achievements" data-section="achievements">ผลงาน & รางวัล</a></li>
         <li><a href="#contact" data-section="contact">ติดต่อ</a></li>
       </ul>
@@ -91,6 +100,7 @@
   <div class="dot-nav" id="dotNav">
     <div class="dot-nav-item active" data-target="#hero"><span class="dot-tooltip">หน้าแรก</span></div>
     <div class="dot-nav-item" data-target="#about"><span class="dot-tooltip">เกี่ยวกับ</span></div>
+    <div class="dot-nav-item" data-target="#echo-glove"><span class="dot-tooltip">โครงงานเด่น</span></div>
     <div class="dot-nav-item" data-target="#achievements"><span class="dot-tooltip">ผลงาน & รางวัล</span></div>
     <div class="dot-nav-item" data-target="#contact"><span class="dot-tooltip">ติดต่อ</span></div>
   </div>
@@ -101,14 +111,16 @@
       <div class="hero-content">
         <div class="hero-brand-group anim-reveal">
           <div class="hero-logos">
-            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper" title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
+            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper"
+              title="โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ">
               <div class="hero-logo-inner"><img src="assets/tupp-logo-v3.png" alt="TUPP Logo" /></div>
               <div class="logo-dropdown">
                 <a href="https://www.tupp.ac.th/" target="_blank">เว็บไซต์โรงเรียน</a>
                 <a href="https://www.facebook.com/Iam.TUPP/?locale=th_TH" target="_blank">เพจ Facebook โรงเรียน</a>
               </div>
             </div>
-            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper anim-delay-1" title="Gifted Science Research And AI">
+            <div class="hero-logo-item floating-element hero-logo-dropdown-wrapper anim-delay-1"
+              title="Gifted Science Research And AI">
               <div class="hero-logo-inner"><img src="assets/gsrt-ai-logo.png" alt="GSRT AI Logo" /></div>
               <div class="logo-dropdown">
                 <a href="https://www.facebook.com/aigsrttupp/" target="_blank">เพจ Facebook ของสายการเรียน</a>
@@ -119,7 +131,11 @@
         </div>
         <p class="hero-greeting anim-reveal">สวัสดีครับ, ผม —</p>
         <h1 class="hero-name anim-reveal">ศุภณัฏฐ์<em>เมฆมูสิก</em></h1>
-        <a href="#achievements" class="hero-cta anim-reveal" style="margin-top: 16px;">ดูผลงาน <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+        <a href="#achievements" class="hero-cta anim-reveal" style="margin-top: 16px;">ดูผลงาน <svg width="16"
+            height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12" />
+            <polyline points="12 5 19 12 12 19" />
+          </svg></a>
       </div>
       <div class="hero-visual anim-reveal">
         <div class="hero-profile-container" data-tilt>
@@ -131,45 +147,174 @@
         </div>
       </div>
     </div>
-    <div class="hero-scroll-hint"><div class="scroll-indicator"></div><span>เลื่อนลง</span></div>
+    <div class="hero-scroll-hint">
+      <div class="scroll-indicator"></div><span>เลื่อนลง</span>
+    </div>
   </section>
 
   <!-- ===== ABOUT ===== -->
   <section class="section" id="about">
     <div class="container">
-      <div class="section-label anim-reveal"><span class="section-number">01</span><span class="section-line"></span><span class="section-name">เกี่ยวกับฉัน</span></div>
+      <div class="section-label anim-reveal"><span class="section-number">01</span><span
+          class="section-line"></span><span class="section-name">เกี่ยวกับฉัน</span></div>
       <h2 class="section-title anim-reveal">ประวัติ<em>ส่วนตัว</em></h2>
       <div class="about-grid">
         <div>
           <div class="education-timeline anim-reveal">
-            <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5"/></svg> ประวัติการศึกษา</h3>
-            <div class="timeline-item"><span class="timeline-year">2568</span><div class="timeline-info"><h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4><p>ม.ปลาย • วิทย์-คณิต-AI</p><span class="timeline-gpa">GPAX 3.27</span></div></div>
-            <div class="timeline-item"><span class="timeline-year">2567</span><div class="timeline-info"><h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4><p>มัธยมศึกษาตอนต้น</p><span class="timeline-gpa">GPAX 3.42</span></div></div>
-            <div class="timeline-item"><span class="timeline-year">2564</span><div class="timeline-info"><h4>โรงเรียนสารสาสน์วิเทศมีนบุรี</h4><p>ประถมศึกษา</p></div></div>
+            <h3><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                <path d="M6 12v5c0 2 4 3 6 3s6-1 6-3v-5" />
+              </svg> ประวัติการศึกษา</h3>
+            <div class="timeline-item"><span class="timeline-year">2568</span>
+              <div class="timeline-info">
+                <h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4>
+                <p>ม.ปลาย • วิทย์-คณิต-AI</p><span class="timeline-gpa">GPAX 3.27</span>
+              </div>
+            </div>
+            <div class="timeline-item"><span class="timeline-year">2567</span>
+              <div class="timeline-info">
+                <h4>โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</h4>
+                <p>มัธยมศึกษาตอนต้น</p><span class="timeline-gpa">GPAX 3.42</span>
+              </div>
+            </div>
+            <div class="timeline-item"><span class="timeline-year">2564</span>
+              <div class="timeline-info">
+                <h4>โรงเรียนสารสาสน์วิเทศมีนบุรี</h4>
+                <p>ประถมศึกษา</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="radar-chart-wrapper anim-reveal">
-          <h3 class="radar-title">ทักษะด้านเทคนิค</h3>
-          <canvas id="radarChart" width="440" height="440"></canvas>
-          <div class="skills-legend">
-            <div class="skills-legend-item"><span class="dot"></span>Python</div>
-            <div class="skills-legend-item"><span class="dot"></span>C/C++</div>
-            <div class="skills-legend-item"><span class="dot"></span>Robotics</div>
-            <div class="skills-legend-item"><span class="dot"></span>IoT</div>
-            <div class="skills-legend-item"><span class="dot"></span>Web Dev</div>
-            <div class="skills-legend-item"><span class="dot"></span>AI/ML</div>
+        <section class="skills-showcase anim-reveal" aria-labelledby="skills-title">
+          <div class="skills-showcase-heading">
+            <span class="skills-eyebrow">SKILL SET</span>
+            <h3 id="skills-title">ความสามารถ</h3>
           </div>
-          <div class="tools-section anim-reveal">
-            <h3 class="radar-title" style="margin-top:1.5rem">เครื่องมือที่ใช้งาน</h3>
-            <div class="tools-tags">
-              <span class="tool-tag">VSCode</span>
-              <span class="tool-tag">Arduino IDE</span>
-              <span class="tool-tag">Blender</span>
-              <span class="tool-tag">SketchUp</span>
-              <span class="tool-tag">Lightroom</span>
-              <span class="tool-tag">Snapseed</span>
-              <span class="tool-tag">Canva</span>
-              <span class="tool-tag">Capcut</span>
+          <div class="skills-primary-grid">
+            <article class="skill-feature skill-feature-web">
+              <span class="skill-feature-icon" aria-hidden="true">&lt;/&gt;</span>
+              <div>
+                <h4>ทำเว็บไซต์</h4>
+                <p>สร้างและพัฒนาเว็บไซต์</p>
+              </div>
+            </article>
+            <article class="skill-feature">
+              <span class="skill-feature-icon" aria-hidden="true">3D</span>
+              <div>
+                <h4>ปั้นโมเดล 3D</h4>
+                <p>SketchUp · AutoCAD</p>
+              </div>
+            </article>
+            <article class="skill-feature">
+              <span class="skill-feature-icon" aria-hidden="true">◉</span>
+              <div>
+                <h4>ถ่ายรูป</h4>
+                <p>ชื่นชอบและเป็นงานอดิเรก</p>
+              </div>
+            </article>
+            <article class="skill-feature">
+              <span class="skill-feature-icon" aria-hidden="true">✦</span>
+              <div>
+                <h4>แต่งรูป</h4>
+                <p>Lightroom · Snapseed</p>
+              </div>
+            </article>
+          </div>
+          <div class="skills-tools-panel">
+            <h4>โปรแกรมที่เคยใช้</h4>
+            <div class="skills-tools-list">
+              <span>Google Antigravity</span><span>Cursor</span><span>Windsurf</span><span>VSCode</span>
+              <span>Arduino IDE</span><span>Canva</span><span>CapCut</span><span>SketchUp</span><span>AutoCAD</span>
+              <span>Lightroom</span><span>Snapseed</span>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURED PROJECT: ECHO GLOVE ===== -->
+  <section class="section section-featured" id="echo-glove">
+    <div class="container">
+      <div class="section-label anim-reveal">
+        <span class="section-number">02</span>
+        <span class="section-line"></span>
+        <span class="section-name">โครงงานเด่น • FEATURED PROJECT</span>
+      </div>
+
+      <!-- Main Project Showcase Card -->
+      <div class="echo-card-container anim-reveal">
+        <div class="echo-card-grid">
+          <div class="echo-info-col">
+            <div class="echo-badge-row">
+              <button type="button" class="echo-badge echo-badge-gold echo-badge-interactive" id="openSchoolAwardCertificate"
+                aria-label="ดูเกียรติบัตรรางวัลชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน">
+                🏆 รางวัลชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน
+              </button>
+              <button type="button" class="echo-badge echo-badge-interactive" id="openKmutnbCertificate"
+                aria-label="ดูเกียรติบัตรการเข้าร่วมงาน KMUTNB Innovation Award 2569">
+                ได้ร่วมส่งผลงานเข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ
+              </button>
+            </div>
+            <h2 class="echo-title">ECHO <em>GLOVE</em></h2>
+            <p class="echo-tagline">From the fingertips to the sound world hears</p>
+            <p class="echo-summary">
+              ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน ผสานการทำงานระหว่างเซนเซอร์ตรวจจับองศาการงอ (Flex
+              Sensors), ไจโรสโคป/ความเร่ง 6 แกน (IMU) และประมวลผลด้วยโมเดล Machine Learning ออนดีไวซ์ (TinyML)
+              เพื่อแปลงท่าทางภาษามือเป็นเสียงพูดแบบ Real-time โดยไม่ต้องพึ่งพาสมาร์ทโฟน
+            </p>
+
+            <div class="echo-specs-grid">
+              <div class="echo-spec-box">
+                <span class="echo-spec-title">หน่วยประมวลผล</span>
+                <span class="echo-spec-desc">Arduino Nano 33 BLE Rev2</span>
+              </div>
+              <div class="echo-spec-box">
+                <span class="echo-spec-title">โมเดล AI</span>
+                <span class="echo-spec-desc">Edge Impulse TinyML</span>
+              </div>
+              <div class="echo-spec-box">
+                <span class="echo-spec-title">ระบบเสียง</span>
+                <span class="echo-spec-desc">DFPlayer Mini + Speaker</span>
+              </div>
+              <div class="echo-spec-box">
+                <span class="echo-spec-title">การเชื่อมต่อ</span>
+                <span class="echo-spec-desc">Standalone</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="echo-btn-group">
+              <a href="https://supanat-dev.github.io/echo-glove/" target="_blank" rel="noopener noreferrer"
+                class="btn-echo-main">
+                <span>เข้าชมเว็บไซต์โครงงาน Echo Glove ฉบับเต็ม</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <line x1="10" y1="14" x2="21" y2="3"></line>
+                </svg>
+              </a>
+              <button type="button" class="btn-echo-sub" id="openEchoPosterBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                  <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <span>ดูโปสเตอร์งานวิจัย</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Visual Showcase Image -->
+          <div class="echo-visual-col">
+            <div class="echo-mockup-frame" data-tilt>
+              <img src="assets/echo-glove/PROTOTYPE_3.jpg" alt="Echo Glove Standalone Prototype"
+                class="echo-mockup-img">
+              <div class="echo-mockup-caption">
+                <span class="caption-label">ภาพชิ้นงาน</span>
+              </div>
             </div>
           </div>
         </div>
@@ -180,88 +325,258 @@
   <!-- ===== ACHIEVEMENTS ===== -->
   <section class="section section-alt" id="achievements">
     <div class="container">
-      <div class="section-label anim-reveal"><span class="section-number">02</span><span class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
+      <div class="section-label anim-reveal"><span class="section-number">03</span><span
+          class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
       <h2 class="section-title anim-reveal">รางวัลและความสำเร็จที่<em>ภาคภูมิใจ</em></h2>
       <div class="achievements-grid">
-        <div class="achievement-card anim-reveal" data-cert-title="ชนะเลิศ OTOP ระดับโรงเรียน" data-cert-desc="ได้รับรางวัลชนะเลิศอันดับ 1 ในการประกวดโครงงานวิชาการ ประจำปีการศึกษา 2568 ณ โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ จากโครงงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ และได้ส่งผลงานเข้างานประกวดสิ่งประดิษฐ์และนวัตกรรม มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.) ประจำปี 2569" data-cert-year="2568" data-gallery-srcs='["Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113040_05b.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113044_590.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🏆</div><h3>ชนะเลิศ OTOP ระดับโรงเรียน</h3><p>ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน</p><span class="ach-year">2568</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน"
+          data-cert-desc="ได้รับรางวัลชนะเลิศอันดับ 1 ในการประกวดโครงงานวิชาการ ประจำปีการศึกษา 2568 ณ โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ จากโครงงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ และได้ส่งผลงานเข้างานประกวดสิ่งประดิษฐ์และนวัตกรรม มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.) ประจำปี 2569"
+          data-cert-year="2568"
+          data-gallery-srcs='["Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113040_05b.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113044_590.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">🏆</div>
+            <h3>ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน</h3>
+            <p>ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน</p><span class="ach-year">2568</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="รองชนะเลิศอันดับ 1 EERC 2025" data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 1 เมื่อวันที่ 16 สิงหาคม 2568 ในการแข่งขันหุ่นยนต์จากโครงการ SIET Young Innovators 2025 : EERC 2025 จัดโดยคณะครุศาสตร์อุตสาหกรรมและเทคโนโลยี สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง" data-cert-year="2568" data-gallery-srcs='["Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112512_ebc.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112516_63c.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112519_a8e.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112522_57f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112525_ad2.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112528_200.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112530_4f6.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112534_38f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112537_168.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112540_abe.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112604_146.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112608_6f5.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112611_acd.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png');"></div>
-          <div class="ach-body"><div class="ach-icon">🥈</div><h3>รองชนะเลิศอันดับ 1 EERC 2025</h3><p>SIET Young Innovators: EERC 2025 (ณ สจล.)</p><span class="ach-year">2568</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="รองชนะเลิศอันดับ 1 EERC 2025"
+          data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 1 เมื่อวันที่ 16 สิงหาคม 2568 ในการแข่งขันหุ่นยนต์จากโครงการ SIET Young Innovators 2025 : EERC 2025 จัดโดยคณะครุศาสตร์อุตสาหกรรมและเทคโนโลยี สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง"
+          data-cert-year="2568"
+          data-gallery-srcs='["Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112512_ebc.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112516_63c.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112519_a8e.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112522_57f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112525_ad2.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112528_200.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112530_4f6.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112534_38f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112537_168.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112540_abe.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112604_146.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112608_6f5.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112611_acd.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">🥈</div>
+            <h3>รองชนะเลิศอันดับ 1 EERC 2025</h3>
+            <p>SIET Young Innovators: EERC 2025 (ณ สจล.)</p><span class="ach-year">2568</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Coding Thailand 2025" data-cert-desc="ผ่านการเข้าร่วมและอบรมเชิงปฏิบัติการโครงการ Coding Thailand 2025: AI-Driven Future ได้รับเกียรติบัตรหลายด้าน ได้แก่ Basic Python, Basic IoT, Image Processing, Data Analytics, Arduino Nano ESP32 และไมโครคอนโทรลเลอร์ มุ่งเน้นการใช้งานเทคโนโลยี IoT และปัญญาประดิษฐ์เพื่อพัฒนาโครงงานระดับประเทศ" data-cert-year="2568" data-gallery-srcs='["Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg", "Certificates/coding/เกียรติบัตร/Basic IoT_250721_134857.jpg", "Certificates/coding/เกียรติบัตร/Basic Python_250721_135211.jpg", "Certificates/coding/เกียรติบัตร/Data Analytic_250721_134937.jpg", "Certificates/coding/เกียรติบัตร/Image Processing_250721_135022.jpg", "Certificates/coding/เกียรติบัตร/ไมโครคอนโทรลเลอร์_250721_135045.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">💻</div><h3>Coding Thailand 2025</h3><p>AI-Driven Future: IoT, Python, MCU</p><span class="ach-year">2568</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Coding Thailand 2025"
+          data-cert-desc="ผ่านการเข้าร่วมและอบรมเชิงปฏิบัติการโครงการ Coding Thailand 2025: AI-Driven Future ได้รับเกียรติบัตรหลายด้าน ได้แก่ Basic Python, Basic IoT, Image Processing, Data Analytics, Arduino Nano ESP32 และไมโครคอนโทรลเลอร์ มุ่งเน้นการใช้งานเทคโนโลยี IoT และปัญญาประดิษฐ์เพื่อพัฒนาโครงงานระดับประเทศ"
+          data-cert-year="2568"
+          data-gallery-srcs='["Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg", "Certificates/coding/เกียรติบัตร/Basic IoT_250721_134857.jpg", "Certificates/coding/เกียรติบัตร/Basic Python_250721_135211.jpg", "Certificates/coding/เกียรติบัตร/Data Analytic_250721_134937.jpg", "Certificates/coding/เกียรติบัตร/Image Processing_250721_135022.jpg", "Certificates/coding/เกียรติบัตร/ไมโครคอนโทรลเลอร์_250721_135045.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">💻</div>
+            <h3>Coding Thailand 2025</h3>
+            <p>AI-Driven Future: IoT, Python, MCU</p><span class="ach-year">2568</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Intro to Python for AI & Digital Twin" data-cert-desc="ผ่านการอบรมหลักสูตรเชิงปฏิบัติการ Introduction to Python Programming for Artificial Intelligence and Digital Twin จัดโดยมหาวิทยาลัยเกษตรศาสตร์ ได้ฝึกทักษะการเขียนโปรแกรมภาษา Python สำหรับประยุกต์ใช้กับปัญญาประดิษฐ์และการสร้างแบบจำลองดิจิทัล (Digital Twin)" data-cert-year="2567" data-gallery-srcs='["Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg", "Certificates/Digital Twin ม.เกษตร/รูปกิจกรรม/Notes_260626_131603_641.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🐍</div><h3>Intro to Python for AI & Digital Twin</h3><p>Python for AI & Digital Twin (ม.เกษตร)</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Intro to Python for AI & Digital Twin"
+          data-cert-desc="ผ่านการอบรมหลักสูตรเชิงปฏิบัติการ Introduction to Python Programming for Artificial Intelligence and Digital Twin จัดโดยมหาวิทยาลัยเกษตรศาสตร์ ได้ฝึกทักษะการเขียนโปรแกรมภาษา Python สำหรับประยุกต์ใช้กับปัญญาประดิษฐ์และการสร้างแบบจำลองดิจิทัล (Digital Twin)"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg", "Certificates/Digital Twin ม.เกษตร/รูปกิจกรรม/Notes_260626_131603_641.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🐍</div>
+            <h3>Intro to Python for AI & Digital Twin</h3>
+            <p>Python for AI & Digital Twin (ม.เกษตร)</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Bootcamps for Statistics 3" data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการ Bootcamps for Statistics Career ครั้งที่ 3 จัดโดยคณะวิทยาศาสตร์ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้พัฒนาทักษะการวิเคราะห์สถิติ การวาดกราฟข้อมูลเชิงวิทยาศาสตร์ และการเขียนโปรแกรมด้วย Google Colab" data-cert-year="2567" data-gallery-srcs='["Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131724_729.jpg", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131727_c99.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png');"></div>
-          <div class="ach-body"><div class="ach-icon">📊</div><h3>Bootcamps for Statistics 3</h3><p>กราฟ + Google Colab (วิทย์ สจล.)</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Bootcamps for Statistics 3"
+          data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการ Bootcamps for Statistics Career ครั้งที่ 3 จัดโดยคณะวิทยาศาสตร์ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้พัฒนาทักษะการวิเคราะห์สถิติ การวาดกราฟข้อมูลเชิงวิทยาศาสตร์ และการเขียนโปรแกรมด้วย Google Colab"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131724_729.jpg", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131727_c99.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">📊</div>
+            <h3>Bootcamps for Statistics 3</h3>
+            <p>กราฟ + Google Colab (วิทย์ สจล.)</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="SDGs Hackathon Camp" data-cert-desc="ได้เข้าร่วมค่ายฝึกอบรมโครงการเตรียมตัวสู่เวทีพัฒนาแนวคิดเยาวชนเพื่อความยั่งยืน (SDGs Hackathon Pitching Camp) ณ มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต ได้พัฒนาแนวคิดและนำเสนอโครงการเพื่อตอบโจทย์เป้าหมายการพัฒนาที่ยั่งยืน (SDGs) ในระดับเยาวชน" data-cert-year="2567" data-gallery-srcs='["Certificates/YSDA/เกียรติบัตร/YSDA.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130910_298.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130914_0f8.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130918_57c.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130923_375.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130927_4c2.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130930_6c1.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130933_607.jpg"]'>
+        <div class="achievement-card anim-reveal" data-cert-title="SDGs Hackathon Camp"
+          data-cert-desc="ได้เข้าร่วมค่ายฝึกอบรมโครงการเตรียมตัวสู่เวทีพัฒนาแนวคิดเยาวชนเพื่อความยั่งยืน (SDGs Hackathon Pitching Camp) ณ มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต ได้พัฒนาแนวคิดและนำเสนอโครงการเพื่อตอบโจทย์เป้าหมายการพัฒนาที่ยั่งยืน (SDGs) ในระดับเยาวชน"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/YSDA/เกียรติบัตร/YSDA.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130910_298.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130914_0f8.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130918_57c.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130923_375.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130927_4c2.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130930_6c1.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130933_607.jpg"]'>
           <div class="ach-cert-image" style="background-image: url('Certificates/YSDA/เกียรติบัตร/YSDA.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🌱</div><h3>SDGs Hackathon Camp</h3><p>ค่ายพัฒนาแนวคิดเยาวชน (ม.ธรรมศาสตร์)</p><span class="ach-year">2567</span></div>
+          <div class="ach-body">
+            <div class="ach-icon">🌱</div>
+            <h3>SDGs Hackathon Camp</h3>
+            <p>ค่ายพัฒนาแนวคิดเยาวชน (ม.ธรรมศาสตร์)</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="RAI Mechatronics (สจล.)" data-cert-desc="ผ่านการคัดเลือกจาก 1,000 คน ในรอบออนไลน์ เหลือ 150 คน เข้าสู่รอบออนไซต์ ณ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้ร่วม Workshop การใช้ AI ทำ Image Processing, ได้ลองสั่งการแขนกลให้ทำงาน และได้เขียนโค้ด PLC เพื่อควบคุมระบบสายพาน" data-cert-year="2567" data-gallery-srcs='["Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/รอบออนไลน์.png", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111655_d45.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111659_69a.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111703_018.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111707_e02.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111710_ed2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111714_f61.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111718_0b7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111721_1d3.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111725_035.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111728_5a4.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111732_b8e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111735_32e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111739_434.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111743_ec0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111746_305.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111750_51e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111753_1cc.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111756_8d1.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111800_0c0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111804_ad5.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111807_331.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111812_c4b.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111816_b0f.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111819_6e7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111824_297.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111827_fa7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111831_3b9.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111835_ed8.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111839_9f2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111843_63c.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🤖</div><h3>RAI Mechatronics (สจล.)</h3><p>การแข่งขันเมคคาทรอนิกส์ RAI KMITL</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="RAI Mechatronics (สจล.)"
+          data-cert-desc="ผ่านการคัดเลือกจาก 1,000 คน ในรอบออนไลน์ เหลือ 150 คน เข้าสู่รอบออนไซต์ ณ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้ร่วม Workshop การใช้ AI ทำ Image Processing, ได้ลองสั่งการแขนกลให้ทำงาน และได้เขียนโค้ด PLC เพื่อควบคุมระบบสายพาน"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/รอบออนไลน์.png", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111655_d45.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111659_69a.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111703_018.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111707_e02.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111710_ed2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111714_f61.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111718_0b7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111721_1d3.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111725_035.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111728_5a4.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111732_b8e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111735_32e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111739_434.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111743_ec0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111746_305.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111750_51e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111753_1cc.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111756_8d1.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111800_0c0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111804_ad5.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111807_331.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111812_c4b.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111816_b0f.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111819_6e7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111824_297.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111827_fa7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111831_3b9.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111835_ed8.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111839_9f2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111843_63c.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">🤖</div>
+            <h3>RAI Mechatronics (สจล.)</h3>
+            <p>การแข่งขันเมคคาทรอนิกส์ RAI KMITL</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="K-Engineering World Tour" data-cert-desc="เข้าร่วมกิจกรรม K-Engineering World Tour ณ คณะวิศวกรรมศาสตร์ สจล. ได้ฝึกต่อวงจร LED ผ่าน Arduino ได้ทดลองบังคับหุ่นยนต์ทำแผนที่ด้วย LiDAR และได้เรียนรู้เทคโนโลยีวิศวกรรมและนวัตกรรมจากคณะต่างๆ ในรั้ว สจล." data-cert-year="2567" data-gallery-srcs='["Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_2.jpg", "Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_3.jpg", "Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112319_903.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112322_811.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112326_13b.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112329_4d8.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112332_e41.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112335_86a.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112338_294.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112343_b30.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112346_1f3.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112350_681.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112353_e5f.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112356_b44.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112400_2f4.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png');"></div>
-          <div class="ach-body"><div class="ach-icon">⚙️</div><h3>K-Engineering World Tour</h3><p>นวัตกรรมและวิศวกรรมระดับโลก</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="K-Engineering World Tour"
+          data-cert-desc="เข้าร่วมกิจกรรม K-Engineering World Tour ณ คณะวิศวกรรมศาสตร์ สจล. ได้ฝึกต่อวงจร LED ผ่าน Arduino ได้ทดลองบังคับหุ่นยนต์ทำแผนที่ด้วย LiDAR และได้เรียนรู้เทคโนโลยีวิศวกรรมและนวัตกรรมจากคณะต่างๆ ในรั้ว สจล."
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_2.jpg", "Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_3.jpg", "Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112319_903.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112322_811.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112326_13b.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112329_4d8.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112332_e41.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112335_86a.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112338_294.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112343_b30.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112346_1f3.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112350_681.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112353_e5f.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112356_b44.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112400_2f4.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">⚙️</div>
+            <h3>K-Engineering World Tour</h3>
+            <p>นวัตกรรมและวิศวกรรมระดับโลก</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="FIBO Robotics" data-cert-desc="ศึกษาดูงานและเข้าร่วมอบรมเชิงปฏิบัติการด้านวิทยาการหุ่นยนต์ ณ สถาบันวิทยาการหุ่นยนต์ภาคสนาม (FIBO) มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี (มจธ.) ได้เขียนโปรแกรมควบคุม MCU สั่งงานเซนเซอร์ และควบคุมอุปกรณ์ต่างๆ ผ่าน Raspberry Pi" data-cert-year="2567" data-gallery-srcs='["Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131221_4d3.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131225_d3a.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🦾</div><h3>FIBO Robotics</h3><p>วิทยาการหุ่นยนต์ภาคสนาม (มจธ.)</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="FIBO Robotics"
+          data-cert-desc="ศึกษาดูงานและเข้าร่วมอบรมเชิงปฏิบัติการด้านวิทยาการหุ่นยนต์ ณ สถาบันวิทยาการหุ่นยนต์ภาคสนาม (FIBO) มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี (มจธ.) ได้เขียนโปรแกรมควบคุม MCU สั่งงานเซนเซอร์ และควบคุมอุปกรณ์ต่างๆ ผ่าน Raspberry Pi"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131221_4d3.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131225_d3a.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🦾</div>
+            <h3>FIBO Robotics</h3>
+            <p>วิทยาการหุ่นยนต์ภาคสนาม (มจธ.)</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="KMUTNB Innovation Award" data-cert-desc="ได้ส่งผลงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ เข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.)" data-cert-year="2568" data-gallery-srcs='["Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png');"></div>
-          <div class="ach-body"><div class="ach-icon">💡</div><h3>KMUTNB Innovation Award</h3><p>นวัตกรรมสิ่งประดิษฐ์เพื่ออนาคต</p><span class="ach-year">2568</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="KMUTNB Innovation Award"
+          data-cert-desc="ได้ส่งผลงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ เข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.)"
+          data-cert-year="2568"
+          data-gallery-srcs='["Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">💡</div>
+            <h3>KMUTNB Innovation Award</h3>
+            <p>นวัตกรรมสิ่งประดิษฐ์เพื่ออนาคต</p><span class="ach-year">2568</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="การแข่งขันวิชาการ ม.เกษตร" data-cert-desc="เข้าร่วม Workshop และการแข่งขัน iDektep Mini Coding Challenge จัดโดยคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ ได้เรียนรู้การเทรนโมเดล AI เพื่อ Detect และคัดแยกวัตถุจากรูปภาพ โดยใช้ AI จาก Roboflow แล้วมารันต่อใน VSCode ด้วยภาษา Python" data-cert-year="2567" data-gallery-srcs='["Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131411_d0a.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131415_bb1.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131418_e8e.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131421_4ac.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png');"></div>
-          <div class="ach-body"><div class="ach-icon">🎓</div><h3>การแข่งขันวิชาการ ม.เกษตร</h3><p>เวทีการแข่งขันระดับอุดมศึกษา</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="การแข่งขันวิชาการ ม.เกษตร"
+          data-cert-desc="เข้าร่วม Workshop และการแข่งขัน iDektep Mini Coding Challenge จัดโดยคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ ได้เรียนรู้การเทรนโมเดล AI เพื่อ Detect และคัดแยกวัตถุจากรูปภาพ โดยใช้ AI จาก Roboflow แล้วมารันต่อใน VSCode ด้วยภาษา Python"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131411_d0a.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131415_bb1.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131418_e8e.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131421_4ac.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">🎓</div>
+            <h3>การแข่งขันวิชาการ ม.เกษตร</h3>
+            <p>เวทีการแข่งขันระดับอุดมศึกษา</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Samsung Innovation Campus" data-cert-desc="เข้าร่วมโครงการ Samsung Innovation Campus เพื่อพัฒนาทักษะด้านโค้ดดิ้งและเทคโนโลยี" data-cert-year="2567" data-gallery-srcs='["Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">📱</div><h3>Samsung Innovation Campus</h3><p>ทักษะโค้ดดิ้งและนวัตกรรม</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Samsung Innovation Campus"
+          data-cert-desc="เข้าร่วมโครงการ Samsung Innovation Campus เพื่อพัฒนาทักษะด้านโค้ดดิ้งและเทคโนโลยี"
+          data-cert-year="2567" data-gallery-srcs='["Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">📱</div>
+            <h3>Samsung Innovation Campus</h3>
+            <p>ทักษะโค้ดดิ้งและนวัตกรรม</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="กิจกรรมจิตอาสา" data-cert-desc="เข้าร่วมกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคม" data-cert-year="2567" data-gallery-srcs='["Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg", "Certificates/จิตอาสา 4-4/รูปกิจกรรม/Notes_260626_112827_d67.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🤝</div><h3>กิจกรรมจิตอาสา</h3><p>บำเพ็ญประโยชน์และพัฒนาสังคม</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="กิจกรรมจิตอาสา"
+          data-cert-desc="เข้าร่วมกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคม" data-cert-year="2567"
+          data-gallery-srcs='["Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg", "Certificates/จิตอาสา 4-4/รูปกิจกรรม/Notes_260626_112827_d67.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg');"></div>
+          <div class="ach-body">
+            <div class="ach-icon">🤝</div>
+            <h3>กิจกรรมจิตอาสา</h3>
+            <p>บำเพ็ญประโยชน์และพัฒนาสังคม</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Quantum Computing Workshop" data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการเกี่ยวกับวิทยาการคอมพิวเตอร์ควอนตัมเบื้องต้น จัดโดยมหาวิทยาลัยหอการค้าไทย" data-cert-year="2567" data-gallery-srcs='["Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">⚛️</div><h3>Quantum Computing Workshop</h3><p>วิทยาการคอมพิวเตอร์ควอนตัม</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Quantum Computing Workshop"
+          data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการเกี่ยวกับวิทยาการคอมพิวเตอร์ควอนตัมเบื้องต้น จัดโดยมหาวิทยาลัยหอการค้าไทย"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">⚛️</div>
+            <h3>Quantum Computing Workshop</h3>
+            <p>วิทยาการคอมพิวเตอร์ควอนตัม</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="OBEC AI สพฐ." data-cert-desc="เข้าร่วมโครงการเกี่ยวกับปัญญาประดิษฐ์ (AI) ในการศึกษา จัดโดยสำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)" data-cert-year="2567" data-gallery-srcs='["Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494397974.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398038.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398070.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494399056.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407449.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407505.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407539.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407586.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494408863.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494410125.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494411299.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494413054.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494414437.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421244.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421325.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421366.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421410.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421452.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421495.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494422713.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494423740.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494424779.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494427308.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1786439410371.png", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100488487.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100492132.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100496549.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/IMG_20260731_174657.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🧠</div><h3>OBEC AI สพฐ.</h3><p>ปัญญาประดิษฐ์เพื่อการศึกษา</p><span class="ach-year">2567</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="OBEC AI สพฐ."
+          data-cert-desc="เข้าร่วมโครงการเกี่ยวกับปัญญาประดิษฐ์ (AI) ในการศึกษา จัดโดยสำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)"
+          data-cert-year="2567"
+          data-gallery-srcs='["Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494397974.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398038.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398070.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494399056.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407449.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407505.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407539.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407586.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494408863.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494410125.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494411299.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494413054.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494414437.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421244.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421325.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421366.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421410.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421452.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421495.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494422713.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494423740.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494424779.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494427308.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1786439410371.png", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100488487.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100492132.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100496549.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/IMG_20260731_174657.jpg"]'>
+          <div class="ach-cert-image" style="background-image: url('Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🧠</div>
+            <h3>OBEC AI สพฐ.</h3>
+            <p>ปัญญาประดิษฐ์เพื่อการศึกษา</p><span class="ach-year">2567</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="เหรียญทองแดง งานศิลปหัตถกรรมนักเรียน" data-cert-desc="ได้รับรางวัลเหรียญทองแดง การแข่งขันดนตรีสากลประเภทเครื่องลมและเครื่องกระทบ Wind Ensembles ระดับชั้นมัธยมศึกษาตอนต้น งานศิลปหัตถกรรมนักเรียนครั้งที่ 71" data-cert-year="2566" data-gallery-srcs='["Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🥉</div><h3>เหรียญทองแดง ศิลปหัตถกรรม</h3><p>ดนตรี Wind Ensembles ระดับ ม.ต้น</p><span class="ach-year">2566</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="เหรียญทองแดง งานศิลปหัตถกรรมนักเรียน"
+          data-cert-desc="ได้รับรางวัลเหรียญทองแดง การแข่งขันดนตรีสากลประเภทเครื่องลมและเครื่องกระทบ Wind Ensembles ระดับชั้นมัธยมศึกษาตอนต้น งานศิลปหัตถกรรมนักเรียนครั้งที่ 71"
+          data-cert-year="2566"
+          data-gallery-srcs='["Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🥉</div>
+            <h3>เหรียญทองแดง ศิลปหัตถกรรม</h3>
+            <p>ดนตรี Wind Ensembles ระดับ ม.ต้น</p><span class="ach-year">2566</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="รองชนะเลิศอันดับ 2 EasyKids Robotics Competition 2026" data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 2 จากการแข่งขันหุ่นยนต์ EasyKids Robotics Competition 2026 ซึ่งเป็นเวทีการแข่งขันหุ่นยนต์ระดับนักเรียน ได้ฝึกทักษะการเขียนโปรแกรมควบคุมหุ่นยนต์และการแก้ปัญหาเฉพาะหน้าในสถานการณ์จริง" data-cert-year="2569" data-gallery-srcs='["Certificates/EasyKids Robotics Competition 2026/เกียรติบัตร/pdf_page-0001.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC03758.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC03779.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC04583.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261009_123435.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261010_185933.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261011_185527.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/Screenshot_20261011_211222.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/EasyKids Robotics Competition 2026/เกียรติบัตร/pdf_page-0001.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🥉</div><h3>รองชนะเลิศ 2 EasyKids Robotics 2026</h3><p>การแข่งขันหุ่นยนต์ระดับนักเรียน</p><span class="ach-year">2569</span></div>
+        <div class="achievement-card anim-reveal"
+          data-cert-title="รองชนะเลิศอันดับ 2 EasyKids Robotics Competition 2026"
+          data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 2 จากการแข่งขันหุ่นยนต์ EasyKids Robotics Competition 2026 ซึ่งเป็นเวทีการแข่งขันหุ่นยนต์ระดับนักเรียน ได้ฝึกทักษะการเขียนโปรแกรมควบคุมหุ่นยนต์และการแก้ปัญหาเฉพาะหน้าในสถานการณ์จริง"
+          data-cert-year="2569"
+          data-gallery-srcs='["Certificates/EasyKids Robotics Competition 2026/เกียรติบัตร/pdf_page-0001.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC03758.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC03779.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/DSC04583.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261009_123435.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261010_185933.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/IMG_20261011_185527.jpg", "Certificates/EasyKids Robotics Competition 2026/รูปกิจกรรม/Screenshot_20261011_211222.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/EasyKids Robotics Competition 2026/เกียรติบัตร/pdf_page-0001.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🥉</div>
+            <h3>รองชนะเลิศ 2 EasyKids Robotics 2026</h3>
+            <p>การแข่งขันหุ่นยนต์ระดับนักเรียน</p><span class="ach-year">2569</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Next gen AI สจล. — รอบรองสุดท้าย" data-cert-desc="ผ่านการอบรมและได้รับการคัดเลือกจนถึงรอบรองสุดท้ายในโครงการ Next gen AI จัดโดยสถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (สจล.) ได้เข้าร่วม Team-based On-site Workshop และฝึกพัฒนาโปรเจกต์ด้าน AI ร่วมกับทีมและที่ปรึกษาจาก สจล." data-cert-year="2569" data-gallery-srcs='["Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6101.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6102 2.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6738.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6766.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07455.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07558.JPG"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🤖</div><h3>Next gen AI สจล. — รอบรองสุดท้าย</h3><p>Workshop & คัดเลือก AI Project (สจล.)</p><span class="ach-year">2569</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Next gen AI สจล. — รอบรองสุดท้าย"
+          data-cert-desc="ผ่านการอบรมและได้รับการคัดเลือกจนถึงรอบรองสุดท้ายในโครงการ Next gen AI จัดโดยสถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (สจล.) ได้เข้าร่วม Team-based On-site Workshop และฝึกพัฒนาโปรเจกต์ด้าน AI ร่วมกับทีมและที่ปรึกษาจาก สจล."
+          data-cert-year="2569"
+          data-gallery-srcs='["Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6101.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6102 2.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6738.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6766.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07455.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07558.JPG"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🤖</div>
+            <h3>Next gen AI สจล. — รอบรองสุดท้าย</h3>
+            <p>Workshop & คัดเลือก AI Project (สจล.)</p><span class="ach-year">2569</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Samsung Solve For Tomorrow" data-cert-desc="ส่งผลงานนวัตกรรมเข้าร่วมประกวดโครงการ Samsung Solve For Tomorrow ซึ่งเป็นเวทีระดับประเทศด้านนวัตกรรมเพื่อสังคมสำหรับเยาวชน จัดโดยบริษัท ซัมซุง อีเลคโทรนิคส์ (ไทย) จำกัด" data-cert-year="2569" data-gallery-srcs='["Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">🌍</div><h3>Samsung Solve For Tomorrow</h3><p>ส่งผลงานนวัตกรรมเพื่อสังคมระดับประเทศ</p><span class="ach-year">2569</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="Samsung Solve For Tomorrow"
+          data-cert-desc="ส่งผลงานนวัตกรรมเข้าร่วมประกวดโครงการ Samsung Solve For Tomorrow ซึ่งเป็นเวทีระดับประเทศด้านนวัตกรรมเพื่อสังคมสำหรับเยาวชน จัดโดยบริษัท ซัมซุง อีเลคโทรนิคส์ (ไทย) จำกัด"
+          data-cert-year="2569"
+          data-gallery-srcs='["Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">🌍</div>
+            <h3>Samsung Solve For Tomorrow</h3>
+            <p>ส่งผลงานนวัตกรรมเพื่อสังคมระดับประเทศ</p><span class="ach-year">2569</span>
+          </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="เกียรติบัตรจิตอาสาของโรงเรียน" data-cert-desc="ได้รับเกียรติบัตรจิตอาสาจากทางโรงเรียน สำหรับการเข้าร่วมและทำกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคมและส่วนรวมในนามของโรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ" data-cert-year="2569" data-gallery-srcs='["Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg');"></div>
-          <div class="ach-body"><div class="ach-icon">💚</div><h3>เกียรติบัตรจิตอาสาของโรงเรียน</h3><p>บำเพ็ญประโยชน์เพื่อสังคมและส่วนรวม</p><span class="ach-year">2569</span></div>
+        <div class="achievement-card anim-reveal" data-cert-title="เกียรติบัตรจิตอาสาของโรงเรียน"
+          data-cert-desc="ได้รับเกียรติบัตรจิตอาสาจากทางโรงเรียน สำหรับการเข้าร่วมและทำกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคมและส่วนรวมในนามของโรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ"
+          data-cert-year="2569"
+          data-gallery-srcs='["Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg"]'>
+          <div class="ach-cert-image"
+            style="background-image: url('Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg');">
+          </div>
+          <div class="ach-body">
+            <div class="ach-icon">💚</div>
+            <h3>เกียรติบัตรจิตอาสาของโรงเรียน</h3>
+            <p>บำเพ็ญประโยชน์เพื่อสังคมและส่วนรวม</p><span class="ach-year">2569</span>
+          </div>
         </div>
       </div>
     </div>
@@ -270,25 +585,56 @@
   <!-- ===== CONTACT ===== -->
   <section class="section" id="contact">
     <div class="container">
-      <div class="section-label anim-reveal" style="justify-content:center"><span class="section-number">03</span><span class="section-line"></span><span class="section-name">ติดต่อ</span></div>
+      <div class="section-label anim-reveal" style="justify-content:center"><span class="section-number">04</span><span
+          class="section-line"></span><span class="section-name">ติดต่อ</span></div>
       <div class="contact-wrapper">
         <h2 class="contact-cta-text anim-reveal">ช่องทางการ<em>ติดต่อ</em></h2>
         <div class="contact-grid anim-reveal">
           <div class="contact-item">
             <div class="contact-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+              </svg>
             </div>
             <span class="contact-label">อีเมล</span><span class="contact-value">phoomakmoosik@gmail.com</span>
           </div>
           <div class="contact-item">
             <div class="contact-icon">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+              </svg>
             </div>
             <span class="contact-label">โทรศัพท์</span><span class="contact-value">080-659-7161</span>
           </div>
           <div class="contact-item">
             <div class="contact-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 320 320"><defs><style>.lc1{fill:#06c755}.lc2{fill:#fff}</style></defs><rect class="lc1" width="320" height="320" rx="72.14"/><path class="lc2" d="M266.66,144.92c0-47.74-47.86-86.58-106.69-86.58S53.28,97.18,53.28,144.92c0,42.8,38,78.65,89.22,85.42,3.48.75,8.21,2.29,9.4,5.26,1.08,2.7.71,6.93.35,9.65,0,0-1.25,7.53-1.52,9.13-.47,2.7-2.15,10.55,9.24,5.76s61.44-36.18,83.82-61.95h0C259.25,181.24,266.66,164,266.66,144.92Z"/><path class="lc1" d="M231.16,172.49h-30a2,2,0,0,1-2-2v0h0V123.94h0v0a2,2,0,0,1,2-2h30a2,2,0,0,1,2,2v7.57a2,2,0,0,1-2,2H210.79v7.85h20.37a2,2,0,0,1,2,2V151a2,2,0,0,1-2,2H210.79v7.86h20.37a2,2,0,0,1,2,2v7.56A2,2,0,0,1,231.16,172.49Z"/><path class="lc1" d="M120.29,172.49a2,2,0,0,0,2-2v-7.56a2,2,0,0,0-2-2H99.92v-37a2,2,0,0,0-2-2H90.32a2,2,0,0,0-2,2v46.53h0v0a2,2,0,0,0,2,2h30Z"/><rect class="lc1" x="128.73" y="121.85" width="11.64" height="50.64" rx="2.04"/><path class="lc1" d="M189.84,121.85h-7.56a2,2,0,0,0-2,2v27.66l-21.3-28.77a1.2,1.2,0,0,0-.17-.21v0l-.12-.12,0,0-.11-.09-.06,0-.11-.08-.06,0-.11-.06-.07,0-.11,0-.07,0-.12,0-.08,0-.12,0h-.08l-.11,0h-7.71a2,2,0,0,0-2,2v46.56a2,2,0,0,0,2,2h7.57a2,2,0,0,0,2-2V142.81l21.33,28.8a2,2,0,0,0,.52.52h0l.12.08.06,0,.1.05.1,0,.07,0,.14,0h0a2.42,2.42,0,0,0,.54.07h7.52a2,2,0,0,0,2-2V123.89A2,2,0,0,0,189.84,121.85Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 320 320">
+                <defs>
+                  <style>
+                    .lc1 {
+                      fill: #06c755
+                    }
+
+                    .lc2 {
+                      fill: #fff
+                    }
+                  </style>
+                </defs>
+                <rect class="lc1" width="320" height="320" rx="72.14" />
+                <path class="lc2"
+                  d="M266.66,144.92c0-47.74-47.86-86.58-106.69-86.58S53.28,97.18,53.28,144.92c0,42.8,38,78.65,89.22,85.42,3.48.75,8.21,2.29,9.4,5.26,1.08,2.7.71,6.93.35,9.65,0,0-1.25,7.53-1.52,9.13-.47,2.7-2.15,10.55,9.24,5.76s61.44-36.18,83.82-61.95h0C259.25,181.24,266.66,164,266.66,144.92Z" />
+                <path class="lc1"
+                  d="M231.16,172.49h-30a2,2,0,0,1-2-2v0h0V123.94h0v0a2,2,0,0,1,2-2h30a2,2,0,0,1,2,2v7.57a2,2,0,0,1-2,2H210.79v7.85h20.37a2,2,0,0,1,2,2V151a2,2,0,0,1-2,2H210.79v7.86h20.37a2,2,0,0,1,2,2v7.56A2,2,0,0,1,231.16,172.49Z" />
+                <path class="lc1"
+                  d="M120.29,172.49a2,2,0,0,0,2-2v-7.56a2,2,0,0,0-2-2H99.92v-37a2,2,0,0,0-2-2H90.32a2,2,0,0,0-2,2v46.53h0v0a2,2,0,0,0,2,2h30Z" />
+                <rect class="lc1" x="128.73" y="121.85" width="11.64" height="50.64" rx="2.04" />
+                <path class="lc1"
+                  d="M189.84,121.85h-7.56a2,2,0,0,0-2,2v27.66l-21.3-28.77a1.2,1.2,0,0,0-.17-.21v0l-.12-.12,0,0-.11-.09-.06,0-.11-.08-.06,0-.11-.06-.07,0-.11,0-.07,0-.12,0-.08,0-.12,0h-.08l-.11,0h-7.71a2,2,0,0,0-2,2v46.56a2,2,0,0,0,2,2h7.57a2,2,0,0,0,2-2V142.81l21.33,28.8a2,2,0,0,0,.52.52h0l.12.08.06,0,.1.05.1,0,.07,0,.14,0h0a2.42,2.42,0,0,0,.54.07h7.52a2,2,0,0,0,2-2V123.89A2,2,0,0,0,189.84,121.85Z" />
+              </svg>
             </div>
             <span class="contact-label">LINE ID</span><span class="contact-value">phoo9597m</span>
           </div>
@@ -298,7 +644,9 @@
   </section>
 
   <!-- FOOTER -->
-  <footer class="footer"><p>© 2026 <span>ศุภณัฏฐ์ เมฆมูสิก</span> — Portfolio</p></footer>
+  <footer class="footer">
+    <p>© 2026 <span>ศุภณัฏฐ์ เมฆมูสิก</span> — Portfolio</p>
+  </footer>
 
 
   <!-- ===== CERTIFICATE FAN CAROUSEL MODAL ===== -->
@@ -318,11 +666,17 @@
           <!-- Pagination controls (shown only when >7 images) -->
           <div class="cert-fan-pagination" id="certFanPagination" style="display:none;">
             <button class="cert-fan-arrow" id="certFanPrev" aria-label="Previous">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
             </button>
             <div class="cert-fan-dots" id="certFanDots"></div>
             <button class="cert-fan-arrow" id="certFanNext" aria-label="Next">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
             </button>
           </div>
         </div>
@@ -336,6 +690,42 @@
     </div>
   </div>
 
-  <script src="script.js?v=2.0"></script>
+
+  <!-- ===== POSTER MODAL ===== -->
+  <div class="modal" id="echoPosterModal">
+    <div class="modal-backdrop"></div>
+    <div class="modal-wrapper modal-wrapper-poster">
+      <button class="modal-close" aria-label="ปิดหน้าต่าง">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="modal-content poster-modal-content">
+        <div class="poster-modal-header">
+          <div>
+            <h3 class="poster-modal-title">ECHO GLOVE — โปสเตอร์นำเสนอโครงงาน</h3>
+            <p class="poster-modal-sub">Gifted Science Research And AI (GSRT & AI) •
+              โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ</p>
+          </div>
+          <a href="assets/echo-glove/echo-glove-poster.jpg" download="Echo_Glove_Poster.jpg"
+            class="btn-poster-download">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            ดาวน์โหลดภาพ
+          </a>
+        </div>
+        <div class="poster-img-container">
+          <img src="assets/echo-glove/echo-glove-poster.jpg" alt="Echo Glove Research Poster" class="poster-full-img">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=2.2"></script>
 </body>
+
 </html>
