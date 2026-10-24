@@ -513,6 +513,87 @@ document.addEventListener('DOMContentLoaded', () => {
     pPaused = document.hidden;
   });
 
+  // ===== ACHIEVEMENT FILTERS & SORTING =====
+  (function initAchievementFilters() {
+    const grid = document.querySelector('.achievements-grid');
+    const filterButtons = Array.from(document.querySelectorAll('.achievement-filter'));
+    const status = document.getElementById('achievementFilterStatus');
+    if (!grid || !filterButtons.length) return;
+
+    const cards = Array.from(grid.querySelectorAll('.achievement-card'));
+    const categoryNames = {
+      all: 'ทั้งหมด',
+      innovation: 'โครงงานและนวัตกรรม',
+      competition: 'การแข่งขันและรางวัล',
+      training: 'การอบรมและค่าย',
+      volunteer: 'จิตอาสา'
+    };
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let activeFilter = 'all';
+
+    // Newest year first; Array#sort remains stable for cards from the same year.
+    cards
+      .sort((a, b) => Number(b.dataset.certYear) - Number(a.dataset.certYear))
+      .forEach(card => grid.appendChild(card));
+
+    function applyFilter(filter) {
+      activeFilter = filter;
+
+      filterButtons.forEach(button => {
+        const isActive = button.dataset.filter === filter;
+        button.classList.toggle('is-active', isActive);
+        button.setAttribute('aria-pressed', String(isActive));
+      });
+
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const shouldShow = filter === 'all' || card.dataset.category === filter;
+        card.getAnimations().forEach(animation => animation.cancel());
+
+        if (shouldShow) {
+          visibleCount += 1;
+          card.hidden = false;
+          if (!reduceMotion) {
+            card.animate(
+              [
+                { opacity: 0, transform: 'translateY(10px) scale(0.98)' },
+                { opacity: 1, transform: 'translateY(0) scale(1)' }
+              ],
+              { duration: 240, easing: 'cubic-bezier(0.22, 1, 0.36, 1)' }
+            );
+          }
+        } else if (reduceMotion) {
+          card.hidden = true;
+        } else {
+          const animation = card.animate(
+            [
+              { opacity: 1, transform: 'translateY(0) scale(1)' },
+              { opacity: 0, transform: 'translateY(6px) scale(0.98)' }
+            ],
+            { duration: 140, easing: 'ease-in' }
+          );
+          animation.onfinish = () => {
+            const stillHidden = activeFilter !== 'all' && card.dataset.category !== activeFilter;
+            if (stillHidden) card.hidden = true;
+          };
+        }
+      });
+
+      if (status) {
+        const label = filter === 'all' ? 'ทั้งหมด' : `หมวด${categoryNames[filter]}`;
+        status.textContent = `กำลังแสดง${label} ${visibleCount} รายการ`;
+      }
+
+      window.setTimeout(() => {
+        if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+      }, reduceMotion ? 0 : 260);
+    }
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => applyFilter(button.dataset.filter));
+    });
+  })();
+
   // ===== 3. GSAP SCROLL ANIMATIONS =====
   gsap.registerPlugin(ScrollTrigger);
 
@@ -748,11 +829,14 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     function getSpreadMultiplier() {
-      const w = window.innerWidth;
-      if (w < 480) return 0.35;
-      if (w < 768) return 0.55;
-      if (w < 1024) return 0.8;
-      return 1.0;
+      // Reserve space for tilted images and their hover scale inside the modal.
+      const mobile = window.innerWidth <= 768;
+      const width = Math.min(460, window.innerWidth * 0.62) + 4;
+      const height = Math.min(mobile ? 220 : 300, window.innerHeight * (mobile ? 0.30 : 0.34)) + 4;
+      const angle = (mobile ? 12 : 21) * Math.PI / 180;
+      const sideExtent = (width / 2 * Math.cos(angle) + height * Math.sin(angle)) * 0.85;
+      const available = container.clientWidth / 2 - sideExtent - 12;
+      return Math.max(0, Math.min(1, available / 336));
     }
 
     function getSlotConfig(totalSlots, slot) {
@@ -774,6 +858,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return {
         ...base,
+        rot: base.rot * (window.innerWidth <= 768 ? 12 / 21 : 1),
         x: base.x * m
       };
     }
@@ -793,24 +878,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const container  = document.getElementById('certFanContainer');
     const pagination = document.getElementById('certFanPagination');
     const dotsWrap   = document.getElementById('certFanDots');
+    const counter    = document.getElementById('certFanCounter');
     const prevBtn    = document.getElementById('certFanPrev');
     const nextBtn    = document.getElementById('certFanNext');
     const certModal  = document.getElementById('certModal');
     const cmTitle    = document.getElementById('cmTitle');
     const cmDesc     = document.getElementById('cmDesc');
     const cmYear     = document.getElementById('cmYear');
+    const cmProjectLink = document.getElementById('cmProjectLink');
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        if (certModal.classList.contains('active') && cardEls.length) {
+          gsap.killTweensOf(cardEls);
+          activeHoverSlot = null;
+          applyFanLayout(centerIndex, false, null);
+        }
+      }, 150);
+    });
 
     // Build the visible map: cardIndex → slot index
     function getVisibleMap(center) {
       const map = new Map();
       const total = allCards.length;
-      const needsPag = total > MAX_VISIBLE;
-      if (!needsPag) {
-        allCards.forEach((_, i) => map.set(i, i));
-        return map;
-      }
-      for (let slot = 0; slot < MAX_VISIBLE; slot++) {
-        const idx = ((center + slot - HALF) % total + total) % total;
+      const slotCount = Math.min(total, MAX_VISIBLE);
+      const middleSlot = slotCount >> 1;
+      for (let slot = 0; slot < slotCount; slot++) {
+        const idx = ((center + slot - middleSlot) % total + total) % total;
         map.set(idx, slot);
       }
       return map;
@@ -967,16 +1063,21 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildDots() {
       dotsWrap.innerHTML = '';
       allCards.forEach((_, i) => {
-        const dot = document.createElement('span');
+        const dot = document.createElement('button');
+        dot.type = 'button';
         dot.className = 'cert-fan-dot' + (i === centerIndex ? ' active' : '');
+        dot.setAttribute('aria-label', `ดูรูปที่ ${i + 1}`);
+        dot.setAttribute('aria-pressed', String(i === centerIndex));
         dot.addEventListener('click', () => cycleTo(i));
         dotsWrap.appendChild(dot);
       });
     }
 
     function updateDots() {
+      if (counter) counter.textContent = `รูปที่ ${centerIndex + 1} จาก ${allCards.length}`;
       dotsWrap.querySelectorAll('.cert-fan-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === centerIndex);
+        dot.setAttribute('aria-pressed', String(i === centerIndex));
       });
     }
 
@@ -995,7 +1096,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function cycle(dir) {
-      if (isAnimating || allCards.length <= MAX_VISIBLE) return;
+      if (isAnimating || allCards.length <= 1) return;
       isAnimating = true;
       direction = dir;
       const total = allCards.length;
@@ -1008,6 +1109,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     prevBtn.addEventListener('click', () => cycle('left'));
     nextBtn.addEventListener('click', () => cycle('right'));
+
+    document.addEventListener('keydown', e => {
+      if (!certModal.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        cycle(e.key === 'ArrowRight' ? 'right' : 'left');
+      }
+    });
 
     // Swipe gesture support for mobile
     let touchStartX = 0;
@@ -1027,7 +1136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     // Public opener called by achievement cards
-    function openCertFan(gallerySrcs, certSrcs, title, desc, year) {
+    function openCertFan(gallerySrcs, certSrcs, title, desc, year, projectPdf = null) {
       // Reset state
       isAnimating = false;
       hasEntered = false;
@@ -1051,15 +1160,24 @@ document.addEventListener('DOMContentLoaded', () => {
       cmTitle.textContent = title;
       cmDesc.textContent  = desc;
       cmYear.textContent  = year;
+      if (cmProjectLink) {
+        cmProjectLink.hidden = !projectPdf;
+        if (projectPdf) {
+          cmProjectLink.setAttribute('href', projectPdf);
+        } else {
+          cmProjectLink.removeAttribute('href');
+        }
+      }
 
       // Pagination
-      if (needsPag) {
+      if (total > 1) {
         pagination.style.display = 'flex';
         buildDots();
       } else {
         pagination.style.display = 'none';
         dotsWrap.innerHTML = '';
       }
+      updateDots();
 
       buildCards();
 
@@ -1103,7 +1221,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const certSrcs    = gallerySrcs.filter(s => s.includes('เกียรติบัตร'));
         const activitySrcs = gallerySrcs.filter(s => !s.includes('เกียรติบัตร'));
 
-        openCertFan(activitySrcs, certSrcs, title, desc, year);
+        openCertFan(activitySrcs, certSrcs, title, desc, year, card.dataset.projectPdf);
       });
     });
 

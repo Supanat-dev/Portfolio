@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Portfolio สำหรับยื่นเข้าคณะวิศวกรรมศาสตร์ สจล. โดย ศุภณัฏฐ์ เมฆมูสิก">
   <title>ศุภณัฏฐ์ เมฆมูสิก — Engineering Portfolio</title>
-  <link rel="stylesheet" href="style.css?v=2.3">
+  <link rel="stylesheet" href="style.css?v=3.0">
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&family=Noto+Serif+Thai:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
@@ -249,11 +249,29 @@
             <div class="echo-badge-row">
               <button type="button" class="echo-badge echo-badge-gold echo-badge-interactive" id="openSchoolAwardCertificate"
                 aria-label="ดูเกียรติบัตรรางวัลชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน">
-                🏆 รางวัลชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน
+                <span class="echo-badge-copy">🏆 รางวัลชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน</span>
+                <span class="echo-badge-action" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <path d="m9 15 2 2 4-4" />
+                  </svg>
+                  กดดูเกียรติบัตร
+                  <span class="echo-badge-arrow">→</span>
+                </span>
               </button>
               <button type="button" class="echo-badge echo-badge-interactive" id="openKmutnbCertificate"
                 aria-label="ดูเกียรติบัตรการเข้าร่วมงาน KMUTNB Innovation Award 2569">
-                ได้ร่วมส่งผลงานเข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ
+                <span class="echo-badge-copy">ได้ร่วมส่งผลงานเข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ</span>
+                <span class="echo-badge-action" aria-hidden="true">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <path d="m9 15 2 2 4-4" />
+                  </svg>
+                  กดดูเกียรติบัตร
+                  <span class="echo-badge-arrow">→</span>
+                </span>
               </button>
             </div>
             <h2 class="echo-title">ECHO <em>GLOVE</em></h2>
@@ -302,7 +320,7 @@
                   <circle cx="8.5" cy="8.5" r="1.5"></circle>
                   <polyline points="21 15 16 10 5 21"></polyline>
                 </svg>
-                <span>ดูโปสเตอร์งานวิจัย</span>
+                <span>ดูโปสเตอร์โครงงาน</span>
               </button>
             </div>
           </div>
@@ -327,33 +345,51 @@
     <div class="container">
       <div class="section-label anim-reveal"><span class="section-number">03</span><span
           class="section-line"></span><span class="section-name">ผลงานและเกียรติบัตร</span></div>
-      <h2 class="section-title anim-reveal">รางวัลและความสำเร็จที่<em>ภาคภูมิใจ</em></h2>
+      <h2 class="section-title anim-reveal">รวมรางวัลและ<em>เกียรติบัตรต่างๆ</em></h2>
+      <div class="achievement-filter-wrap anim-reveal">
+        <div class="achievement-filters" role="group" aria-label="กรองผลงานและเกียรติบัตร">
+          <button type="button" class="achievement-filter is-active" data-filter="all" aria-pressed="true">
+            ทั้งหมด <span>20</span>
+          </button>
+          <button type="button" class="achievement-filter" data-filter="innovation" aria-pressed="false">
+            โครงงานและนวัตกรรม <span>4</span>
+          </button>
+          <button type="button" class="achievement-filter" data-filter="competition" aria-pressed="false">
+            การแข่งขันและรางวัล <span>4</span>
+          </button>
+          <button type="button" class="achievement-filter" data-filter="training" aria-pressed="false">
+            การอบรมและค่าย <span>10</span>
+          </button>
+          <button type="button" class="achievement-filter" data-filter="volunteer" aria-pressed="false">
+            จิตอาสา <span>2</span>
+          </button>
+        </div>
+        <p class="achievement-filter-status" id="achievementFilterStatus" aria-live="polite">กำลังแสดงทั้งหมด 20 รายการ</p>
+      </div>
       <div class="achievements-grid">
-        <div class="achievement-card anim-reveal" data-cert-title="ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน"
+        <div class="achievement-card anim-reveal" data-category="innovation" data-cert-title="ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน"
           data-cert-desc="ได้รับรางวัลชนะเลิศอันดับ 1 ในการประกวดโครงงานวิชาการ ประจำปีการศึกษา 2568 ณ โรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ จากโครงงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ และได้ส่งผลงานเข้างานประกวดสิ่งประดิษฐ์และนวัตกรรม มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.) ประจำปี 2569"
-          data-cert-year="2568"
+          data-cert-year="2569"
           data-gallery-srcs='["Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113040_05b.jpg", "Certificates/OCOP โรงเรียน/รูปกิจกรรม/Notes_260626_113044_590.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/OCOP โรงเรียน/เกียรติบัตร/เกียรติบัตร_OCOP.jpg');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🏆</div>
             <h3>ชนะเลิศการประกวดโครงงานวิชาการระดับโรงเรียน</h3>
-            <p>ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน</p><span class="ach-year">2568</span>
+            <p>ถุงมือแปลภาษามืออัจฉริยะเพื่อผู้พิการทางการได้ยิน</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="รองชนะเลิศอันดับ 1 EERC 2025"
+        <div class="achievement-card anim-reveal" data-category="competition" data-cert-title="รองชนะเลิศอันดับ 1 EERC 2025"
           data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 1 เมื่อวันที่ 16 สิงหาคม 2568 ในการแข่งขันหุ่นยนต์จากโครงการ SIET Young Innovators 2025 : EERC 2025 จัดโดยคณะครุศาสตร์อุตสาหกรรมและเทคโนโลยี สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง"
           data-cert-year="2568"
           data-gallery-srcs='["Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112512_ebc.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112516_63c.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112519_a8e.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112522_57f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112525_ad2.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112528_200.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112530_4f6.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112534_38f.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112537_168.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112540_abe.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112604_146.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112608_6f5.jpg", "Certificates/EERC 2025/รูปกิจกรรม/Notes_260626_112611_acd.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/EERC 2025/เกียรติบัตร/Notes_260626_112444_819.png');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🥈</div>
             <h3>รองชนะเลิศอันดับ 1 EERC 2025</h3>
             <p>SIET Young Innovators: EERC 2025 (ณ สจล.)</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Coding Thailand 2025"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Coding Thailand 2025"
           data-cert-desc="ผ่านการเข้าร่วมและอบรมเชิงปฏิบัติการโครงการ Coding Thailand 2025: AI-Driven Future ได้รับเกียรติบัตรหลายด้าน ได้แก่ Basic Python, Basic IoT, Image Processing, Data Analytics, Arduino Nano ESP32 และไมโครคอนโทรลเลอร์ มุ่งเน้นการใช้งานเทคโนโลยี IoT และปัญญาประดิษฐ์เพื่อพัฒนาโครงงานระดับประเทศ"
           data-cert-year="2568"
           data-gallery-srcs='["Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg", "Certificates/coding/เกียรติบัตร/Basic IoT_250721_134857.jpg", "Certificates/coding/เกียรติบัตร/Basic Python_250721_135211.jpg", "Certificates/coding/เกียรติบัตร/Data Analytic_250721_134937.jpg", "Certificates/coding/เกียรติบัตร/Image Processing_250721_135022.jpg", "Certificates/coding/เกียรติบัตร/ไมโครคอนโทรลเลอร์_250721_135045.jpg"]'>
@@ -361,12 +397,11 @@
             style="background-image: url('Certificates/coding/เกียรติบัตร/Arduino Nano ESP32_250721_135137.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">💻</div>
             <h3>Coding Thailand 2025</h3>
             <p>AI-Driven Future: IoT, Python, MCU</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Intro to Python for AI & Digital Twin"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Intro to Python for AI & Digital Twin"
           data-cert-desc="ผ่านการอบรมหลักสูตรเชิงปฏิบัติการ Introduction to Python Programming for Artificial Intelligence and Digital Twin จัดโดยมหาวิทยาลัยเกษตรศาสตร์ ได้ฝึกทักษะการเขียนโปรแกรมภาษา Python สำหรับประยุกต์ใช้กับปัญญาประดิษฐ์และการสร้างแบบจำลองดิจิทัล (Digital Twin)"
           data-cert-year="2567"
           data-gallery-srcs='["Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg", "Certificates/Digital Twin ม.เกษตร/รูปกิจกรรม/Notes_260626_131603_641.jpg"]'>
@@ -374,12 +409,11 @@
             style="background-image: url('Certificates/Digital Twin ม.เกษตร/เกียรติบัตร/Digital Twin มเกษตร_250828_124435.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🐍</div>
             <h3>Intro to Python for AI & Digital Twin</h3>
             <p>Python for AI & Digital Twin (ม.เกษตร)</p><span class="ach-year">2567</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Bootcamps for Statistics 3"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Bootcamps for Statistics 3"
           data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการ Bootcamps for Statistics Career ครั้งที่ 3 จัดโดยคณะวิทยาศาสตร์ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้พัฒนาทักษะการวิเคราะห์สถิติ การวาดกราฟข้อมูลเชิงวิทยาศาสตร์ และการเขียนโปรแกรมด้วย Google Colab"
           data-cert-year="2567"
           data-gallery-srcs='["Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131724_729.jpg", "Certificates/ดาต้า สจล. Bootcamps for Statistics Career/รูปกิจกรรม/Notes_260626_131727_c99.jpg"]'>
@@ -387,132 +421,121 @@
             style="background-image: url('Certificates/ดาต้า สจล. Bootcamps for Statistics Career/เกียรติบัตร/เกียรติบัตร.png');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">📊</div>
             <h3>Bootcamps for Statistics 3</h3>
             <p>กราฟ + Google Colab (วิทย์ สจล.)</p><span class="ach-year">2567</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="SDGs Hackathon Camp"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="SDGs Hackathon Camp"
           data-cert-desc="ได้เข้าร่วมค่ายฝึกอบรมโครงการเตรียมตัวสู่เวทีพัฒนาแนวคิดเยาวชนเพื่อความยั่งยืน (SDGs Hackathon Pitching Camp) ณ มหาวิทยาลัยธรรมศาสตร์ ศูนย์รังสิต ได้พัฒนาแนวคิดและนำเสนอโครงการเพื่อตอบโจทย์เป้าหมายการพัฒนาที่ยั่งยืน (SDGs) ในระดับเยาวชน"
-          data-cert-year="2567"
+          data-cert-year="2568"
           data-gallery-srcs='["Certificates/YSDA/เกียรติบัตร/YSDA.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130910_298.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130914_0f8.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130918_57c.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130923_375.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130927_4c2.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130930_6c1.jpg", "Certificates/YSDA/รูปกิจกรรม/Notes_260626_130933_607.jpg"]'>
           <div class="ach-cert-image" style="background-image: url('Certificates/YSDA/เกียรติบัตร/YSDA.jpg');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🌱</div>
             <h3>SDGs Hackathon Camp</h3>
-            <p>ค่ายพัฒนาแนวคิดเยาวชน (ม.ธรรมศาสตร์)</p><span class="ach-year">2567</span>
+            <p>ค่ายพัฒนาแนวคิดเยาวชน (ม.ธรรมศาสตร์)</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="RAI Mechatronics (สจล.)"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="RAI Mechatronics (สจล.)"
           data-cert-desc="ผ่านการคัดเลือกจาก 1,000 คน ในรอบออนไลน์ เหลือ 150 คน เข้าสู่รอบออนไซต์ ณ สถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง ได้ร่วม Workshop การใช้ AI ทำ Image Processing, ได้ลองสั่งการแขนกลให้ทำงาน และได้เขียนโค้ด PLC เพื่อควบคุมระบบสายพาน"
-          data-cert-year="2567"
+          data-cert-year="2569"
           data-gallery-srcs='["Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/รอบออนไลน์.png", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111655_d45.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111659_69a.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111703_018.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111707_e02.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111710_ed2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111714_f61.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111718_0b7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111721_1d3.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111725_035.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111728_5a4.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111732_b8e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111735_32e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111739_434.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111743_ec0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111746_305.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111750_51e.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111753_1cc.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111756_8d1.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111800_0c0.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111804_ad5.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111807_331.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111812_c4b.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111816_b0f.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111819_6e7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111824_297.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111827_fa7.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111831_3b9.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111835_ed8.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111839_9f2.jpg", "Certificates/สจล. RAI เมคคาทรอนิก/รูปกิจกรรม/Notes_260626_111843_63c.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/สจล. RAI เมคคาทรอนิก/เกียรติบัตร/ผ่านรอบออนไซต์.jpg');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🤖</div>
             <h3>RAI Mechatronics (สจล.)</h3>
-            <p>การแข่งขันเมคคาทรอนิกส์ RAI KMITL</p><span class="ach-year">2567</span>
+            <p>การแข่งขันเมคคาทรอนิกส์ RAI KMITL</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="K-Engineering World Tour"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="K-Engineering World Tour"
           data-cert-desc="เข้าร่วมกิจกรรม K-Engineering World Tour ณ คณะวิศวกรรมศาสตร์ สจล. ได้ฝึกต่อวงจร LED ผ่าน Arduino ได้ทดลองบังคับหุ่นยนต์ทำแผนที่ด้วย LiDAR และได้เรียนรู้เทคโนโลยีวิศวกรรมและนวัตกรรมจากคณะต่างๆ ในรั้ว สจล."
-          data-cert-year="2567"
+          data-cert-year="2568"
           data-gallery-srcs='["Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_2.jpg", "Certificates/K-Engineering/เกียรติบัตร/certificate (1)_250904_101510_260519_214337_3.jpg", "Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112319_903.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112322_811.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112326_13b.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112329_4d8.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112332_e41.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112335_86a.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112338_294.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112343_b30.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112346_1f3.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112350_681.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112353_e5f.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112356_b44.jpg", "Certificates/K-Engineering/รูปกิจกรรม/Notes_260626_112400_2f4.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/K-Engineering/เกียรติบัตร/K_Engineering.png');"></div>
           <div class="ach-body">
-            <div class="ach-icon">⚙️</div>
             <h3>K-Engineering World Tour</h3>
-            <p>นวัตกรรมและวิศวกรรมระดับโลก</p><span class="ach-year">2567</span>
+            <p>นวัตกรรมและวิศวกรรมระดับโลก</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="FIBO Robotics"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="FIBO Robotics"
           data-cert-desc="ศึกษาดูงานและเข้าร่วมอบรมเชิงปฏิบัติการด้านวิทยาการหุ่นยนต์ ณ สถาบันวิทยาการหุ่นยนต์ภาคสนาม (FIBO) มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี (มจธ.) ได้เขียนโปรแกรมควบคุม MCU สั่งงานเซนเซอร์ และควบคุมอุปกรณ์ต่างๆ ผ่าน Raspberry Pi"
-          data-cert-year="2567"
+          data-cert-year="2568"
           data-gallery-srcs='["Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131221_4d3.jpg", "Certificates/FIBO โรงเรียนพาไป/รูปกิจกรรม/Notes_260626_131225_d3a.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/FIBO โรงเรียนพาไป/เกียรติบัตร/20260115-003056_260116_111532.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🦾</div>
             <h3>FIBO Robotics</h3>
-            <p>วิทยาการหุ่นยนต์ภาคสนาม (มจธ.)</p><span class="ach-year">2567</span>
+            <p>วิทยาการหุ่นยนต์ภาคสนาม (มจธ.)</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="KMUTNB Innovation Award"
+        <div class="achievement-card anim-reveal" data-category="innovation" data-cert-title="KMUTNB Innovation Award"
           data-cert-desc="ได้ส่งผลงาน Echo Glove ถุงมือแปลภาษามืออัจฉริยะ เข้าร่วมประกวดสิ่งประดิษฐ์และนวัตกรรม ในงาน KMUTNB Innovation Award ประจำปี 2569 จัดโดยมหาวิทยาลัยเทคโนโลยีพระจอมเกล้าพระนครเหนือ (มจพ.)"
-          data-cert-year="2568"
+          data-cert-year="2569"
           data-gallery-srcs='["Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/KMUTNB INNOVATION AWARD 2026/เกียรติบัตร/มจธ_โครงงานถุงมือ.png');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">💡</div>
             <h3>KMUTNB Innovation Award</h3>
-            <p>นวัตกรรมสิ่งประดิษฐ์เพื่ออนาคต</p><span class="ach-year">2568</span>
+            <p>นวัตกรรมสิ่งประดิษฐ์เพื่ออนาคต</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="การแข่งขันวิชาการ ม.เกษตร"
+        <div class="achievement-card anim-reveal" data-category="competition" data-cert-title="การแข่งขันวิชาการ ม.เกษตร"
           data-cert-desc="เข้าร่วม Workshop และการแข่งขัน iDektep Mini Coding Challenge จัดโดยคณะวิศวกรรมศาสตร์ มหาวิทยาลัยเกษตรศาสตร์ ได้เรียนรู้การเทรนโมเดล AI เพื่อ Detect และคัดแยกวัตถุจากรูปภาพ โดยใช้ AI จาก Roboflow แล้วมารันต่อใน VSCode ด้วยภาษา Python"
-          data-cert-year="2567"
+          data-cert-year="2568"
           data-gallery-srcs='["Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131411_d0a.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131415_bb1.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131418_e8e.jpg", "Certificates/ม.เกษตร แข่ง/ภาพกิจกรรม/Notes_260626_131421_4ac.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/ม.เกษตร แข่ง/เกียรติบัตร/Notes_260626_131400_f5f.png');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🎓</div>
             <h3>การแข่งขันวิชาการ ม.เกษตร</h3>
-            <p>เวทีการแข่งขันระดับอุดมศึกษา</p><span class="ach-year">2567</span>
+            <p>เวทีการแข่งขันระดับอุดมศึกษา</p><span class="ach-year">2568</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Samsung Innovation Campus"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Samsung Innovation Campus"
           data-cert-desc="เข้าร่วมโครงการ Samsung Innovation Campus เพื่อพัฒนาทักษะด้านโค้ดดิ้งและเทคโนโลยี"
           data-cert-year="2567" data-gallery-srcs='["Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/samsung/เกียรติบัตร/Notes_260626_112934_977.jpg');"></div>
           <div class="ach-body">
-            <div class="ach-icon">📱</div>
             <h3>Samsung Innovation Campus</h3>
             <p>ทักษะโค้ดดิ้งและนวัตกรรม</p><span class="ach-year">2567</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="กิจกรรมจิตอาสา"
+        <div class="achievement-card anim-reveal" data-category="volunteer" data-cert-title="กิจกรรมจิตอาสา"
           data-cert-desc="เข้าร่วมกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคม" data-cert-year="2567"
           data-gallery-srcs='["Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg", "Certificates/จิตอาสา 4-4/รูปกิจกรรม/Notes_260626_112827_d67.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/จิตอาสา 4-4/เกียรติบัตร/จิตอาสา 4_4.jpg');"></div>
           <div class="ach-body">
-            <div class="ach-icon">🤝</div>
             <h3>กิจกรรมจิตอาสา</h3>
             <p>บำเพ็ญประโยชน์และพัฒนาสังคม</p><span class="ach-year">2567</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Quantum Computing Workshop"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Quantum Computing Workshop"
           data-cert-desc="ผ่านการอบรมเชิงปฏิบัติการเกี่ยวกับวิทยาการคอมพิวเตอร์ควอนตัมเบื้องต้น จัดโดยมหาวิทยาลัยหอการค้าไทย"
-          data-cert-year="2567"
+          data-cert-year="2569"
           data-gallery-srcs='["Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/อบรมควันตั้มคอมพิวเตอร์ที่ ม.หอการค้าไทย/เกียรติบัตร/อบรมควันตั้มคอมพิวเตอร์ที่ มหอการค้าไทย_260516_175627.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">⚛️</div>
             <h3>Quantum Computing Workshop</h3>
-            <p>วิทยาการคอมพิวเตอร์ควอนตัม</p><span class="ach-year">2567</span>
+            <p>วิทยาการคอมพิวเตอร์ควอนตัม</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="OBEC AI สพฐ."
+        <div class="achievement-card anim-reveal" data-category="innovation" data-cert-title="OBEC AI สพฐ."
           data-cert-desc="เข้าร่วมโครงการเกี่ยวกับปัญญาประดิษฐ์ (AI) ในการศึกษา จัดโดยสำนักงานคณะกรรมการการศึกษาขั้นพื้นฐาน (สพฐ.)"
-          data-cert-year="2567"
-          data-gallery-srcs='["Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494397974.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398038.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398070.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494399056.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407449.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407505.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407539.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407586.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494408863.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494410125.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494411299.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494413054.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494414437.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421244.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421325.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421366.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421410.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421452.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421495.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494422713.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494423740.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494424779.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494427308.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1786439410371.png", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100488487.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100492132.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100496549.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/IMG_20260731_174657.jpg"]'>
-          <div class="ach-cert-image" style="background-image: url('Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg');">
+          data-cert-year="2569"
+          data-gallery-srcs='["Certificates/OBEC AI สพฐ_/เกียรติบัตร/1786439410371.png", "Certificates/OBEC AI สพฐ_/เกียรติบัตร/สพฐ.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494398070.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494407505.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494408863.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/1785494421452.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100488487.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100492132.jpg", "Certificates/OBEC AI สพฐ_/รูปกิจกรรม/FB_IMG_1786100496549.jpg"]'>
+          <div class="ach-cert-image" style="background-image: url('Certificates/OBEC AI สพฐ_/เกียรติบัตร/1786439410371.png');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🧠</div>
             <h3>OBEC AI สพฐ.</h3>
-            <p>ปัญญาประดิษฐ์เพื่อการศึกษา</p><span class="ach-year">2567</span>
+            <p>ปัญญาประดิษฐ์เพื่อการศึกษา</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="เหรียญทองแดง งานศิลปหัตถกรรมนักเรียน"
+        <div class="achievement-card anim-reveal" data-category="competition" data-cert-title="เหรียญทองแดง งานศิลปหัตถกรรมนักเรียน"
           data-cert-desc="ได้รับรางวัลเหรียญทองแดง การแข่งขันดนตรีสากลประเภทเครื่องลมและเครื่องกระทบ Wind Ensembles ระดับชั้นมัธยมศึกษาตอนต้น งานศิลปหัตถกรรมนักเรียนครั้งที่ 71"
           data-cert-year="2566"
           data-gallery-srcs='["Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg"]'>
@@ -520,12 +543,11 @@
             style="background-image: url('Certificates/ศิลปหัตถกรรม/เกียรติบัตร/20250816-220210_250816_220459.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🥉</div>
             <h3>เหรียญทองแดง ศิลปหัตถกรรม</h3>
             <p>ดนตรี Wind Ensembles ระดับ ม.ต้น</p><span class="ach-year">2566</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal"
+        <div class="achievement-card anim-reveal" data-category="competition"
           data-cert-title="รองชนะเลิศอันดับ 2 EasyKids Robotics Competition 2026"
           data-cert-desc="ได้รับรางวัลรองชนะเลิศอันดับ 2 จากการแข่งขันหุ่นยนต์ EasyKids Robotics Competition 2026 ซึ่งเป็นเวทีการแข่งขันหุ่นยนต์ระดับนักเรียน ได้ฝึกทักษะการเขียนโปรแกรมควบคุมหุ่นยนต์และการแก้ปัญหาเฉพาะหน้าในสถานการณ์จริง"
           data-cert-year="2569"
@@ -534,12 +556,11 @@
             style="background-image: url('Certificates/EasyKids Robotics Competition 2026/เกียรติบัตร/pdf_page-0001.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🥉</div>
             <h3>รองชนะเลิศ 2 EasyKids Robotics 2026</h3>
             <p>การแข่งขันหุ่นยนต์ระดับนักเรียน</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Next gen AI สจล. — รอบรองสุดท้าย"
+        <div class="achievement-card anim-reveal" data-category="training" data-cert-title="Next gen AI สจล. — รอบรองสุดท้าย"
           data-cert-desc="ผ่านการอบรมและได้รับการคัดเลือกจนถึงรอบรองสุดท้ายในโครงการ Next gen AI จัดโดยสถาบันเทคโนโลยีพระจอมเกล้าเจ้าคุณทหารลาดกระบัง (สจล.) ได้เข้าร่วม Team-based On-site Workshop และฝึกพัฒนาโปรเจกต์ด้าน AI ร่วมกับทีมและที่ปรึกษาจาก สจล."
           data-cert-year="2569"
           data-gallery-srcs='["Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6101.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6102 2.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6738.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/DSCF6766.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07455.JPG", "Certificates/Next gen Ai สจล_/รูปกิจกรรม/ZVE07558.JPG"]'>
@@ -547,25 +568,24 @@
             style="background-image: url('Certificates/Next gen Ai สจล_/เกียรติบัตร/certificate_nextgen_ai.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🤖</div>
             <h3>Next gen AI สจล. — รอบรองสุดท้าย</h3>
             <p>Workshop & คัดเลือก AI Project (สจล.)</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="Samsung Solve For Tomorrow"
-          data-cert-desc="ส่งผลงานนวัตกรรมเข้าร่วมประกวดโครงการ Samsung Solve For Tomorrow ซึ่งเป็นเวทีระดับประเทศด้านนวัตกรรมเพื่อสังคมสำหรับเยาวชน จัดโดยบริษัท ซัมซุง อีเลคโทรนิคส์ (ไทย) จำกัด"
+        <div class="achievement-card anim-reveal" data-category="innovation" data-cert-title="Samsung Solve For Tomorrow"
+          data-cert-desc="BounD โดยทีม TUPP Cohort เป็นเว็บแอปบริหารการเงินสำหรับผู้เริ่มต้นธุรกิจและผู้ประกอบการรายย่อย ช่วยบันทึกและจัดหมวดหมู่รายรับ–รายจ่าย พร้อมสรุปภาพรวมผ่านแดชบอร์ด โดยมีแนวคิดใช้ผู้ช่วย AI วางแผนงบประมาณและคาดการณ์ความเสี่ยงด้านกระแสเงินสด เพื่อให้จัดการบัญชีได้ง่ายแม้ไม่มีพื้นฐานด้านการเงิน"
           data-cert-year="2569"
-          data-gallery-srcs='["Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg"]'>
+          data-project-pdf="Certificates/Samsung Solve For tomorrow/Project Proposal_TUPP Cohort.pdf"
+          data-gallery-srcs='["Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg", "Certificates/Samsung Solve For tomorrow/ผลงาน/Prototype_TUPP Cohort_page-0001.jpg", "Certificates/Samsung Solve For tomorrow/ผลงาน/Problem Map_TUPP Cohort_page-0001.jpg"]'>
           <div class="ach-cert-image"
             style="background-image: url('Certificates/Samsung Solve For tomorrow/เกียรติบัตร/SFT_Certificate.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">🌍</div>
             <h3>Samsung Solve For Tomorrow</h3>
-            <p>ส่งผลงานนวัตกรรมเพื่อสังคมระดับประเทศ</p><span class="ach-year">2569</span>
+            <p>BounD • เว็บแอปผู้ช่วยบริหารการเงินสำหรับธุรกิจรายย่อย</p><span class="ach-year">2569</span>
           </div>
         </div>
-        <div class="achievement-card anim-reveal" data-cert-title="เกียรติบัตรจิตอาสาของโรงเรียน"
+        <div class="achievement-card anim-reveal" data-category="volunteer" data-cert-title="เกียรติบัตรจิตอาสาของโรงเรียน"
           data-cert-desc="ได้รับเกียรติบัตรจิตอาสาจากทางโรงเรียน สำหรับการเข้าร่วมและทำกิจกรรมจิตอาสาบำเพ็ญประโยชน์เพื่อสังคมและส่วนรวมในนามของโรงเรียนเตรียมอุดมศึกษาพัฒนาการสุวรรณภูมิ"
           data-cert-year="2569"
           data-gallery-srcs='["Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg"]'>
@@ -573,7 +593,6 @@
             style="background-image: url('Certificates/เกียรติบัตรจิตอาสา ของโรงเรียน/เกียรติบัตร/IMG_20260812_142653.jpg');">
           </div>
           <div class="ach-body">
-            <div class="ach-icon">💚</div>
             <h3>เกียรติบัตรจิตอาสาของโรงเรียน</h3>
             <p>บำเพ็ญประโยชน์เพื่อสังคมและส่วนรวม</p><span class="ach-year">2569</span>
           </div>
@@ -663,17 +682,22 @@
         <!-- Fan Carousel Section -->
         <div class="cert-fan-section">
           <div class="cert-fan-container" id="certFanContainer"></div>
-          <!-- Pagination controls (shown only when >7 images) -->
+          <!-- Navigation controls for every gallery with more than one image -->
           <div class="cert-fan-pagination" id="certFanPagination" style="display:none;">
-            <button class="cert-fan-arrow" id="certFanPrev" aria-label="Previous">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            <button type="button" class="cert-fan-arrow" id="certFanPrev" aria-label="รูปก่อนหน้า">
+              <svg width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                 stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6" />
               </svg>
+              <span>ก่อนหน้า</span>
             </button>
-            <div class="cert-fan-dots" id="certFanDots"></div>
-            <button class="cert-fan-arrow" id="certFanNext" aria-label="Next">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            <div class="cert-fan-nav-info">
+              <p class="cert-fan-counter" id="certFanCounter" aria-live="polite" aria-atomic="true"></p>
+              <div class="cert-fan-dots" id="certFanDots" role="group" aria-label="เลือกดูรูป"></div>
+            </div>
+            <button type="button" class="cert-fan-arrow" id="certFanNext" aria-label="รูปถัดไป">
+              <span>ถัดไป</span>
+              <svg width="16" height="16" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                 stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6" />
               </svg>
@@ -684,6 +708,16 @@
         <div class="cert-modal-info">
           <h3 class="cert-modal-title" id="cmTitle">ชื่อรางวัล</h3>
           <p class="cert-modal-desc" id="cmDesc">รายละเอียดเกียรติบัตร...</p>
+          <a class="cert-project-link" id="cmProjectLink" target="_blank" rel="noopener noreferrer" type="application/pdf" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <path d="M14 2v6h6M8 13h8M8 17h5" />
+            </svg>
+            อ่านรายละเอียดโครงงานฉบับเต็ม (PDF)
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M15 3h6v6M10 14 21 3M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5" />
+            </svg>
+          </a>
           <span class="ach-year" id="cmYear">2568</span>
         </div>
       </div>
@@ -725,7 +759,7 @@
     </div>
   </div>
 
-  <script src="script.js?v=2.2"></script>
+  <script src="script.js?v=2.8"></script>
 </body>
 
 </html>
