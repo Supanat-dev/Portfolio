@@ -1,0 +1,8 @@
+node_modules/
+dist/
+.dev.vars
+.wrangler/
+.wrangler-config/
+analytics-dashboard/.dev.vars
+analytics-dashboard/.wrangler/
+analytics-dashboard/.wrangler-config/
