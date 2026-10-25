@@ -1,5 +1,6 @@
 const BANGKOK_TIME_ZONE = 'Asia/Bangkok';
-const state = { token: sessionStorage.getItem('portfolio_admin_token') || '', timer: null };
+const TOKEN_STORAGE_KEY = 'portfolio_admin_token';
+const state = { token: localStorage.getItem(TOKEN_STORAGE_KEY) || '', timer: null };
 
 const elements = {
   loginShell: document.querySelector('#loginShell'),
@@ -90,7 +91,7 @@ async function loadData(showError = true) {
     if (response.status === 401) throw new Error('รหัสผ่านไม่ถูกต้อง');
     if (!response.ok) throw new Error('ไม่สามารถโหลดข้อมูลได้');
     const data = await response.json();
-    sessionStorage.setItem('portfolio_admin_token', state.token);
+    localStorage.setItem(TOKEN_STORAGE_KEY, state.token);
     elements.loginShell.hidden = true;
     elements.dashboard.hidden = false;
     elements.loginError.textContent = '';
@@ -107,7 +108,7 @@ async function loadData(showError = true) {
 
 function logout(clearError = true) {
   state.token = '';
-  sessionStorage.removeItem('portfolio_admin_token');
+  localStorage.removeItem(TOKEN_STORAGE_KEY);
   window.clearInterval(state.timer);
   elements.dashboard.hidden = true;
   elements.loginShell.hidden = false;
