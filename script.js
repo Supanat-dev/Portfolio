@@ -4,6 +4,22 @@
    ============================================ */
 document.addEventListener('DOMContentLoaded', () => {
 
+  // Originals remain available, but ordinary browsing uses generated web copies.
+  const imageVersions = window.PORTFOLIO_IMAGES || {};
+  function webImage(src) {
+    return imageVersions[src] || { preview: { src }, detail: { src } };
+  }
+
+  // If a generated file is unavailable, retain the original as a safe fallback.
+  document.querySelectorAll('img[data-original-src]').forEach(img => {
+    img.addEventListener('error', () => {
+      if (img.dataset.originalFallback) return;
+      img.dataset.originalFallback = 'true';
+      img.removeAttribute('srcset');
+      img.src = img.dataset.originalSrc;
+    });
+  });
+
   // ===== PARTICLE TEXT WELCOME SCREEN =====
   const welcomeScreen = document.getElementById('welcomeScreen');
   const ptCanvas = document.getElementById('particleTextCanvas');
@@ -785,6 +801,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function openModal(modal) {
     modal.classList.add('active');
     document.body.classList.add('modal-open');
+    // Keep the full poster out of initial page loading.
+    if (modal.id === 'echoPosterModal') {
+      const img = modal.querySelector('img[data-original-src]');
+      if (img && !img.dataset.detailRequested) {
+        img.dataset.detailRequested = 'true';
+        img.src = webImage(img.dataset.originalSrc).detail.src;
+      }
+    }
   }
 
   function closeModal(modal) {
@@ -886,6 +910,61 @@ document.addEventListener('DOMContentLoaded', () => {
     const cmDesc     = document.getElementById('cmDesc');
     const cmYear     = document.getElementById('cmYear');
     const cmProjectLink = document.getElementById('cmProjectLink');
+    const cmOriginalLink = document.getElementById('cmOriginalLink');
+    const imageStatus = document.getElementById('certImageStatus');
+    const reduceGalleryMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function updateImageStatus() {
+      if (!imageStatus) return;
+      const selected = cardEls[centerIndex];
+      imageStatus.textContent = selected?.dataset.detailState === 'loading'
+        ? 'กำลังโหลดภาพคมชัด…'
+        : selected?.dataset.detailState === 'error' ? 'โหลดภาพคมชัดไม่สำเร็จ สามารถเปิดภาพต้นฉบับได้' : '';
+    }
+
+    function loadDetail(index) {
+      const el = cardEls[index];
+      if (!el || el.dataset.detailState) return;
+      const card = allCards[index];
+      const img = el.querySelector('.cert-fan-detail');
+      el.dataset.detailState = 'loading';
+      img.fetchPriority = index === centerIndex ? 'high' : 'low';
+      img.onload = () => {
+        el.dataset.detailState = 'loaded';
+        el.classList.add('detail-loaded');
+        updateImageStatus();
+      };
+      img.onerror = () => {
+        // A broken web copy must not make a certificate inaccessible.
+        if (!img.dataset.originalFallback && img.getAttribute('src') !== card.src) {
+          img.dataset.originalFallback = 'true';
+          img.src = card.src;
+        } else {
+          el.dataset.detailState = 'error';
+          updateImageStatus();
+        }
+      };
+      img.src = webImage(card.src).detail.src;
+    }
+
+    function prepareVisibleImages(visibleMap) {
+      // Hidden fan cards have no src: opacity alone does not defer image downloads.
+      visibleMap.forEach((slot, index) => {
+        const img = cardEls[index].querySelector('.cert-fan-preview');
+        if (!img.getAttribute('src')) img.src = webImage(allCards[index].src).preview.src;
+      });
+      loadDetail(centerIndex);
+      const connection = navigator.connection;
+      if (!connection?.saveData && !/^(slow-)?2g$/.test(connection?.effectiveType || '')) {
+        // Only the adjacent two detail images are fetched ahead of navigation.
+        const total = allCards.length;
+        if (total > 1) {
+          loadDetail((centerIndex + 1) % total);
+          loadDetail((centerIndex - 1 + total) % total);
+        }
+      }
+      updateImageStatus();
+    }
 
     let resizeTimer;
     window.addEventListener('resize', () => {
@@ -918,6 +997,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const needsPag = total > MAX_VISIBLE;
       const slotCount = needsPag ? MAX_VISIBLE : total;
       const visibleMap = getVisibleMap(center);
+      prepareVisibleImages(visibleMap);
       const prev = prevVisibleSet;
 
       let done = 0;
@@ -948,13 +1028,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (isFirst) {
             gsap.set(el, { x: 0, y: 80, rotation: 0, scale: 0.5, opacity: 0 });
-            gsap.to(el, { ...target, duration: 1.2, ease: 'elastic.out(1.05,0.78)', delay: 0.15 + slot * 0.06, onComplete: onDone });
+            gsap.to(el, { ...target, duration: reduceGalleryMotion ? 0 : 0.45, ease: 'power2.out', delay: reduceGalleryMotion ? 0 : slot * 0.02, onComplete: onDone });
           } else if (!wasVisible) {
             const ex = dir === 'right' ? 400 * getSpreadMultiplier() : -400 * getSpreadMultiplier();
             gsap.set(el, { x: ex, y: target.y, rotation: dir === 'right' ? 30 : -30, scale: 0.5, opacity: 0 });
-            gsap.to(el, { ...target, duration: 0.6, ease: 'power2.out', onComplete: onDone });
+            gsap.to(el, { ...target, duration: reduceGalleryMotion ? 0 : 0.3, ease: 'power2.out', onComplete: onDone });
           } else {
-            gsap.to(el, { ...target, duration: 0.5, ease: 'power2.out', onComplete: onDone });
+            gsap.to(el, { ...target, duration: reduceGalleryMotion ? 0 : 0.3, ease: 'power2.out', onComplete: onDone });
           }
         } else if (wasVisible) {
           const ex = dir === 'right' ? -400 * getSpreadMultiplier() : 400 * getSpreadMultiplier();
@@ -1037,15 +1117,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Render card DOM
     function buildCards() {
+      gsap.killTweensOf(cardEls);
       container.innerHTML = '';
       cardEls = allCards.map((card, i) => {
         const el = document.createElement('div');
         el.className = 'cert-fan-card' + (card.isCert ? ' is-cert' : '');
         const img = document.createElement('img');
-        img.src = card.src;
+        const preview = webImage(card.src).preview;
+        img.className = 'cert-fan-preview';
+        if (preview.width && preview.height) {
+          img.width = preview.width;
+          img.height = preview.height;
+        }
         img.alt = card.isCert ? 'เกียรติบัตร' : `รูปกิจกรรม ${i + 1}`;
-        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.onerror = () => {
+          if (img.dataset.originalFallback) return;
+          img.dataset.originalFallback = 'true';
+          img.src = card.src;
+        };
         el.appendChild(img);
+        const detail = document.createElement('img');
+        detail.className = 'cert-fan-detail';
+        detail.alt = '';
+        detail.setAttribute('aria-hidden', 'true');
+        detail.decoding = 'async';
+        el.appendChild(detail);
 
         // Click → cycle card to center
         el.addEventListener('click', () => {
@@ -1075,6 +1172,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateDots() {
       if (counter) counter.textContent = `รูปที่ ${centerIndex + 1} จาก ${allCards.length}`;
+      if (cmOriginalLink) {
+        cmOriginalLink.hidden = !allCards.length;
+        if (allCards.length) cmOriginalLink.setAttribute('href', allCards[centerIndex].src);
+        else cmOriginalLink.removeAttribute('href');
+      }
       dotsWrap.querySelectorAll('.cert-fan-dot').forEach((dot, i) => {
         dot.classList.toggle('active', i === centerIndex);
         dot.setAttribute('aria-pressed', String(i === centerIndex));
@@ -1145,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
       activeHoverSlot = null;
       hoverCleanupFns.forEach(fn => fn());
       hoverCleanupFns = [];
+      if (leaveTimer) { clearTimeout(leaveTimer); leaveTimer = null; }
 
       // Combine: cert images first (gold), then activity images
       allCards = [
@@ -1204,7 +1307,32 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
 
   // Achievement card click → parse gallery srcs → open fan
+    const warmedImages = new Set();
+    function warmGallery(card) {
+      const connection = navigator.connection;
+      if (connection?.saveData || /^(slow-)?2g$/.test(connection?.effectiveType || '')) return;
+      let sources;
+      try { sources = JSON.parse(card.dataset.gallerySrcs || '[]'); }
+      catch { return; }
+      sources = [...sources.filter(src => src.includes('เกียรติบัตร')), ...sources.filter(src => !src.includes('เกียรติบัตร'))];
+      if (!sources.length) return;
+      const center = sources.length > MAX_VISIBLE ? HALF : sources.length >> 1;
+      const versions = webImage(sources[center]);
+      [versions.preview.src, versions.detail.src].forEach(src => {
+        if (warmedImages.has(src)) return;
+        warmedImages.add(src);
+        const img = new Image();
+        img.decoding = 'async';
+        img.fetchPriority = 'low';
+        img.onerror = () => warmedImages.delete(src);
+        img.src = src;
+      });
+    }
     document.querySelectorAll('.achievement-card').forEach(card => {
+      card.addEventListener('pointerenter', e => {
+        if (e.pointerType === 'mouse') warmGallery(card);
+      });
+      card.addEventListener('focusin', () => warmGallery(card));
       card.addEventListener('click', () => {
         const title = card.dataset.certTitle;
         const desc  = card.dataset.certDesc;

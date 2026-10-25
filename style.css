@@ -191,8 +191,8 @@ ul,ol{list-style:none}
 .achievement-card{background:var(--glass-bg);backdrop-filter:blur(16px);border:1px solid var(--glass-border);border-radius:16px;overflow:hidden;transition:all .3s var(--ease)}
 .achievement-card:hover{transform:translateY(-6px);box-shadow:var(--glass-shadow-hover);border-color:rgba(37,99,235,0.15)}
 .ach-cert-image{width:100%;height:180px;background-color:var(--bg-section);background-size:cover;background-position:center;background-repeat:no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text-dim);border-bottom:1px solid var(--border);font-size:12px;cursor:pointer;transition:all .3s;position:relative;}
-.ach-cert-image::after{content:'';position:absolute;inset:0;background:rgba(15,23,42,0.4);transition:background .3s;opacity:0;}
-.ach-cert-image[style*="background-image"]::after{opacity:1;}
+.ach-cert-image img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ach-cert-image::after{content:'';position:absolute;inset:0;background:rgba(15,23,42,0.4);transition:background .3s;pointer-events:none;}
 .ach-cert-image:hover::after{background:rgba(15,23,42,0.1);}
 .ach-cert-image svg, .ach-cert-image span{position:relative;z-index:1;text-shadow:0 2px 4px rgba(0,0,0,0.5);}
 .ach-cert-image[style*="background-image"] svg, .ach-cert-image[style*="background-image"] span{display:none;} /* Hide placeholder text when image is present */
@@ -639,6 +639,7 @@ body.modal-open {
   box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4);
   border: 2px solid rgba(255,255,255,0.1);
   transition: box-shadow 0.3s;
+  background: var(--bg-card);
 }
 .cert-fan-card img {
   max-width: min(460px, 62vw);
@@ -650,6 +651,21 @@ body.modal-open {
   pointer-events: none;
   user-select: none;
 }
+.cert-fan-card .cert-fan-detail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  opacity: 0;
+  transition: opacity .2s ease;
+}
+.cert-fan-card.detail-loaded .cert-fan-detail { opacity: 1; }
+.cert-image-status { min-height: 1.5em; margin-top: 8px; color: var(--text-muted); font-size: 11px; text-align: center; }
+.cert-original-link { align-self: flex-start; color: var(--accent-light); font-size: 12px; text-decoration: underline; text-underline-offset: 3px; }
+.cert-original-link[hidden] { display: none; }
+.cert-original-link:focus-visible { outline: 2px solid var(--accent-light); outline-offset: 3px; }
 
 /* Certificate-type card gets a special gold accent border */
 .cert-fan-card.is-cert {
