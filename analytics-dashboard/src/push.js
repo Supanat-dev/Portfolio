@@ -47,14 +47,44 @@ export function validSubscription(subscription) {
       && /^[\w-]{22}$/.test(subscription.keys?.auth || '');
   } catch { return false; }
 }
+class PushDeliveryError extends Error {
+  constructor(code, providerStatus = null) { super(code); this.code = code; this.providerStatus = providerStatus; }
+}
+const pushErrorMessages = {
+  PUSH_ENCRYPTION_FAILED: 'เตรียมข้อความแจ้งเตือนไม่สำเร็จ กรุณาปิดแล้วเปิดรับแจ้งเตือนอีกครั้ง',
+  PUSH_TIMEOUT: 'บริการแจ้งเตือนตอบกลับช้า กรุณากดส่งทดสอบอีกครั้ง',
+  PUSH_NETWORK_FAILED: 'เชื่อมต่อบริการแจ้งเตือนไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+  PUSH_SUBSCRIPTION_EXPIRED: 'การรับแจ้งเตือนเครื่องนี้หมดอายุ กรุณากดรับแจ้งเตือนใหม่',
+  PUSH_AUTH_REJECTED: 'บริการแจ้งเตือนปฏิเสธกุญแจ กรุณาปิดแล้วเปิดรับแจ้งเตือนอีกครั้ง',
+  PUSH_RATE_LIMITED: 'ส่งทดสอบถี่เกินไป รอสักครู่แล้วลองใหม่',
+  PUSH_REDIRECT_REJECTED: 'บริการแจ้งเตือนเปลี่ยนที่อยู่ กรุณาปิดแล้วเปิดรับแจ้งเตือนใหม่',
+  PUSH_PROVIDER_REJECTED: 'บริการแจ้งเตือนไม่รับข้อความ กรุณาลองใหม่อีกครั้ง',
+};
 async function deliver(env, subscription, keys, origin, data, transport = fetch) {
-  const payload = await buildPushPayload({ data: JSON.stringify(data), options: { ttl: 300, urgency: 'high' } }, subscription,
-    { ...keys, subject: origin });
-  const response = await transport(subscription.endpoint, { ...payload, redirect: 'error', signal: AbortSignal.timeout(8000) });
+  let payload;
+  try {
+    payload = await buildPushPayload({ data: JSON.stringify(data), options: { ttl: 300, urgency: 'high' } }, subscription,
+      { ...keys, subject: origin });
+  } catch { throw new PushDeliveryError('PUSH_ENCRYPTION_FAILED'); }
+  let response;
+  try {
+    // Workers supports follow/manual, not redirect:error. Never forward a signed
+    // push request to a redirect target: inspect the original response instead.
+    response = await transport(subscription.endpoint, { ...payload, redirect: 'manual', signal: AbortSignal.timeout(8000) });
+  } catch (error) {
+    throw new PushDeliveryError(['TimeoutError', 'AbortError'].includes(error.name) ? 'PUSH_TIMEOUT' : 'PUSH_NETWORK_FAILED');
+  }
   if ([404, 410].includes(response.status)) {
     await env.DB.prepare('DELETE FROM analytics_push_subscriptions WHERE endpoint = ?').bind(subscription.endpoint).run();
   }
-  return response.ok;
+  if (!response.ok) {
+    const code = [404, 410].includes(response.status) ? 'PUSH_SUBSCRIPTION_EXPIRED'
+      : [401, 403].includes(response.status) ? 'PUSH_AUTH_REJECTED'
+        : response.status === 429 ? 'PUSH_RATE_LIMITED'
+          : response.status >= 300 && response.status < 400 ? 'PUSH_REDIRECT_REJECTED' : 'PUSH_PROVIDER_REJECTED';
+    throw new PushDeliveryError(code, response.status);
+  }
+  return true;
 }
 export async function handlePush(request, env, { json, readBody }) {
   const path = new URL(request.url).pathname;
@@ -83,14 +113,24 @@ export async function handlePush(request, env, { json, readBody }) {
     await env.DB.prepare('DELETE FROM analytics_push_subscriptions WHERE endpoint = ?').bind(String(body?.endpoint || '')).run();
     return json({ ok: true });
   }
+  if (path === '/api/push/status' && request.method === 'POST') {
+    const body = await readBody(request);
+    const result = await env.DB.prepare('SELECT 1 FROM analytics_push_subscriptions WHERE endpoint = ?').bind(String(body?.endpoint || '')).all();
+    return json({ registered: Boolean(result.results?.length) });
+  }
   if (path === '/api/push/test' && request.method === 'POST') {
     const body = await readBody(request);
     const result = await env.DB.prepare('SELECT subscription FROM analytics_push_subscriptions WHERE endpoint = ?').bind(String(body?.endpoint || '')).all();
     const keys = await readKeys(env);
     if (!keys || !result.results?.length) return json({ error: 'Subscribe first' }, 409);
-    const ok = await deliver(env, JSON.parse(result.results[0].subscription), keys, origin,
-      { title: 'Portfolio Pulse', body: 'รับแจ้งเตือนบนเครื่องนี้สำเร็จ', url: '/', tag: 'portfolio-push-test' });
-    return json({ ok }, ok ? 200 : 502);
+    try {
+      await deliver(env, JSON.parse(result.results[0].subscription), keys, origin,
+        { title: 'Portfolio Pulse', body: 'รับแจ้งเตือนบนเครื่องนี้สำเร็จ', url: '/', tag: 'portfolio-push-test' });
+      return json({ ok: true });
+    } catch (error) {
+      if (!(error instanceof PushDeliveryError)) throw error;
+      return json({ ok: false, code: error.code, message: pushErrorMessages[error.code], providerStatus: error.providerStatus }, 502);
+    }
   }
   return json({ error: 'Not found' }, 404);
 }

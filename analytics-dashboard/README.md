@@ -56,7 +56,9 @@ Service Worker ไม่ cache Dashboard/API/token จึงไม่เปิ�
 
 ## ทดสอบในเครื่อง
 
-ใช้ Node.js 22 ขึ้นไป; รัน `npm test` เพื่อทดสอบ Worker/SQL จริงด้วย SQLite, tracker, การนับซ้ำ, วันตามกรุงเทพฯ และ Web Push encryption โดยไม่ส่งแจ้งเตือนไปบริการจริง
+ใช้ Node.js 22 ขึ้นไป; รัน `npm test` เพื่อทดสอบ Worker/SQL จริงด้วย SQLite, tracker, การนับซ้ำ, วันตามกรุงเทพฯ และ Web Push encryption รวมทั้งการส่ง HTTP ใน workerd/Miniflare runtime เดียวกับ Cloudflare โดยจำลองบริการ Push ไม่ส่งแจ้งเตือนไปบริการจริง ต้องให้ process ทดสอบเชื่อม loopback ในเครื่องได้
+
+การส่ง Push ใช้ `redirect: 'manual'` และปฏิเสธ 3xx โดยไม่ส่งต่อไป URL อื่น เพราะ Workers ไม่รองรับ `redirect: 'error'` ข้อผิดพลาดจากบริการ Push แสดงรหัส/ข้อความแยกจากข้อผิดพลาดฐานข้อมูล และเครื่องที่ subscription หมดอายุสามารถเปิดรับใหม่ได้
 
 1. รัน `npm run db:migrate:local`
 2. สร้างไฟล์ `.dev.vars` (ไฟล์นี้ห้าม commit) โดยใส่ `ADMIN_TOKEN=รหัสสำหรับทดสอบ`

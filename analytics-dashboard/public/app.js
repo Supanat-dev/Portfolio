@@ -89,7 +89,12 @@ async function api(path, options = {}) {
   const response = await fetch(path, { ...options, cache: 'no-store', headers: { Authorization: 'Bearer ' + state.token,
     ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers } });
   if (response.status === 401) { clearLogin(); throw new Error('รหัสผ่านไม่ถูกต้องหรือเปลี่ยนแล้ว กรุณาเข้าสู่ระบบใหม่'); }
-  if (!response.ok) throw new Error(response.status === 503 ? 'ระบบกำลังเตรียมฐานข้อมูล กรุณาลองใหม่อีกครั้ง' : 'ทำรายการไม่สำเร็จ กรุณาลองใหม่');
+  if (!response.ok) {
+    const detail = await response.json().catch(() => ({}));
+    const error = new Error(detail.message || (response.status === 503 ? 'ระบบขัดข้องชั่วคราว กรุณาลองใหม่อีกครั้ง' : 'ทำรายการไม่สำเร็จ กรุณาลองใหม่'));
+    error.code = detail.code;
+    throw error;
+  }
   return response.json();
 }
 async function checkNewVisits() {
@@ -179,7 +184,8 @@ async function updatePushStatus() {
     const reg = await registration();
     const subscription = await reg.pushManager.getSubscription();
     const config = await api('/api/push/config');
-    state.pushReady = Boolean(subscription && config.configured && storage.get('portfolio_push_key') === config.publicKey);
+    const status = subscription ? await api('/api/push/status', { method: 'POST', body: JSON.stringify({ endpoint: subscription.endpoint }) }) : null;
+    state.pushReady = Boolean(subscription && status?.registered && config.configured && storage.get('portfolio_push_key') === config.publicKey);
     el.enablePush.hidden = state.pushReady;
     el.testPush.hidden = el.disablePush.hidden = !state.pushReady;
     el.pushStatus.textContent = state.pushReady ? 'เปิดรับแจ้งเตือนบนเครื่องนี้แล้ว แม้ปิด Dashboard'
@@ -249,7 +255,18 @@ el.testPush.addEventListener('click', async () => {
     if (!subscription) throw new Error('กรุณาเปิดรับแจ้งเตือนอีกครั้ง');
     await api('/api/push/test', { method: 'POST', body: JSON.stringify({ endpoint: subscription.endpoint }) });
     el.pushStatus.textContent = 'ส่งทดสอบแล้ว ตรวจแถบแจ้งเตือนของมือถือได้เลย';
-  } catch (error) { el.pushStatus.textContent = error.message; }
+  } catch (error) {
+    if (error.code === 'PUSH_SUBSCRIPTION_EXPIRED') {
+      try {
+        const reg = await registration();
+        const subscription = await reg.pushManager.getSubscription();
+        if (subscription) await subscription.unsubscribe();
+        storage.remove('portfolio_push_key');
+        await updatePushStatus();
+      } catch { /* Keep the useful delivery error if local cleanup fails. */ }
+    }
+    el.pushStatus.textContent = error.message;
+  }
   finally { el.testPush.disabled = false; }
 });
 if (state.token) {
