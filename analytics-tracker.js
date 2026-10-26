@@ -13,18 +13,6 @@
   };
   const disabled = () => navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true
     || safeStorage.get('portfolio_analytics_optout') === '1';
-  const optout = document.querySelector('#analyticsOptout');
-  function updatePrivacyButton() {
-    if (!optout) return;
-    optout.disabled = navigator.doNotTrack === '1' || navigator.globalPrivacyControl === true;
-    optout.textContent = optout.disabled ? 'ปิดตามการตั้งค่าความเป็นส่วนตัวของเบราว์เซอร์' : disabled() ? 'เปิดสถิติการใช้งานนิรนาม' : 'ปิดสถิติการใช้งานบนเครื่องนี้';
-  }
-  if (optout) optout.addEventListener('click', () => {
-    safeStorage.set('portfolio_analytics_optout', safeStorage.get('portfolio_analytics_optout') === '1' ? '0' : '1');
-    if (disabled()) safeStorage.remove('portfolio_analytics_visitor');
-    location.reload();
-  });
-  updatePrivacyButton();
   if (!endpoint || disabled()) return;
   const sessionId = crypto.randomUUID();
   const startedAt = new Date().toISOString();
@@ -159,7 +147,7 @@
   });
   document.addEventListener('click', (e) => {
     const target = e.target instanceof Element ? e.target.closest('a, button, [data-target], [data-filter], [data-analytics-label]') : null;
-    if (!target || target.closest('#analyticsPrivacy') || target.closest('form, input, textarea, [contenteditable]')) return;
+    if (!target || target.closest('form, input, textarea, [contenteditable]')) return;
     let destination = target.dataset.target || target.dataset.filter || '';
     if (target.tagName === 'A') {
       try {

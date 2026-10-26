@@ -233,7 +233,6 @@ ul,ol{list-style:none}
 /* ===== FOOTER ===== */
 .footer{padding:40px 48px;text-align:center;border-top:1px solid var(--border);color:var(--text-dim);font-size:13px;position:relative;z-index:2}
 .footer span{color:var(--accent);font-weight:600}
-.analytics-privacy{max-width:720px;margin:18px auto 0;font-size:12px;line-height:1.8}.analytics-privacy summary{cursor:pointer}.analytics-privacy button{border:1px solid currentColor;border-radius:8px;padding:8px 12px;background:transparent;color:inherit;cursor:pointer}
 
 
 /* ===== GSAP ANIMATIONS ===== */
