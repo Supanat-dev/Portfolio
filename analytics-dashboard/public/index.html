@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=2">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <div class="ambient ambient-a"></div>
@@ -44,6 +44,7 @@
         <p id="lastUpdated">กำลังโหลดข้อมูล…</p>
       </div>
       <div class="top-actions">
+        <a class="action-button activity-jump" href="#recentSessions">ดูกิจกรรมผู้เข้าชม</a>
         <label class="range-control">ช่วงเวลา
           <select id="rangeSelect">
             <option value="1">24 ชั่วโมง</option>
@@ -58,16 +59,7 @@
       </div>
     </header>
 
-    <section class="notice-card" aria-label="การแจ้งเตือน">
-      <div><strong>รู้ทันทีเมื่อมีคนเข้ามา</strong><p id="pushStatus">เปิดรับแจ้งเตือนบนมือถือของคุณได้ แม้ปิด Dashboard</p></div>
-      <div class="notice-actions">
-        <button class="action-button primary" id="enablePush" type="button">รับแจ้งเตือนบนเครื่องนี้</button>
-        <button class="action-button" id="testPush" type="button" hidden>ส่งทดสอบ</button>
-        <button class="action-button" id="disablePush" type="button" hidden>ปิดแจ้งเตือน</button>
-      </div>
-    </section>
     <p class="dashboard-message" id="dashboardMessage" role="status" aria-live="polite"></p>
-    <div class="live-notice" id="liveNotice" role="status" aria-live="polite" hidden></div>
 
     <section class="stats-grid" aria-label="สรุปสถิติ">
       <article class="stat-card accent"><span>กำลังออนไลน์</span><strong id="activeStat">—</strong><small><i class="live-dot"></i> อัปเดตทุก 15 วินาที</small></article>
@@ -83,6 +75,27 @@
       <p>ใช้รหัสสุ่มในเบราว์เซอร์อายุ 180 วัน คนละเครื่อง/ล้างข้อมูลจะนับใหม่ ข้อมูลก่อนอัปเดตไม่สามารถระบุย้อนหลังได้</p>
     </section>
 
+    <section class="panel recent-sessions" id="recentSessions">
+      <div class="panel-heading">
+        <div><p class="eyebrow">RECENT SESSIONS</p><h2>ประวัติการเข้าชม</h2></div>
+        <p class="result-count" id="resultCount">0 รายการ</p>
+      </div>
+      <p class="panel-note activity-help">แสดงชื่อผลงานล่าสุดไม่เกิน 3 ชื่อ กด “ดูกิจกรรม” ที่แถวผู้ชมเพื่อดูสิ่งที่เปิด การคลิก และเวลาของการเข้าชมครั้งนั้น</p>
+
+      <div class="empty-state" id="emptyState" hidden>
+        <div class="empty-pulse"></div>
+        <h3>ยังไม่มีข้อมูลในช่วงเวลานี้</h3>
+        <p>เมื่อเชื่อม tracker กับเว็บพอร์ตแล้ว session ใหม่จะปรากฏที่นี่</p>
+      </div>
+
+      <div class="table-wrap" id="tableWrap">
+        <table>
+          <thead><tr><th>สถานะ / กิจกรรม</th><th>ผลงานที่เปิดดู</th><th>วันที่เข้า</th><th>เวลาเข้า</th><th>เวลาออก</th><th>ระยะเวลา</th><th>ตำแหน่งโดยประมาณ</th><th>Browser / ระบบ / อุปกรณ์</th><th>แหล่งที่มา</th><th>หน้า / เลื่อนลึกสุด</th></tr></thead>
+          <tbody id="sessionRows"></tbody>
+        </table>
+      </div>
+    </section>
+
     <div class="insights-grid">
       <section class="panel compact"><div class="panel-heading"><div><p class="eyebrow">TRAFFIC SOURCES</p><h2>ผู้ชมมาจากไหน</h2></div></div><div class="breakdown" id="sourcesList"></div><p class="panel-note">โดยตรง / ไม่ทราบ = เปิดเอง หรือแอป/เว็บไซต์ไม่ได้ส่งแหล่งที่มาให้</p></section>
       <section class="panel compact"><div class="panel-heading"><div><p class="eyebrow">BROWSER & DEVICE</p><h2>เบราว์เซอร์และอุปกรณ์</h2></div></div><div class="device-breakdowns"><div><h3>Browser</h3><div id="browsersList"></div></div><div><h3>ระบบปฏิบัติการ</h3><div id="osList"></div></div><div><h3>อุปกรณ์</h3><div id="devicesList"></div></div></div></section>
@@ -94,25 +107,7 @@
 
     <section class="panel interaction-panel"><div class="panel-heading"><div><p class="eyebrow">CLICKS & PROJECTS</p><h2>จุดที่คลิกและผลงานที่สนใจ</h2></div></div><div class="breakdown" id="interactionsList"></div></section>
 
-    <section class="panel">
-      <div class="panel-heading">
-        <div><p class="eyebrow">RECENT SESSIONS</p><h2>ประวัติการเข้าชม</h2></div>
-        <p class="result-count" id="resultCount">0 รายการ</p>
-      </div>
 
-      <div class="empty-state" id="emptyState" hidden>
-        <div class="empty-pulse"></div>
-        <h3>ยังไม่มีข้อมูลในช่วงเวลานี้</h3>
-        <p>เมื่อเชื่อม tracker กับเว็บพอร์ตแล้ว session ใหม่จะปรากฏที่นี่</p>
-      </div>
-
-      <div class="table-wrap" id="tableWrap">
-        <table>
-          <thead><tr><th>สถานะ / ผู้ชม</th><th>วันที่เข้า</th><th>เวลาเข้า</th><th>เวลาออก</th><th>ระยะเวลา</th><th>ตำแหน่งโดยประมาณ</th><th>Browser / ระบบ / อุปกรณ์</th><th>แหล่งที่มา</th><th>หน้า / เลื่อนลึกสุด</th><th>รายละเอียด</th></tr></thead>
-          <tbody id="sessionRows"></tbody>
-        </table>
-      </div>
-    </section>
 
     <footer>
       <p>เวลาออกอาจคลาดเคลื่อนเล็กน้อยเมื่อผู้ชมปิดเบราว์เซอร์หรืออินเทอร์เน็ตหลุด</p>
@@ -120,9 +115,9 @@
     </footer>
   </main>
   <dialog id="sessionDialog" class="session-dialog" aria-labelledby="detailTitle">
-    <div class="detail-heading"><h2 id="detailTitle">รายละเอียดการเข้าชม</h2><button id="closeDetail" class="action-button" type="button">ปิด</button></div>
+    <div class="detail-heading"><h2 id="detailTitle">กิจกรรมของการเข้าชมครั้งนี้</h2><button id="closeDetail" class="action-button" type="button">ปิด</button></div>
     <div id="detailContent"></div>
   </dialog>
-  <script src="app.js?v=3" type="module"></script>
+  <script src="app.js?v=4" type="module"></script>
 </body>
 </html>

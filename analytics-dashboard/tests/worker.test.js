@@ -5,7 +5,6 @@ import { readFileSync } from 'node:fs';
 import worker from '../src/index.js';
 import { classifyClient, sourceInfo, safePath } from '../src/analytics.js';
 import { ensureExtendedSchema } from '../src/schema.js';
-import { notifyVisit, validSubscription } from '../src/push.js';
 
 class D1 {
   constructor() {
@@ -61,7 +60,7 @@ test('upgrade preserves old sessions; protected APIs require the owner token', a
   const env = envFor();
   env.DB.sqlite.exec("INSERT INTO sessions (session_id, started_at, last_seen_at) VALUES ('legacy-session-001', datetime('now'), datetime('now'))");
   assert.equal((await worker.fetch(new Request(base + '/api/sessions'), env)).status, 401);
-  assert.equal((await worker.fetch(new Request(base + '/api/push/setup', { method: 'POST' }), env)).status, 401);
+  assert.equal((await worker.fetch(new Request(base + '/api/sessions/legacy-session-001'), env)).status, 401);
   const data = await (await request('/api/sessions?range=all', env)).json();
   assert.equal(data.summary.total, 1);
   assert.equal(data.sessions[0].visitor_type, null);
@@ -81,6 +80,8 @@ test('collects device, approximate city, source, views, clicks and scroll; strip
   assert.equal(data.content[0].active_seconds, 20); assert.equal(data.content[0].path, '/Portfolio/');
   assert.equal(data.scroll.length, 3); assert.equal(data.scroll[2].milestone, 75);
   assert.equal(data.interactions[0].label, 'Echo Glove');
+  assert.equal(s.project_count, 1); assert.equal(s.click_count, 0);
+  assert.equal(s.project_preview, 'Echo Glove');
   assert.equal(JSON.stringify(data).includes('13.7'), false);
   const detail = await (await request('/api/sessions/' + body.sessionId, env)).json();
   assert.equal(detail.events.length, 1); assert.equal(detail.views.length, 1);
@@ -129,14 +130,6 @@ test('DNT/GPC, rejected origins, malformed and oversized batches never write vis
   assert.equal((await collect(env, big)).status, 413);
   assert.equal(env.DB.sqlite.prepare('SELECT COUNT(*) AS n FROM sessions').get().n, 0);
 });
-test('new visit cursor is independent of date filter and paginated without replay', async () => {
-  const env = envFor(); const first = visit(); await collect(env, first);
-  const before = await (await request('/api/sessions?range=1', env)).json();
-  await collect(env, visit());
-  const changes = await (await request('/api/visits?after=' + before.latestCursor, env)).json();
-  assert.equal(changes.visits.length, 1);
-  assert.equal((await (await request('/api/visits?after=' + changes.cursor, env)).json()).visits.length, 0);
-});
 test('Thai today includes a session after local midnight but before UTC midnight', async () => {
   const env = envFor(); await ensureExtendedSchema(env.DB);
   const thaiDate = new Date(Date.now() + 7 * 3600000).toISOString().slice(0, 10);
@@ -154,46 +147,19 @@ test('browser and OS detection covers iPhone, Android tablet and iPad desktop UA
   assert.equal(sourceInfo('', origin).referrer, null);
   assert.equal(safePath('//example.com'), '/');
 });
-const b64 = (bytes) => Buffer.from(bytes).toString('base64url');
-async function subscription() {
-  const keys = await crypto.subtle.generateKey({ name: 'ECDH', namedCurve: 'P-256' }, true, ['deriveBits']);
-  return { endpoint: 'https://fcm.googleapis.com/fcm/send/test-device', expirationTime: null,
-    keys: { p256dh: b64(await crypto.subtle.exportKey('raw', keys.publicKey)), auth: b64(crypto.getRandomValues(new Uint8Array(16))) } };
-}
-test('push setup keeps private key server-side and encrypted; repeat setup keeps identity', async () => {
+test('notification endpoints are retired and no notification schema is created', async () => {
   const env = envFor();
-  const first = await (await request('/api/push/setup', env, { method: 'POST' })).json();
-  const second = await (await request('/api/push/setup', env, { method: 'POST' })).json();
-  assert.equal(first.publicKey, second.publicKey); assert.equal(Object.keys(first).length, 1);
-  const row = env.DB.sqlite.prepare('SELECT * FROM analytics_push_config').get();
-  assert.ok(row.encrypted_private_key.length > 43);
-  assert.equal((await worker.fetch(new Request(base + '/api/push/config'), env)).status, 401);
+  for (const path of ['/api/push/config', '/api/push/setup', '/api/push/subscribe', '/api/push/test', '/api/visits']) {
+    assert.equal((await request(path, env, { method: 'POST' })).status, 410);
+  }
+  await collect(env, visit());
+  const tables = env.DB.sqlite.prepare("SELECT name FROM sqlite_master WHERE type = 'table' AND (name LIKE 'analytics_push_%' OR name = 'analytics_notifications')").all();
+  assert.equal(tables.length, 0);
 });
-test('push sends encrypted payload once per session and removes expired subscriptions', async () => {
-  const env = envFor(); const body = visit(); await collect(env, body);
-  const config = await (await request('/api/push/setup', env, { method: 'POST' })).json();
-  const sub = await subscription(); assert.equal(validSubscription(sub), true);
-  assert.equal(validSubscription({ ...sub, endpoint: 'https://127.0.0.1/admin' }), false);
-  assert.equal((await request('/api/push/subscribe', env, { method: 'POST', body: JSON.stringify({ subscription: sub, publicKey: config.publicKey }) })).status, 200);
-  let sends = 0;
-  const transport = async (url, payload) => {
-    sends++; assert.equal(url, sub.endpoint); assert.equal(payload.headers['content-encoding'], 'aes128gcm');
-    assert.match(payload.headers.authorization, /^vapid /); assert.equal(payload.body.byteLength, 4096);
-    assert.equal(new TextDecoder().decode(payload.body).includes('sessionId'), false);
-    return new Response('', { status: 201 });
-  };
-  const args = { sessionId: body.sessionId, now: new Date().toISOString(), dashboardOrigin: base };
-  await notifyVisit(env, args, transport); await notifyVisit(env, args, transport);
-  assert.equal(sends, 1);
-  const second = visit(); await collect(env, second);
-  await notifyVisit(env, { ...args, sessionId: second.sessionId }, async () => new Response('', { status: 410 }));
-  assert.equal(env.DB.sqlite.prepare('SELECT COUNT(*) AS n FROM analytics_push_subscriptions').get().n, 0);
-});
-test('rotating owner password invalidates old token and lets push re-enroll with new keys', async () => {
-  const env = envFor(); const oldToken = env.ADMIN_TOKEN;
-  const first = await (await request('/api/push/setup', env, { method: 'POST' })).json();
-  env.ADMIN_TOKEN = 'another-test-token-not-a-production-secret';
-  assert.equal((await worker.fetch(new Request(base + '/api/push/config', { headers: { Authorization: 'Bearer ' + oldToken } }), env)).status, 401);
-  const second = await (await request('/api/push/setup', env, { method: 'POST' })).json();
-  assert.notEqual(first.publicKey, second.publicKey);
+test('owner password rotation still invalidates the old dashboard login', async () => {
+  const env = envFor();
+  const oldToken = env.ADMIN_TOKEN;
+  env.ADMIN_TOKEN = 'changed-test-password';
+  assert.equal((await worker.fetch(new Request(base + '/api/sessions', { headers: { Authorization: 'Bearer ' + oldToken } }), env)).status, 401);
+  assert.equal((await request('/api/sessions', env)).status, 200);
 });

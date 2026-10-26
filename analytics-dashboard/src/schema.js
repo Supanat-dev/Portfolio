@@ -25,16 +25,6 @@ export const EXTENDED_SCHEMA = [
   )`,
   `CREATE INDEX IF NOT EXISTS idx_analytics_events_session ON analytics_events(session_id, occurred_at)`,
   `CREATE INDEX IF NOT EXISTS idx_analytics_events_type ON analytics_events(type, occurred_at)`,
-  `CREATE TABLE IF NOT EXISTS analytics_notifications (
-    session_id TEXT PRIMARY KEY, state TEXT NOT NULL, updated_at TEXT NOT NULL
-  )`,
-  `CREATE TABLE IF NOT EXISTS analytics_push_config (
-    id INTEGER PRIMARY KEY CHECK (id = 1), public_key TEXT NOT NULL,
-    encrypted_private_key TEXT NOT NULL, iv TEXT NOT NULL
-  )`,
-  `CREATE TABLE IF NOT EXISTS analytics_push_subscriptions (
-    endpoint TEXT PRIMARY KEY, subscription TEXT NOT NULL, created_at TEXT NOT NULL
-  )`,
 ];
 const readyDatabases = new WeakSet();
 export async function ensureExtendedSchema(db) {

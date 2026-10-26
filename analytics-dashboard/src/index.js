@@ -1,6 +1,5 @@
 import { classifyClient, safePath, sourceInfo } from './analytics.js';
 import { ensureExtendedSchema } from './schema.js';
-import { handlePush, notifyVisit } from './push.js';
 
 const JSON_HEADERS = { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' };
 const json = (data, status = 200, headers = {}) => new Response(JSON.stringify(data), { status, headers: { ...JSON_HEADERS, ...headers } });
@@ -41,7 +40,7 @@ async function readBody(request) {
   return JSON.parse(new TextDecoder().decode(bytes));
 }
 
-async function collect(request, env, ctx) {
+async function collect(request, env) {
   const origin = allowedOrigin(request, env);
   if (!origin) return json({ error: 'Origin not allowed' }, 403);
   const cors = corsHeaders(origin);
@@ -109,13 +108,19 @@ async function collect(request, env, ctx) {
     }
   }
   await env.DB.batch(statements);
-  if (extended && body.type !== 'end' && ctx?.waitUntil) {
-    ctx.waitUntil(notifyVisit(env, { sessionId: body.sessionId, now, dashboardOrigin: new URL(request.url).origin }).catch(() => {}));
-  }
   return json({ ok: true }, 202, cors);
 }
 
 const SESSION_COLUMNS = `s.*, d.visitor_id, d.visitor_type, d.browser, d.os, d.device, d.source, d.city, d.region, d.region_code,
+  (SELECT COUNT(*) FROM analytics_events e WHERE e.session_id = s.session_id AND e.type = 'click') AS click_count,
+  (SELECT COUNT(*) FROM analytics_events e WHERE e.session_id = s.session_id AND e.type = 'project_open') AS project_count,
+  (SELECT GROUP_CONCAT(label, ' · ') FROM (
+    SELECT e.label, MAX(e.occurred_at) AS last_open FROM analytics_events e
+    WHERE e.session_id = s.session_id AND e.type = 'project_open'
+    GROUP BY e.label ORDER BY last_open DESC LIMIT 3
+  )) AS project_preview,
+  (SELECT e.label FROM analytics_events e WHERE e.session_id = s.session_id AND e.type = 'click'
+    ORDER BY e.occurred_at DESC LIMIT 1) AS last_click,
   (SELECT COUNT(*) FROM analytics_views v WHERE v.session_id = s.session_id AND v.kind = 'page') AS page_views,
   (SELECT MAX(max_scroll) FROM analytics_views v WHERE v.session_id = s.session_id AND v.kind = 'page') AS max_scroll`;
 async function sessions(request, env) {
@@ -151,12 +156,11 @@ async function sessions(request, env) {
       FROM (SELECT 25 AS milestone UNION ALL SELECT 50 UNION ALL SELECT 75 UNION ALL SELECT 100) m
       JOIN analytics_views v ON v.max_scroll >= m.milestone JOIN sessions s ON s.session_id = v.session_id
       WHERE v.kind = 'page' ${range.clause} GROUP BY milestone ORDER BY milestone`, [...range.values, ...range.values]),
-    env.DB.prepare('SELECT rowid AS cursor FROM sessions ORDER BY rowid DESC LIMIT 1'),
   ]);
   return json({ summary: results[0].results?.[0] || {}, sessions: results[1].results || [],
     sources: results[2].results || [], browsers: results[3].results || [], os: results[4].results || [], devices: results[5].results || [],
     content: results[6].results || [], interactions: results[7].results || [], scroll: results[8].results || [],
-    latestCursor: results[9].results?.[0]?.cursor || 0, generatedAt: new Date().toISOString() });
+    generatedAt: new Date().toISOString() });
 }
 async function sessionDetail(request, env, sessionId) {
   if (!authorized(request, env)) return json({ error: 'Unauthorized' }, 401);
@@ -170,32 +174,18 @@ async function sessionDetail(request, env, sessionId) {
   if (!results[0].results?.length) return json({ error: 'Session not found' }, 404);
   return json({ session: results[0].results[0], views: results[1].results, events: results[2].results.slice(0, 500), truncated: results[2].results.length > 500 });
 }
-async function newVisits(request, env) {
-  if (!authorized(request, env)) return json({ error: 'Unauthorized' }, 401);
-  await ensureExtendedSchema(env.DB);
-  const after = integer(new URL(request.url).searchParams.get('after'), Number.MAX_SAFE_INTEGER);
-  const result = await env.DB.prepare(`SELECT s.rowid AS cursor, s.session_id, s.started_at, d.city, s.country, d.source, d.device
-    FROM sessions s LEFT JOIN analytics_session_details d ON d.session_id = s.session_id WHERE s.rowid > ? ORDER BY s.rowid LIMIT 51`).bind(after).all();
-  const visits = (result.results || []).slice(0, 50);
-  return json({ visits, cursor: visits.at(-1)?.cursor || after, hasMore: (result.results || []).length > 50 });
-}
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
     if (url.pathname === '/api/collect' && request.method === 'OPTIONS') {
       const origin = allowedOrigin(request, env);
       return origin ? new Response(null, { status: 204, headers: corsHeaders(origin) }) : json({ error: 'Origin not allowed' }, 403);
     }
     try {
-      if (url.pathname === '/api/collect' && request.method === 'POST') return await collect(request, env, ctx);
+      if (url.pathname === '/api/collect' && request.method === 'POST') return await collect(request, env);
       if (url.pathname === '/api/sessions' && request.method === 'GET') return await sessions(request, env);
       if (url.pathname.startsWith('/api/sessions/') && request.method === 'GET') return await sessionDetail(request, env, url.pathname.split('/').at(-1));
-      if (url.pathname === '/api/visits' && request.method === 'GET') return await newVisits(request, env);
-      if (url.pathname.startsWith('/api/push/')) {
-        if (!authorized(request, env)) return json({ error: 'Unauthorized' }, 401);
-        await ensureExtendedSchema(env.DB);
-        return await handlePush(request, env, { json, readBody });
-      }
+      if (url.pathname.startsWith('/api/push/') || url.pathname === '/api/visits') return json({ error: 'Notifications disabled' }, 410);
       if (url.pathname === '/api/health') return json({ ok: true, service: 'portfolio-analytics', version: 2 });
       if (url.pathname.startsWith('/api/')) return json({ error: 'Not found' }, 404);
       return env.ASSETS.fetch(request);
