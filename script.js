@@ -799,6 +799,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // (certMockup, certRealImg, certGalleryThumbs, cmMockTitle/Desc/Year removed — handled by fan carousel engine)
 
   function openModal(modal) {
+    const analyticsTitle = modal.id === 'certModal' ? cmTitle.textContent : 'Echo Glove — โปสเตอร์โครงงาน';
+    document.dispatchEvent(new CustomEvent('portfolio:analytics', { detail: { type: 'project_open', title: analyticsTitle, modalId: modal.id } }));
     modal.classList.add('active');
     document.body.classList.add('modal-open');
     // Keep the full poster out of initial page loading.
@@ -812,6 +814,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function closeModal(modal) {
+    document.dispatchEvent(new CustomEvent('portfolio:analytics', { detail: { type: 'project_close', modalId: modal.id } }));
     modal.classList.remove('active');
     if (!document.querySelector('.modal.active')) {
       document.body.classList.remove('modal-open');
@@ -1185,6 +1188,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function cycleTo(targetCenter) {
       if (isAnimating || targetCenter === centerIndex) return;
+      document.dispatchEvent(new CustomEvent('portfolio:analytics', { detail: { type: 'gallery', title: `${cmTitle.textContent} — รูปที่ ${targetCenter + 1}`, target: `gallery-image-${targetCenter + 1}` } }));
       isAnimating = true;
       direction = targetCenter > centerIndex ? 'right' : 'left';
       // handle wrap
@@ -1205,6 +1209,7 @@ document.addEventListener('DOMContentLoaded', () => {
       centerIndex = dir === 'right'
         ? (centerIndex + 1) % total
         : (centerIndex - 1 + total) % total;
+      document.dispatchEvent(new CustomEvent('portfolio:analytics', { detail: { type: 'gallery', title: `${cmTitle.textContent} — รูปที่ ${centerIndex + 1}`, target: `gallery-image-${centerIndex + 1}` } }));
       updateDots();
       applyFanLayout(centerIndex, false, dir);
     }
